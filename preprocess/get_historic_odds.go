@@ -14,7 +14,7 @@ import (
 	"strconv"
 )
 
-func saveOdds() {
+func SaveOdds(year int32, league string) {
 	gormDb, err := gorm.Open(mysql.Open("root:password@tcp(127.0.0.1:3306)/sports-book?charset=utf8mb4&parseTime=True&loc=Local"))
 	if err != nil {
 		fmt.Println(err)
@@ -22,7 +22,7 @@ func saveOdds() {
 	}
 	query.SetDefault(gormDb)
 
-	filename := "./preprocess/oddsFiles/2022odds.csv"
+	filename := fmt.Sprintf("./preprocess/oddsFiles/%s/%dodds.csv", league, year)
 	allOdds := make([]MatchOdds1x2, 0)
 	b365odds, _ := Get1x2Odds(filename, "Bet365", "B365H", "B365D", "B365A")
 	ladbrokesOdds, _ := Get1x2Odds(filename, "ladbrokes", "LBH", "LBD", "LBA")
@@ -36,7 +36,7 @@ func saveOdds() {
 		panic("no odds found")
 	}
 
-	Save1x2odds(allOdds, 2022)
+	Save1x2odds(allOdds, year, league)
 }
 
 type MatchOdds1x2 struct {
@@ -79,6 +79,10 @@ func Get1x2Odds(fileName string, bookies, hw, d, aw string) ([]MatchOdds1x2, err
 			homeWinString := row[homeWinIdx]
 			drawString := row[drawIdx]
 			awayWinString := row[awayWinIdx]
+			if homeWinString == "" && drawString == "" && awayWinString == "" {
+				log.Println("empty row found", idx)
+				continue
+			}
 			homeWin, err := strconv.ParseFloat(homeWinString, 64)
 			if err != nil {
 				panic(err)
@@ -105,7 +109,7 @@ func Get1x2Odds(fileName string, bookies, hw, d, aw string) ([]MatchOdds1x2, err
 	return allOdds, nil
 }
 
-func Save1x2odds(odds []MatchOdds1x2, year int32) {
+func Save1x2odds(odds []MatchOdds1x2, year int32, league string) {
 	teamMap := getTeamMap()
 	var oddsToSave = make([]*model.Odds1x2, 0)
 	for _, odd := range odds {
@@ -122,7 +126,7 @@ func Save1x2odds(odds []MatchOdds1x2, year int32) {
 		}
 		oddsToSave = append(oddsToSave, &toSave)
 	}
-	print(len(oddsToSave))
+	log.Println(fmt.Sprintf("saved %d odds", len(oddsToSave)))
 	err := query.Odds1x2.WithContext(context.Background()).CreateInBatches(oddsToSave, 200)
 	if err != nil {
 		fmt.Println(err)
@@ -167,6 +171,72 @@ func getTeamMap() map[string]int32 {
 			team.Name = "West Brom"
 		case "Nottingham Forest":
 			team.Name = "Nott'm Forest"
+		case "Queens Park Rangers":
+			team.Name = "QPR"
+
+			// la liga
+		case "Espanyol":
+			team.Name = "Espanol"
+		case "Deportivo La Coruna":
+			team.Name = "La Coruna"
+		case "Athletic Club":
+			team.Name = "Ath Bilbao"
+		case "Celta Vigo":
+			team.Name = "Celta"
+		case "Real Sociedad":
+			team.Name = "Sociedad"
+		case "Rayo Vallecano":
+			team.Name = "Vallecano"
+		case "Atletico Madrid":
+			team.Name = "Ath Madrid"
+		case "Real Betis":
+			team.Name = "Betis"
+		case "Sporting Gijon":
+			team.Name = "Sp Gijon"
+		case "Real Valladolid":
+			team.Name = "Valladolid"
+		case "SD Huesca":
+			team.Name = "Huesca"
+
+		// bundesliga
+		case "Borussia Dortmund":
+			team.Name = "Dortmund"
+		case "Bayer Leverkusen":
+			team.Name = "Leverkusen"
+		case "Eintracht Frankfurt":
+			team.Name = "Ein Frankfurt"
+		case "FC Cologne":
+			team.Name = "FC Koln"
+		case "Hamburger SV":
+			team.Name = "Hamburg"
+		case "Hannover 96":
+			team.Name = "Hannover"
+		case "Hertha Berlin":
+			team.Name = "Hertha"
+		case "Borussia M.Gladbach":
+			team.Name = "M'gladbach"
+		case "VfB Stuttgart":
+			team.Name = "Stuttgart"
+		case "Mainz 05":
+			team.Name = "Mainz"
+		case "RasenBallsport Leipzig":
+			team.Name = "RB Leipzig"
+		case "Fortuna Duesseldorf":
+			team.Name = "Fortuna Dusseldorf"
+		case "Nuernberg":
+			team.Name = "Nurnberg"
+		case "Arminia Bielefeld":
+			team.Name = "Bielefeld"
+		case "Greuther Fuerth":
+			team.Name = "Greuther Furth"
+
+		// serie a
+		case "AC Milan":
+			team.Name = "Milan"
+		case "SPAL 2013":
+			team.Name = "Spal"
+		case "Parma Calcio 1913":
+			team.Name = "Parma"
 
 		}
 		resp[team.Name] = team.ID

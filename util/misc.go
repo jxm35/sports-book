@@ -3,12 +3,20 @@ package util
 import (
 	"context"
 	"fmt"
+	"time"
+
 	"gorm.io/driver/mysql"
 	"gorm.io/gorm"
+
 	"sports-book.com/model"
 	"sports-book.com/query"
-	"time"
 )
+
+var dbConn *gorm.DB
+
+func xy(db *gorm.DB, err error) int {
+	return 5
+}
 
 func ConnectDB() error {
 	gormDb, err := gorm.Open(mysql.Open("root:password@tcp(127.0.0.1:3306)/sports-book?charset=utf8mb4&parseTime=True&loc=Local"))
@@ -17,7 +25,15 @@ func ConnectDB() error {
 		return err
 	}
 	query.SetDefault(gormDb)
+	dbConn = gormDb
 	return nil
+}
+
+func getConn() *gorm.DB {
+	if dbConn == nil {
+		ConnectDB()
+	}
+	return dbConn
 }
 
 func GetFixtures(season int32) []model.Match {
@@ -40,6 +56,33 @@ type OddsChecka struct {
 	Draw       float64
 	AwayBookie string
 	AwayWin    float64
+}
+
+func GetBestOddsForMatch(matchId int32) OddsChecka {
+	var resp OddsChecka
+	o := query.Odds1x2
+
+	o.WithContext(context.Background()).
+		Select(o.Bookmaker.As("HomeBookie"), o.HomeWin).
+		Where(o.Match.Eq(matchId)).
+		Order(o.HomeWin.Desc()).
+		Limit(1).
+		Scan(&resp)
+
+	o.WithContext(context.Background()).
+		Select(o.Bookmaker.As("DrawBookie"), o.Draw).
+		Where(o.Match.Eq(matchId)).
+		Order(o.Draw.Desc()).
+		Limit(1).
+		Scan(&resp)
+
+	o.WithContext(context.Background()).
+		Select(o.Bookmaker.As("AwayBookie"), o.AwayWin).
+		Where(o.Match.Eq(matchId)).
+		Order(o.AwayWin.Desc()).
+		Limit(1).
+		Scan(&resp)
+	return resp
 }
 
 func GetBestOdds(homeTeam, awayTeam, year int32) OddsChecka {
@@ -122,17 +165,93 @@ type TeamSeasonDetails struct {
 	XGConcededAway    float64
 }
 
+func GetHomexGVariance(season int32) float64 {
+	db := getConn()
+	rawSql := "SELECT VARIANCE(home_expected_goals) FROM `match` m WHERE m.competition = ?;"
+	var variance float64
+	db.Raw(rawSql, season).Row().Scan(&variance)
+	return variance
+}
+
+func GetAwayxGVariance(season int32) float64 {
+	db := getConn()
+	rawSql := "SELECT VARIANCE(away_expected_goals) FROM `match` m WHERE m.competition = ?;"
+	var variance float64
+	db.Raw(rawSql, season).Row().Scan(&variance)
+	return variance
+}
+
+func GetTeamHomeMatchesBefore(team int32, since time.Time) ([]model.Match, error) {
+	ctx := context.Background()
+	var res []model.Match
+	m := query.Match
+	err := m.WithContext(ctx).
+		Select(m.ALL).
+		Where(
+			m.Date.Date().Lt(since),
+			m.HomeTeam.Eq(team),
+		).
+		Order(m.Date.Desc()).
+		Scan(&res)
+	return res, err
+}
+
+func GetTeamAwayMatchesBefore(team int32, since time.Time) ([]model.Match, error) {
+	ctx := context.Background()
+	var res []model.Match
+	m := query.Match
+	err := m.WithContext(ctx).
+		Select(m.ALL).
+		Where(
+			m.Date.Date().Lt(since),
+			m.AwayTeam.Eq(team),
+		).
+		Order(m.Date.Desc()).
+		Scan(&res)
+	return res, err
+}
+
 func GetTeamHomeMatchesSince(team int32, since time.Time) ([]model.Match, error) {
 	ctx := context.Background()
 	var res []model.Match
 	m := query.Match
 	err := m.WithContext(ctx).
 		Select(m.ALL).
-		Where(m.Date.Date().Gt(since)).
+		Where(
+			m.Date.Date().Gt(since),
+			m.HomeTeam.Eq(team),
+		).
 		Order(m.Date.Desc()).
 		Scan(&res)
 	return res, err
+}
 
+func GetTeamAwayMatchesSince(team int32, since time.Time) ([]model.Match, error) {
+	ctx := context.Background()
+	var res []model.Match
+	m := query.Match
+	err := m.WithContext(ctx).
+		Select(m.ALL).
+		Where(
+			m.Date.Date().Gt(since),
+			m.AwayTeam.Eq(team),
+		).
+		Order(m.Date.Desc()).
+		Scan(&res)
+	return res, err
+}
+
+func GetMatchesInSeason(season int32) ([]model.Match, error) {
+	m := query.Match
+	c := query.Competition
+	ctx := context.Background()
+	var res []model.Match
+	err := m.WithContext(ctx).
+		Select(m.ALL).
+		Join(c, m.Competition.EqCol(c.ID)).
+		Where(c.Year.Eq(season)).
+		Scan(&res)
+	return res, err
 }
 
 func GetTeamSeasonDetails(season, team int32) (TeamSeasonDetails, error) {
@@ -247,6 +366,7 @@ func GetTopScorerInSeason(season int32) (topScorer, error) {
 func getStartOfDay(day time.Time) time.Time {
 	return time.Date(day.Year(), day.Month(), day.Day(), 0, 0, 0, 0, time.Local)
 }
+
 func getEndOfDay(day time.Time) time.Time {
 	return time.Date(day.Year(), day.Month(), day.Day(), 23, 59, 0, 0, time.Local)
 }

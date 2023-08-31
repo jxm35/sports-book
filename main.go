@@ -2,10 +2,6 @@ package main
 
 import (
 	"fmt"
-	"sports-book.com/backtest"
-	"sports-book.com/predict"
-	"sports-book.com/predict/goals_predictor"
-	"sports-book.com/predict/probability_generator"
 	"sports-book.com/util"
 )
 
@@ -17,12 +13,25 @@ func main() {
 	//}
 	//testDb()
 	//save()
-	util.ConnectDB()
-	pipeline := predict.NewPipelineBuilder().
-		SetPredictor(&goals_predictor.LastSeasonXgGoalPredictor{}).
-		SetProbabilityGenerator(&probability_generator.WeibullOddsGenerator{}).
-		Build()
-	backtest.RunBacktests(2015, 2022, pipeline)
+	//util.ConnectDB()
+	//pipeline, err := predict.NewPipelineBuilder().
+	//	SetPredictor(&goals_predictor.LastSeasonXgGoalPredictor{}).
+	//	SetProbabilityGenerator(&probability_generator.WeibullOddsGenerator{}).
+	//	SetBetPlacer(&bet_placer.KellyCriterionBetPlacer{
+	//		MaxPercentBetted: 0.2,
+	//		MinOddsDelta:     0.1,
+	//		MaxOddsDelta:     0.3,
+	//	}).
+	//	Build()
+	//if err != nil {
+	//	panic(err)
+	//}
+	//backtest.RunBacktests(2018, 2022, pipeline)
+
+	//probability_generator.FindFranksValue()
+	//goals_predictor.FindDecayFactor()
+	//probability_generator.FindWeibullShapes()
+
 	//weib := probability_generator.WeibullOddsGenerator{}
 	//results := weib.Generate1x2Probabilities(3.12, 2.09)
 	//poiss := probability_generator.PoissonOddsGenerator{}

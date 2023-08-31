@@ -1,8 +1,17 @@
 package probability_generator
 
 import (
+	"errors"
+	"fmt"
+	"gonum.org/v1/gonum/diff/fd"
+	"gonum.org/v1/gonum/mat"
+	"gonum.org/v1/gonum/optimize"
 	"math"
 	"math/big"
+	"sports-book.com/model"
+	"sports-book.com/predict/domain"
+	"sports-book.com/predict/goals_predictor"
+	"sports-book.com/util"
 )
 
 type WeibullOddsGenerator struct{}
@@ -16,19 +25,81 @@ type alphaArgs struct {
 var cache = map[alphaArgs]float64{}
 
 const (
-	weibullHomeShape = 0.7910484751 //0.9062415
-	weibullAwayShape = 0.6016388937 //0.8491849
+	// 0.9213043557296844 predicted by maximising with gradient threshold
+	weibullHomeShape = 0.6963436844 //0.7910484751 //0.9062415
+	// 0.888478275810224 predicted by maximising with gradient threshold
+	weibullAwayShape = 0.6963436844 // 0.6016388937 //0.8491849
 )
 
-func (p *WeibullOddsGenerator) Generate1x2Probabilities(homeProjected, awayProjected float64) MatchProbability {
+func FindWeibullShapes() {
+	competitionYearMap := map[int32]int32{
+		1:  2018,
+		2:  2019,
+		3:  2020,
+		4:  2021,
+		5:  2022,
+		7:  2014,
+		8:  2015,
+		9:  2016,
+		10: 2017,
+	}
+	cache = make(map[alphaArgs]float64)
+	var matches = make([]model.Match, 0)
+	for i := 2017; i <= 2022; i++ {
+		yearMatches, err := util.GetMatchesInSeason(int32(i))
+		if err != nil {
+			panic(err)
+		}
+		matches = append(matches, yearMatches...)
+	}
+	maxFunc := func(match model.Match, shape float64) float64 {
+		l := &goals_predictor.LastSeasonXgGoalPredictor{}
+		_, awayExp, err := l.PredictScore(match.HomeTeam, match.AwayTeam, competitionYearMap[match.Competition])
+		if errors.Is(err, goals_predictor.ErrNoPreviousData) {
+			return 0
+		}
+		probs := getGoalProbabilityWeibull(int(match.AwayGoals), awayExp, shape)
+		return math.Log10(probs)
+	}
+	minFunc := func(x []float64) float64 {
+		var sum float64
+		for _, match := range matches {
+			val := maxFunc(match, x[0])
+			if !math.IsNaN(val) {
+				sum += val
+			}
+		}
+		return -1 * sum
+	}
+	p := optimize.Problem{
+		Func: minFunc,
+		Grad: func(grad, x []float64) {
+			fd.Gradient(grad, minFunc, x, nil)
+		},
+		Hess: func(hess *mat.SymDense, x []float64) {
+			fd.Hessian(hess, minFunc, x, nil)
+		},
+		Status: nil,
+	}
+	res, err := optimize.Minimize(p, []float64{1}, nil, nil)
+	if err != nil {
+		fmt.Println(err)
+	}
+	fmt.Println("------- result found -------")
+	fmt.Println(res)
+}
+
+func (p *WeibullOddsGenerator) Generate1x2Probabilities(homeProjected, awayProjected float64) domain.MatchProbability {
 	cache = make(map[alphaArgs]float64)
 	var homeGoalProb = make(map[int]float64)
 	var awayGoalProb = make(map[int]float64)
+	//homeShape := util.GetHomexGVariance(season - 1)
+	//awayShape := util.GetAwayxGVariance(season - 1)
 	for i := 0; i <= 10; i++ {
 		homeGoalProb[i] = getGoalProbabilityWeibull(i, homeProjected, weibullHomeShape) // TODO calc variance for home wins
 		awayGoalProb[i] = getGoalProbabilityWeibull(i, awayProjected, weibullAwayShape) // TODO cal variance for away wins
 	}
-	matchProb := MatchProbability{
+	matchProb := domain.MatchProbability{
 		HomeWin: 0,
 		Draw:    0,
 		AwayWin: 0,

@@ -3,18 +3,19 @@ package probability_generator
 import (
 	"math"
 	"math/big"
+	"sports-book.com/predict/domain"
 )
 
 type PoissonOddsGenerator struct{}
 
-func (p *PoissonOddsGenerator) Generate1x2Probabilities(homeProjected, awayProjected float64) MatchProbability {
+func (p *PoissonOddsGenerator) Generate1x2Probabilities(homeProjected, awayProjected float64) domain.MatchProbability {
 	var homeGoalProb = make(map[int]float64)
 	var awayGoalProb = make(map[int]float64)
 	for i := 0; i <= 10; i++ {
 		homeGoalProb[i] = getGoalProbabilityPoisson(i, homeProjected)
 		awayGoalProb[i] = getGoalProbabilityPoisson(i, awayProjected)
 	}
-	matchProb := MatchProbability{
+	matchProb := domain.MatchProbability{
 		HomeWin: 0,
 		Draw:    0,
 		AwayWin: 0,

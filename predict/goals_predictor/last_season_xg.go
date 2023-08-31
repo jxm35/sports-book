@@ -2,13 +2,13 @@ package goals_predictor
 
 import (
 	"fmt"
+
 	"sports-book.com/util"
 )
 
 type LastSeasonXgGoalPredictor struct{}
 
 func (*LastSeasonXgGoalPredictor) PredictScore(homeTeam, awayTeam, season int32) (float64, float64, error) {
-
 	// calculate standard for the year before
 	seasonStats, err := util.GetSeasonDetails(season - 1)
 	if err != nil {
@@ -27,8 +27,8 @@ func (*LastSeasonXgGoalPredictor) PredictScore(homeTeam, awayTeam, season int32)
 	if homeSeason.XGScoredAtHome == 0 && homeSeason.XGConcededAtHome == 0 {
 		return -1, -1, ErrNoPreviousData
 	}
-	homeAttackStrength := (float64(homeSeason.GoalsScoredAtHome) / float64(19)) / avgHomeXg
-	homeDefenseStrength := (float64(homeSeason.GoalsConcededAtHome) / float64(19)) / avgHomeGoalsConceded
+	homeAttackStrength := (homeSeason.XGScoredAtHome / float64(19)) / avgHomeXg
+	homeDefenseStrength := (homeSeason.XGConcededAtHome / float64(19)) / avgHomeGoalsConceded
 
 	// calculate away team's strengths
 	awaySeason, err := util.GetTeamSeasonDetails(season-1, awayTeam)
@@ -38,13 +38,13 @@ func (*LastSeasonXgGoalPredictor) PredictScore(homeTeam, awayTeam, season int32)
 	if awaySeason.XGScoredAtHome == 0 && awaySeason.XGConcededAtHome == 0 {
 		return -1, -1, ErrNoPreviousData
 	}
-	awayDefenseStrength := (float64(awaySeason.GoalsConcededAway) / float64(19)) / avgAwayGoalsConceded
-	awayAttackStrength := (float64(awaySeason.GoalsScoredAway) / float64(19)) / avgAwayXg
+	awayDefenseStrength := (awaySeason.XGConcededAway / float64(19)) / avgAwayGoalsConceded
+	awayAttackStrength := (awaySeason.XGScoredAway / float64(19)) / avgAwayXg
 
 	// use strengths to project home and away goals
 	projectedHomeGoals := homeAttackStrength * awayDefenseStrength * avgHomeXg
 	projectedAwayGoals := awayAttackStrength * homeDefenseStrength * avgAwayXg
 
-	fmt.Printf("%s: %f | %s: %f", homeTeam, projectedHomeGoals, awayTeam, projectedAwayGoals)
+	fmt.Printf("%d: %f | %d: %f", homeTeam, projectedHomeGoals, awayTeam, projectedAwayGoals)
 	return projectedHomeGoals, projectedAwayGoals, nil
 }

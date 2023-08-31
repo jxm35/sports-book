@@ -8,11 +8,11 @@ import (
 	"math"
 	"os"
 	"sports-book.com/model"
-	"sports-book.com/predict/probability_generator"
+	"sports-book.com/predict/domain"
 )
 
 func getCalibration(
-	caliMap map[model.Match]probability_generator.MatchProbability,
+	caliMap map[model.Match]domain.MatchProbability,
 	yearString string,
 ) {
 	bucketSize := 0.1

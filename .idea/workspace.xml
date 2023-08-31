@@ -1,0 +1,189 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="AutoImportSettings">
+    <option name="autoReloadType" value="ALL" />
+  </component>
+  <component name="ChangeListManager">
+    <list default="true" id="c12b77f7-ff21-404b-9dea-32d9f800b7fe" name="Changes" comment="">
+      <change afterPath="$PROJECT_DIR$/predict/bet_placer/interface.go" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/predict/bet_placer/kelly_criterion.go" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/predict/domain/structs.go" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/backtest/calibrate.go" beforeDir="false" afterPath="$PROJECT_DIR$/backtest/calibrate.go" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/backtest/distribution.go" beforeDir="false" afterPath="$PROJECT_DIR$/backtest/distribution.go" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/backtest/run_backtests.go" beforeDir="false" afterPath="$PROJECT_DIR$/backtest/run_backtests.go" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/calibration_15_22.png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/calibrations/last_season_xg_poisson/calibration_15_22.png" beforeDir="false" afterPath="$PROJECT_DIR$/calibrations/last_season_xg_poisson/calibration_15_22.png" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/calibrations/last_season_xg_poisson/prediction_distribution_15_22.png" beforeDir="false" afterPath="$PROJECT_DIR$/calibrations/last_season_xg_poisson/prediction_distribution_15_22.png" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/calibrations/last_season_xg_poisson_ignore_new_teams/calibration_15_22.png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/calibrations/last_season_xg_poisson_ignore_new_teams/prediction_distribution_15_22.png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/calibrations/last_season_xg_weibull_0.79_0.6/calibration_15_22.png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/calibrations/last_season_xg_weibull_0.79_0.6/prediction_distribution_15_22.png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/calibrations/last_season_xg_weibull_0.91_0.85_int/calibration_15_22.png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/calibrations/last_season_xg_weibull_0.91_0.85_int/prediction_distribution_15_22.png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/calibrations/last_season_xg_weibull_0.91_int/calibration_15_22.png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/calibrations/last_season_xg_weibull_0.91_int/prediction_distribution_15_22.png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/go.mod" beforeDir="false" afterPath="$PROJECT_DIR$/go.mod" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/go.sum" beforeDir="false" afterPath="$PROJECT_DIR$/go.sum" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/main.go" beforeDir="false" afterPath="$PROJECT_DIR$/main.go" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/predict/bet.go" beforeDir="false" afterPath="$PROJECT_DIR$/predict/bet.go" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/predict/goals_predictor/exponential_xg.go" beforeDir="false" afterPath="$PROJECT_DIR$/predict/goals_predictor/exponential_xg.go" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/predict/goals_predictor/last_season_results.go" beforeDir="false" afterPath="$PROJECT_DIR$/predict/goals_predictor/last_season_results.go" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/predict/goals_predictor/last_season_xg.go" beforeDir="false" afterPath="$PROJECT_DIR$/predict/goals_predictor/last_season_xg.go" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/predict/interface.go" beforeDir="false" afterPath="$PROJECT_DIR$/predict/interface.go" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/predict/pipeline.go" beforeDir="false" afterPath="$PROJECT_DIR$/predict/pipeline.go" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/predict/pipeline_builder.go" beforeDir="false" afterPath="$PROJECT_DIR$/predict/pipeline_builder.go" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/predict/probability_generator/frank_copula.go" beforeDir="false" afterPath="$PROJECT_DIR$/predict/probability_generator/frank_copula.go" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/predict/probability_generator/interface.go" beforeDir="false" afterPath="$PROJECT_DIR$/predict/probability_generator/interface.go" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/predict/probability_generator/poisson.go" beforeDir="false" afterPath="$PROJECT_DIR$/predict/probability_generator/poisson.go" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/predict/probability_generator/weibull.go" beforeDir="false" afterPath="$PROJECT_DIR$/predict/probability_generator/weibull.go" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/prediction_distribution_15_22.png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/preprocess/get_historic_odds.go" beforeDir="false" afterPath="$PROJECT_DIR$/preprocess/get_historic_odds.go" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/preprocess/oddsFiles/2018odds.csv" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/preprocess/oddsFiles/2019odds.csv" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/preprocess/oddsFiles/2020odds.csv" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/preprocess/oddsFiles/2021odds.csv" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/preprocess/oddsFiles/2022odds.csv" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/preprocess/scrape_understat/2018_players.json" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/preprocess/scrape_understat/2018_results.json" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/preprocess/scrape_understat/2018_teams.json" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/preprocess/scrape_understat/main.py" beforeDir="false" afterPath="$PROJECT_DIR$/preprocess/scrape_understat/main.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/util/misc.go" beforeDir="false" afterPath="$PROJECT_DIR$/util/misc.go" afterDir="false" />
+    </list>
+    <option name="SHOW_DIALOG" value="false" />
+    <option name="HIGHLIGHT_CONFLICTS" value="true" />
+    <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
+    <option name="LAST_RESOLUTION" value="IGNORE" />
+  </component>
+  <component name="FileTemplateManagerImpl">
+    <option name="RECENT_TEMPLATES">
+      <list>
+        <option value="Jupyter Notebook" />
+        <option value="Go File" />
+      </list>
+    </option>
+  </component>
+  <component name="GOROOT" url="file:///opt/homebrew/opt/go/libexec" />
+  <component name="Git.Settings">
+    <option name="RECENT_GIT_ROOT_PATH" value="$PROJECT_DIR$" />
+  </component>
+  <component name="ProjectId" id="2RneH9NCMIhTxKO2FsQVSWydRva" />
+  <component name="ProjectViewState">
+    <option name="hideEmptyMiddlePackages" value="true" />
+    <option name="showLibraryContents" value="true" />
+  </component>
+  <component name="PropertiesComponent">{
+  &quot;keyToString&quot;: {
+    &quot;DefaultGoTemplateProperty&quot;: &quot;Go File&quot;,
+    &quot;RunOnceActivity.OpenProjectViewOnStart&quot;: &quot;true&quot;,
+    &quot;RunOnceActivity.ShowReadmeOnStart&quot;: &quot;true&quot;,
+    &quot;RunOnceActivity.go.formatter.settings.were.checked&quot;: &quot;true&quot;,
+    &quot;RunOnceActivity.go.migrated.go.modules.settings&quot;: &quot;true&quot;,
+    &quot;RunOnceActivity.go.modules.go.list.on.any.changes.was.set&quot;: &quot;true&quot;,
+    &quot;WebServerToolWindowFactoryState&quot;: &quot;false&quot;,
+    &quot;go.import.settings.migrated&quot;: &quot;true&quot;,
+    &quot;go.sdk.automatically.set&quot;: &quot;true&quot;,
+    &quot;last_opened_file_path&quot;: &quot;/Users/james/Documents/sideProjects/sports-book&quot;,
+    &quot;node.js.detected.package.eslint&quot;: &quot;true&quot;,
+    &quot;node.js.detected.package.tslint&quot;: &quot;true&quot;,
+    &quot;node.js.selected.package.eslint&quot;: &quot;(autodetect)&quot;,
+    &quot;node.js.selected.package.tslint&quot;: &quot;(autodetect)&quot;,
+    &quot;settings.editor.selected.configurable&quot;: &quot;com.jetbrains.python.configuration.PyActiveSdkModuleConfigurable&quot;,
+    &quot;vue.rearranger.settings.migration&quot;: &quot;true&quot;
+  },
+  &quot;keyToStringList&quot;: {
+    &quot;DatabaseDriversLRU&quot;: [
+      &quot;mysql&quot;
+    ]
+  }
+}</component>
+  <component name="RecentsManager">
+    <key name="MoveFile.RECENT_KEYS">
+      <recent name="$PROJECT_DIR$/predict/domain" />
+      <recent name="$PROJECT_DIR$/preprocess" />
+    </key>
+  </component>
+  <component name="RunManager" selected="Go Build.go build main.go">
+    <configuration name="go build main.go" type="GoApplicationRunConfiguration" factoryName="Go Application" temporary="true" nameIsGenerated="true">
+      <module name="sports-book" />
+      <working_directory value="$PROJECT_DIR$" />
+      <kind value="FILE" />
+      <directory value="$PROJECT_DIR$" />
+      <filePath value="$PROJECT_DIR$/main.go" />
+      <method v="2" />
+    </configuration>
+    <configuration name="main (1)" type="PythonConfigurationType" factoryName="Python" temporary="true" nameIsGenerated="true">
+      <module name="sports-book" />
+      <option name="INTERPRETER_OPTIONS" value="" />
+      <option name="PARENT_ENVS" value="true" />
+      <envs>
+        <env name="PYTHONUNBUFFERED" value="1" />
+      </envs>
+      <option name="SDK_HOME" value="" />
+      <option name="WORKING_DIRECTORY" value="$PROJECT_DIR$/preprocess/scrape_understat" />
+      <option name="IS_MODULE_SDK" value="true" />
+      <option name="ADD_CONTENT_ROOTS" value="true" />
+      <option name="ADD_SOURCE_ROOTS" value="true" />
+      <EXTENSION ID="PythonCoverageRunConfigurationExtension" runner="coverage.py" />
+      <option name="SCRIPT_NAME" value="$PROJECT_DIR$/preprocess/scrape_understat/main.py" />
+      <option name="PARAMETERS" value="" />
+      <option name="SHOW_COMMAND_LINE" value="false" />
+      <option name="EMULATE_TERMINAL" value="false" />
+      <option name="MODULE_MODE" value="false" />
+      <option name="REDIRECT_INPUT" value="false" />
+      <option name="INPUT_FILE" value="" />
+      <method v="2" />
+    </configuration>
+    <configuration name="main" type="PythonConfigurationType" factoryName="Python" temporary="true" nameIsGenerated="true">
+      <module name="sports-book" />
+      <option name="INTERPRETER_OPTIONS" value="" />
+      <option name="PARENT_ENVS" value="true" />
+      <envs>
+        <env name="PYTHONUNBUFFERED" value="1" />
+      </envs>
+      <option name="SDK_HOME" value="" />
+      <option name="WORKING_DIRECTORY" value="$PROJECT_DIR$/scrape_understat" />
+      <option name="IS_MODULE_SDK" value="true" />
+      <option name="ADD_CONTENT_ROOTS" value="true" />
+      <option name="ADD_SOURCE_ROOTS" value="true" />
+      <EXTENSION ID="PythonCoverageRunConfigurationExtension" runner="coverage.py" />
+      <option name="SCRIPT_NAME" value="$PROJECT_DIR$/scrape_understat/main.py" />
+      <option name="PARAMETERS" value="" />
+      <option name="SHOW_COMMAND_LINE" value="false" />
+      <option name="EMULATE_TERMINAL" value="false" />
+      <option name="MODULE_MODE" value="false" />
+      <option name="REDIRECT_INPUT" value="false" />
+      <option name="INPUT_FILE" value="" />
+      <method v="2" />
+    </configuration>
+    <recent_temporary>
+      <list>
+        <item itemvalue="Go Build.go build main.go" />
+        <item itemvalue="Python.main (1)" />
+        <item itemvalue="Python.main" />
+      </list>
+    </recent_temporary>
+  </component>
+  <component name="SpellCheckerSettings" RuntimeDictionaries="0" Folders="0" CustomDictionaries="0" DefaultDictionary="application-level" UseSingleDictionary="true" transferred="true" />
+  <component name="TaskManager">
+    <task active="true" id="Default" summary="Default task">
+      <changelist id="c12b77f7-ff21-404b-9dea-32d9f800b7fe" name="Changes" comment="" />
+      <created>1688070683648</created>
+      <option name="number" value="Default" />
+      <option name="presentableId" value="Default" />
+      <updated>1688070683648</updated>
+      <workItem from="1688070684792" duration="4471000" />
+      <workItem from="1688075261254" duration="19856000" />
+      <workItem from="1688759296967" duration="16000" />
+      <workItem from="1688759338978" duration="1740000" />
+      <workItem from="1693167569062" duration="19000" />
+      <workItem from="1693393040612" duration="9054000" />
+    </task>
+    <servers />
+  </component>
+  <component name="TypeScriptGeneratedFilesManager">
+    <option name="version" value="3" />
+  </component>
+  <component name="VgoProject">
+    <settings-migrated>true</settings-migrated>
+  </component>
+</project>

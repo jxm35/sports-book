@@ -9,10 +9,10 @@ import (
 	"math"
 	"os"
 	"sports-book.com/model"
-	"sports-book.com/predict/probability_generator"
+	"sports-book.com/predict/domain"
 )
 
-func plotDistribution(caliMap map[model.Match]probability_generator.MatchProbability, yearRange string) {
+func plotDistribution(caliMap map[model.Match]domain.MatchProbability, yearRange string) {
 	bucketSize := 0.1
 	numBuckets := int(1 / bucketSize)
 	buckets := make([]float64, numBuckets)

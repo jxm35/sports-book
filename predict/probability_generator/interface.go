@@ -1,11 +1,7 @@
 package probability_generator
 
-type ProbabilityGenerator interface {
-	Generate1x2Probabilities(homeProjected, awayProjected float64) MatchProbability
-}
+import "sports-book.com/predict/domain"
 
-type MatchProbability struct {
-	HomeWin float64
-	Draw    float64
-	AwayWin float64
+type ProbabilityGenerator interface {
+	Generate1x2Probabilities(homeProjected, awayProjected float64) domain.MatchProbability
 }

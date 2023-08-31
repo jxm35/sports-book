@@ -44,3 +44,7 @@ func HandleOddsDelta(delta OddsDelta, matchId int32) *BetOrder {
 	}
 	return nil
 }
+
+func kellyCriterion(probability, decimalOdds float64) float64 {
+	return (probability / 1) - ((1 - probability) / (decimalOdds - 1)) // odds of 1.5 will return a 50% profit hence 0.5
+}

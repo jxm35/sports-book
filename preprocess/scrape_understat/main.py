@@ -1,6 +1,7 @@
 import asyncio
 import json
 import datetime
+import logging
 
 import aiohttp
 
@@ -12,7 +13,7 @@ from understat import Understat
 async def getPlayersInTeam(conn, year):
     async with aiohttp.ClientSession() as session:
         understat = Understat(session)
-        players = await understat.get_league_players("epl", year)
+        players = await understat.get_league_players("serie_a", year)
         for player in players:
             id = int(player['id'])
             name = player['player_name']
@@ -26,7 +27,11 @@ async def getPlayersInMatch(conn, matchTeamDict, matchesDict, playersDict, home_
         for match_id, sql_id in matchesDict.items():
             players = await understat.get_match_players(match_id)
             for id, player in players[home_or_away].items():
-                player_id = playersDict[player['player']]
+                player_id = playersDict.get(player['player'])
+                if player_id is None:
+                    logging.warning("could not find player {player_name}".format(player_name=player['player']))
+                    continue
+                # player_id = playersDict[player['player']]
                 goals = int(player['goals'])
                 xG = float(player['xG'])
                 minutes = int(player['time'])
@@ -49,7 +54,7 @@ async def getResults(conn, teamDict, year, yearId):
     async with aiohttp.ClientSession() as session:
         understat = Understat(session)
         results = await understat.get_league_results(
-            "epl",
+            "serie_a",
             year,
         )
         for result in results:
@@ -69,7 +74,7 @@ async def getTeams(conn, year):
     async with aiohttp.ClientSession() as session:
         understat = Understat(session)
         teams = await understat.get_teams(
-            "epl",
+            "serie_a",
             year,
         )
         for team in teams:
@@ -192,23 +197,31 @@ def loadMatchTeams(conn):
 
 
 if __name__ == "__main__":
+    print("started")
     conn = getConnection()
-    year = 2017
-    yearId = 10
-    # saveTeam(conn, "hi", 4)
+    print("db connection made")
+    year = 2022
+    yearId = 37
 
     loop = asyncio.new_event_loop()
     asyncio.set_event_loop(loop)
 
     loop.run_until_complete(getTeams(conn, year))
+    print("teams retrieved")
 
     loop.run_until_complete(getPlayersInTeam(conn, year))
+    print("players retrieved")
 
     teamsDict = loadTeamsMap(conn)
     loop.run_until_complete(getResults(conn, teamsDict, year, yearId))
+    print("results retrieved")
 
     matchesDict = loadMatches(conn, yearId)
     playersDict = loadPlayers(conn)
     matchTeamsDict = loadMatchTeams(conn)
+    print("loaded matches, players, and lineups")
     loop.run_until_complete(getPlayersInMatch(conn, matchTeamsDict, matchesDict, playersDict, 'h'))
+    print("home appearances complete")
     loop.run_until_complete(getPlayersInMatch(conn, matchTeamsDict, matchesDict, playersDict, 'a'))
+    print("away appearances complete")
+    print("finished season")
