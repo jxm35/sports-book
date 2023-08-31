@@ -8,11 +8,14 @@ import (
 
 type LastSeasonXgGoalPredictor struct{}
 
-func (*LastSeasonXgGoalPredictor) PredictScore(homeTeam, awayTeam, season int32) (float64, float64, error) {
+func (*LastSeasonXgGoalPredictor) PredictScore(homeTeam, awayTeam, season int32, league string) (float64, float64, error) {
 	// calculate standard for the year before
-	seasonStats, err := util.GetSeasonDetails(season - 1)
+	seasonStats, err := util.GetSeasonDetails(season-1, league)
 	if err != nil {
 		return -1, -1, err
+	}
+	if seasonStats.TotalHG == 0 && seasonStats.TotalAG == 0 {
+		return -1, -1, ErrNoPreviousData
 	}
 	avgHomeXg := seasonStats.TotalHomexG / 380
 	avgAwayXg := seasonStats.TotalAwayxG / 380

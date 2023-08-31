@@ -27,8 +27,8 @@ type Odds1x2 struct {
 	AwayWin float64
 }
 
-func (p *pipelineImpl) PredictMatch(homeTeam, awayTeam, season int32) (domain.MatchProbability, OddsDelta, error) {
-	homeGoalsPredicted, awayGoalsPredicted, err := p.predictor.PredictScore(homeTeam, awayTeam, season)
+func (p *pipelineImpl) PredictMatch(homeTeam, awayTeam, season int32, league string) (domain.MatchProbability, OddsDelta, error) {
+	homeGoalsPredicted, awayGoalsPredicted, err := p.predictor.PredictScore(homeTeam, awayTeam, season, league)
 	if err != nil {
 		return domain.MatchProbability{}, OddsDelta{}, err
 	}

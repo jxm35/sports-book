@@ -6,6 +6,6 @@ import (
 )
 
 type Pipeline interface {
-	PredictMatch(homeTeam, awayTeam, season int32) (domain.MatchProbability, OddsDelta, error)
+	PredictMatch(homeTeam, awayTeam, season int32, league string) (domain.MatchProbability, OddsDelta, error)
 	PlaceBet(matchId int32, generatedOdds domain.MatchProbability, currentPot float64) results.Option[domain.BetOrder]
 }

@@ -5,48 +5,17 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="c12b77f7-ff21-404b-9dea-32d9f800b7fe" name="Changes" comment="">
-      <change afterPath="$PROJECT_DIR$/predict/bet_placer/interface.go" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/predict/bet_placer/kelly_criterion.go" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/predict/domain/structs.go" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/backtest/calibrate.go" beforeDir="false" afterPath="$PROJECT_DIR$/backtest/calibrate.go" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/backtest/distribution.go" beforeDir="false" afterPath="$PROJECT_DIR$/backtest/distribution.go" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.gitignore" beforeDir="false" afterPath="$PROJECT_DIR$/.gitignore" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/backtest/run_backtests.go" beforeDir="false" afterPath="$PROJECT_DIR$/backtest/run_backtests.go" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/calibration_15_22.png" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/calibrations/last_season_xg_poisson/calibration_15_22.png" beforeDir="false" afterPath="$PROJECT_DIR$/calibrations/last_season_xg_poisson/calibration_15_22.png" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/calibrations/last_season_xg_poisson/prediction_distribution_15_22.png" beforeDir="false" afterPath="$PROJECT_DIR$/calibrations/last_season_xg_poisson/prediction_distribution_15_22.png" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/calibrations/last_season_xg_poisson_ignore_new_teams/calibration_15_22.png" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/calibrations/last_season_xg_poisson_ignore_new_teams/prediction_distribution_15_22.png" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/calibrations/last_season_xg_weibull_0.79_0.6/calibration_15_22.png" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/calibrations/last_season_xg_weibull_0.79_0.6/prediction_distribution_15_22.png" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/calibrations/last_season_xg_weibull_0.91_0.85_int/calibration_15_22.png" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/calibrations/last_season_xg_weibull_0.91_0.85_int/prediction_distribution_15_22.png" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/calibrations/last_season_xg_weibull_0.91_int/calibration_15_22.png" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/calibrations/last_season_xg_weibull_0.91_int/prediction_distribution_15_22.png" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/go.mod" beforeDir="false" afterPath="$PROJECT_DIR$/go.mod" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/go.sum" beforeDir="false" afterPath="$PROJECT_DIR$/go.sum" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/main.go" beforeDir="false" afterPath="$PROJECT_DIR$/main.go" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/predict/bet.go" beforeDir="false" afterPath="$PROJECT_DIR$/predict/bet.go" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/predict/goals_predictor/exponential_xg.go" beforeDir="false" afterPath="$PROJECT_DIR$/predict/goals_predictor/exponential_xg.go" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/predict/goals_predictor/interface.go" beforeDir="false" afterPath="$PROJECT_DIR$/predict/goals_predictor/interface.go" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/predict/goals_predictor/last_season_results.go" beforeDir="false" afterPath="$PROJECT_DIR$/predict/goals_predictor/last_season_results.go" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/predict/goals_predictor/last_season_xg.go" beforeDir="false" afterPath="$PROJECT_DIR$/predict/goals_predictor/last_season_xg.go" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/predict/interface.go" beforeDir="false" afterPath="$PROJECT_DIR$/predict/interface.go" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/predict/pipeline.go" beforeDir="false" afterPath="$PROJECT_DIR$/predict/pipeline.go" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/predict/pipeline_builder.go" beforeDir="false" afterPath="$PROJECT_DIR$/predict/pipeline_builder.go" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/predict/probability_generator/frank_copula.go" beforeDir="false" afterPath="$PROJECT_DIR$/predict/probability_generator/frank_copula.go" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/predict/probability_generator/interface.go" beforeDir="false" afterPath="$PROJECT_DIR$/predict/probability_generator/interface.go" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/predict/probability_generator/poisson.go" beforeDir="false" afterPath="$PROJECT_DIR$/predict/probability_generator/poisson.go" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/predict/probability_generator/weibull.go" beforeDir="false" afterPath="$PROJECT_DIR$/predict/probability_generator/weibull.go" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/prediction_distribution_15_22.png" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/preprocess/get_historic_odds.go" beforeDir="false" afterPath="$PROJECT_DIR$/preprocess/get_historic_odds.go" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/preprocess/oddsFiles/2018odds.csv" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/preprocess/oddsFiles/2019odds.csv" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/preprocess/oddsFiles/2020odds.csv" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/preprocess/oddsFiles/2021odds.csv" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/preprocess/oddsFiles/2022odds.csv" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/preprocess/scrape_understat/2018_players.json" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/preprocess/scrape_understat/2018_results.json" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/preprocess/scrape_understat/2018_teams.json" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/preprocess/scrape_understat/main.py" beforeDir="false" afterPath="$PROJECT_DIR$/preprocess/scrape_understat/main.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/util/misc.go" beforeDir="false" afterPath="$PROJECT_DIR$/util/misc.go" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
@@ -185,5 +154,16 @@
   </component>
   <component name="VgoProject">
     <settings-migrated>true</settings-migrated>
+  </component>
+  <component name="XDebuggerManager">
+    <breakpoint-manager>
+      <breakpoints>
+        <line-breakpoint enabled="true" type="DlvLineBreakpoint">
+          <url>file://$PROJECT_DIR$/backtest/run_backtests.go</url>
+          <line>22</line>
+          <option name="timeStamp" value="3" />
+        </line-breakpoint>
+      </breakpoints>
+    </breakpoint-manager>
   </component>
 </project>

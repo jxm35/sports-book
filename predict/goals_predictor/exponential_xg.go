@@ -87,13 +87,13 @@ func (e *ExponentialXgGoalPredictor) getWeight(currentDate, matchDate time.Time)
 	return math.Exp(-e.DecayFactor * halfWeekDiff)
 }
 
-func (e *ExponentialXgGoalPredictor) PredictScore(homeTeam, awayTeam, season int32) (float64, float64, error) {
+func (e *ExponentialXgGoalPredictor) PredictScore(homeTeam, awayTeam, season int32, league string) (float64, float64, error) {
 	if e.MinMatches <= 0 {
 		panic("invalid minimum matches to test")
 	}
 
 	// calculate standard for the year before
-	seasonStats, err := util.GetSeasonDetails(season - 1)
+	seasonStats, err := util.GetSeasonDetails(season-1, league)
 	if err != nil {
 		return -1, -1, err
 	}

@@ -32,6 +32,7 @@ const (
 )
 
 func FindWeibullShapes() {
+	league := "epl"
 	competitionYearMap := map[int32]int32{
 		1:  2018,
 		2:  2019,
@@ -54,7 +55,7 @@ func FindWeibullShapes() {
 	}
 	maxFunc := func(match model.Match, shape float64) float64 {
 		l := &goals_predictor.LastSeasonXgGoalPredictor{}
-		_, awayExp, err := l.PredictScore(match.HomeTeam, match.AwayTeam, competitionYearMap[match.Competition])
+		_, awayExp, err := l.PredictScore(match.HomeTeam, match.AwayTeam, competitionYearMap[match.Competition], league)
 		if errors.Is(err, goals_predictor.ErrNoPreviousData) {
 			return 0
 		}

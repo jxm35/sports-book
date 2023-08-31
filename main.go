@@ -2,6 +2,11 @@ package main
 
 import (
 	"fmt"
+	"sports-book.com/backtest"
+	"sports-book.com/predict"
+	"sports-book.com/predict/bet_placer"
+	"sports-book.com/predict/goals_predictor"
+	"sports-book.com/predict/probability_generator"
 	"sports-book.com/util"
 )
 
@@ -10,34 +15,20 @@ import (
 // 29415 - 20-21
 
 func main() {
-	//}
-	//testDb()
-	//save()
-	//util.ConnectDB()
-	//pipeline, err := predict.NewPipelineBuilder().
-	//	SetPredictor(&goals_predictor.LastSeasonXgGoalPredictor{}).
-	//	SetProbabilityGenerator(&probability_generator.WeibullOddsGenerator{}).
-	//	SetBetPlacer(&bet_placer.KellyCriterionBetPlacer{
-	//		MaxPercentBetted: 0.2,
-	//		MinOddsDelta:     0.1,
-	//		MaxOddsDelta:     0.3,
-	//	}).
-	//	Build()
-	//if err != nil {
-	//	panic(err)
-	//}
-	//backtest.RunBacktests(2018, 2022, pipeline)
-
-	//probability_generator.FindFranksValue()
-	//goals_predictor.FindDecayFactor()
-	//probability_generator.FindWeibullShapes()
-
-	//weib := probability_generator.WeibullOddsGenerator{}
-	//results := weib.Generate1x2Probabilities(3.12, 2.09)
-	//poiss := probability_generator.PoissonOddsGenerator{}
-	//pResults := poiss.Generate1x2Probabilities(3.12, 2.09)
-	//fmt.Println(results)
-	//fmt.Println(pResults)
+	util.ConnectDB()
+	pipeline, err := predict.NewPipelineBuilder().
+		SetPredictor(&goals_predictor.LastSeasonXgGoalPredictor{}).
+		SetProbabilityGenerator(&probability_generator.WeibullOddsGenerator{}).
+		SetBetPlacer(&bet_placer.KellyCriterionBetPlacer{
+			MaxPercentBetted: 0.2,
+			MinOddsDelta:     0.1,
+			MaxOddsDelta:     0.3,
+		}).
+		Build()
+	if err != nil {
+		panic(err)
+	}
+	backtest.RunBacktests(2014, 2022, "epl", pipeline, true)
 }
 
 func testDb() {
@@ -45,7 +36,7 @@ func testDb() {
 	fmt.Println(topScorer)
 	fmt.Println(err)
 
-	seasonStats, err := util.GetSeasonDetails(2022)
+	seasonStats, err := util.GetSeasonDetails(2022, "epl")
 	fmt.Println(seasonStats)
 	fmt.Println(err)
 

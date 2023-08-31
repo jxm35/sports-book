@@ -36,7 +36,7 @@ func getConn() *gorm.DB {
 	return dbConn
 }
 
-func GetFixtures(season int32) []model.Match {
+func GetFixtures(season int32, league string) []model.Match {
 	var fixtureList []model.Match
 	m := query.Match
 	c := query.Competition
@@ -44,6 +44,7 @@ func GetFixtures(season int32) []model.Match {
 		Select(m.ALL).
 		Join(c, m.Competition.EqCol(c.ID)).
 		Where(c.Year.Eq(season)).
+		Where(c.Code.Eq(league)).
 		Order(m.Date.Desc()).
 		Scan(&fixtureList)
 	return fixtureList
@@ -137,7 +138,7 @@ type SeasonDetails struct {
 	TotalAwayxG float64
 }
 
-func GetSeasonDetails(season int32) (SeasonDetails, error) {
+func GetSeasonDetails(season int32, league string) (SeasonDetails, error) {
 	ctx := context.Background()
 	m := query.Match
 	c := query.Competition
@@ -149,7 +150,9 @@ func GetSeasonDetails(season int32) (SeasonDetails, error) {
 			m.HomeExpectedGoals.Sum().As("TotalHomexG"),
 			m.AwayExpectedGoals.Sum().As("TotalAwayxG")).
 		LeftJoin(c, c.ID.EqCol(m.Competition)).
-		Where(c.Year.Eq(season)).Scan(&res)
+		Where(c.Year.Eq(season)).
+		Where(c.Code.Eq(league)).
+		Scan(&res)
 	return res, err
 }
 
