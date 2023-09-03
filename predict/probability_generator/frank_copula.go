@@ -70,7 +70,7 @@ type FrankCopulaOddsGenerator struct {
 //	fmt.Println(res)
 //}
 
-func (f *FrankCopulaOddsGenerator) Generate1x2Probabilities(homeProjected, awayProjected float64) domain.MatchProbability {
+func (f *FrankCopulaOddsGenerator) Generate1x2Probabilities(homeProjected, awayProjected float64, league string) domain.MatchProbability {
 	if len(cache) == 0 {
 		cache = make(map[alphaArgs]float64)
 	}

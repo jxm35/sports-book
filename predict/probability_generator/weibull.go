@@ -31,6 +31,14 @@ const (
 	weibullAwayShape = 0.6963436844 // 0.6016388937 //0.8491849
 )
 
+var weibullShape = map[string]float64{
+	domain.LeagueEPL:        0.6963436844,
+	domain.LeagueLaLiga:     0.7198451013,
+	domain.LeagueSerieA:     0.6867467538,
+	domain.LeagueBundesliga: 0.7872960482,
+	"general":               0.7225578969,
+}
+
 func FindWeibullShapes() {
 	league := "epl"
 	competitionYearMap := map[int32]int32{
@@ -55,7 +63,7 @@ func FindWeibullShapes() {
 	}
 	maxFunc := func(match model.Match, shape float64) float64 {
 		l := &goals_predictor.LastSeasonXgGoalPredictor{}
-		_, awayExp, err := l.PredictScore(match.HomeTeam, match.AwayTeam, competitionYearMap[match.Competition], league)
+		_, awayExp, err := l.PredictScore(match.HomeTeam, match.AwayTeam, competitionYearMap[match.Competition], league, match.Date, match.ID)
 		if errors.Is(err, goals_predictor.ErrNoPreviousData) {
 			return 0
 		}
@@ -90,15 +98,19 @@ func FindWeibullShapes() {
 	fmt.Println(res)
 }
 
-func (p *WeibullOddsGenerator) Generate1x2Probabilities(homeProjected, awayProjected float64) domain.MatchProbability {
+func (p *WeibullOddsGenerator) Generate1x2Probabilities(homeProjected, awayProjected float64, league string) domain.MatchProbability {
 	cache = make(map[alphaArgs]float64)
 	var homeGoalProb = make(map[int]float64)
 	var awayGoalProb = make(map[int]float64)
 	//homeShape := util.GetHomexGVariance(season - 1)
 	//awayShape := util.GetAwayxGVariance(season - 1)
+	shape, ok := weibullShape[league]
+	if ok {
+		panic("invalid league")
+	}
 	for i := 0; i <= 10; i++ {
-		homeGoalProb[i] = getGoalProbabilityWeibull(i, homeProjected, weibullHomeShape) // TODO calc variance for home wins
-		awayGoalProb[i] = getGoalProbabilityWeibull(i, awayProjected, weibullAwayShape) // TODO cal variance for away wins
+		homeGoalProb[i] = getGoalProbabilityWeibull(i, homeProjected, shape) // TODO calc variance for home wins
+		awayGoalProb[i] = getGoalProbabilityWeibull(i, awayProjected, shape) // TODO cal variance for away wins
 	}
 	matchProb := domain.MatchProbability{
 		HomeWin: 0,

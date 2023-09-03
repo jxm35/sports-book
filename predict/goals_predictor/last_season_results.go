@@ -3,6 +3,7 @@ package goals_predictor
 import (
 	"errors"
 	"fmt"
+	"time"
 
 	"sports-book.com/util"
 )
@@ -11,7 +12,7 @@ var ErrNoPreviousData = errors.New("no previous data for one or both teams")
 
 type LastSeasonResultGoalPredictor struct{}
 
-func (*LastSeasonResultGoalPredictor) PredictScore(homeTeam, awayTeam, season int32, league string) (float64, float64, error) {
+func (*LastSeasonResultGoalPredictor) PredictScore(homeTeam, awayTeam, season int32, league string, date time.Time, matchID int32) (float64, float64, error) {
 	// calculate standard for the year before
 	seasonStats, err := util.GetSeasonDetails(season-1, league)
 	if err != nil {

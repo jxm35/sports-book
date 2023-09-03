@@ -5,16 +5,23 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="c12b77f7-ff21-404b-9dea-32d9f800b7fe" name="Changes" comment="">
+      <change afterPath="$PROJECT_DIR$/predict/goals_predictor/elo.go" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.gitignore" beforeDir="false" afterPath="$PROJECT_DIR$/.gitignore" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/backtest/run_backtests.go" beforeDir="false" afterPath="$PROJECT_DIR$/backtest/run_backtests.go" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/go.mod" beforeDir="false" afterPath="$PROJECT_DIR$/go.mod" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/go.sum" beforeDir="false" afterPath="$PROJECT_DIR$/go.sum" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/main.go" beforeDir="false" afterPath="$PROJECT_DIR$/main.go" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/predict/domain/structs.go" beforeDir="false" afterPath="$PROJECT_DIR$/predict/domain/structs.go" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/predict/goals_predictor/exponential_xg.go" beforeDir="false" afterPath="$PROJECT_DIR$/predict/goals_predictor/exponential_xg.go" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/predict/goals_predictor/interface.go" beforeDir="false" afterPath="$PROJECT_DIR$/predict/goals_predictor/interface.go" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/predict/goals_predictor/last_season_results.go" beforeDir="false" afterPath="$PROJECT_DIR$/predict/goals_predictor/last_season_results.go" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/predict/goals_predictor/last_season_xg.go" beforeDir="false" afterPath="$PROJECT_DIR$/predict/goals_predictor/last_season_xg.go" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/predict/interface.go" beforeDir="false" afterPath="$PROJECT_DIR$/predict/interface.go" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/predict/pipeline.go" beforeDir="false" afterPath="$PROJECT_DIR$/predict/pipeline.go" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/predict/probability_generator/frank_copula.go" beforeDir="false" afterPath="$PROJECT_DIR$/predict/probability_generator/frank_copula.go" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/predict/probability_generator/interface.go" beforeDir="false" afterPath="$PROJECT_DIR$/predict/probability_generator/interface.go" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/predict/probability_generator/poisson.go" beforeDir="false" afterPath="$PROJECT_DIR$/predict/probability_generator/poisson.go" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/predict/probability_generator/weibull.go" beforeDir="false" afterPath="$PROJECT_DIR$/predict/probability_generator/weibull.go" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/util/misc.go" beforeDir="false" afterPath="$PROJECT_DIR$/util/misc.go" afterDir="false" />
     </list>
@@ -34,6 +41,9 @@
   <component name="GOROOT" url="file:///opt/homebrew/opt/go/libexec" />
   <component name="Git.Settings">
     <option name="RECENT_GIT_ROOT_PATH" value="$PROJECT_DIR$" />
+  </component>
+  <component name="MarkdownSettingsMigration">
+    <option name="stateVersion" value="1" />
   </component>
   <component name="ProjectId" id="2RneH9NCMIhTxKO2FsQVSWydRva" />
   <component name="ProjectViewState">
@@ -162,6 +172,11 @@
           <url>file://$PROJECT_DIR$/backtest/run_backtests.go</url>
           <line>22</line>
           <option name="timeStamp" value="3" />
+        </line-breakpoint>
+        <line-breakpoint enabled="true" type="DlvLineBreakpoint">
+          <url>file://$PROJECT_DIR$/predict/goals_predictor/last_season_xg.go</url>
+          <line>41</line>
+          <option name="timeStamp" value="7" />
         </line-breakpoint>
       </breakpoints>
     </breakpoint-manager>

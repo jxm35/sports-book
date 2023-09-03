@@ -45,7 +45,7 @@ func GetFixtures(season int32, league string) []model.Match {
 		Join(c, m.Competition.EqCol(c.ID)).
 		Where(c.Year.Eq(season)).
 		Where(c.Code.Eq(league)).
-		Order(m.Date.Desc()).
+		Order(m.Date).
 		Scan(&fixtureList)
 	return fixtureList
 }
@@ -166,6 +166,8 @@ type TeamSeasonDetails struct {
 	GoalsConcededAway int32
 	XGScoredAway      float64
 	XGConcededAway    float64
+
+	Matches int
 }
 
 func GetHomexGVariance(season int32) float64 {
@@ -253,6 +255,70 @@ func GetMatchesInSeason(season int32) ([]model.Match, error) {
 		Select(m.ALL).
 		Join(c, m.Competition.EqCol(c.ID)).
 		Where(c.Year.Eq(season)).
+		Scan(&res)
+	return res, err
+}
+
+func GetHomeLastXGames(team, season int32, date time.Time, numGames int) ([]model.Match, error) {
+	ctx := context.Background()
+	m := query.Match
+	c := query.Competition
+
+	var res []model.Match
+	err := m.WithContext(ctx).
+		Select(m.ALL).
+		LeftJoin(c, c.ID.EqCol(m.Competition)).
+		Where(
+			c.Year.Eq(season),
+			m.HomeTeam.Eq(team),
+			m.Date.Lt(getStartOfDay(date)),
+		).
+		Order(m.Date.Desc()).
+		Limit(numGames).
+		Scan(&res)
+	return res, err
+}
+func GetAwayLastXGames(team, season int32, date time.Time, numGames int) ([]model.Match, error) {
+	ctx := context.Background()
+	m := query.Match
+	c := query.Competition
+
+	var res []model.Match
+	err := m.WithContext(ctx).
+		Select(m.ALL).
+		LeftJoin(c, c.ID.EqCol(m.Competition)).
+		Where(
+			c.Year.Eq(season),
+			m.AwayTeam.Eq(team),
+			m.Date.Lt(getStartOfDay(date)),
+		).
+		Order(m.Date.Desc()).
+		Limit(numGames).
+		Scan(&res)
+	return res, err
+}
+
+func GetLastXGames(team, season int32, date time.Time, numGames int) ([]model.Match, error) {
+	ctx := context.Background()
+	m := query.Match
+	c := query.Competition
+
+	var res []model.Match
+	err := m.WithContext(ctx).
+		Select(m.ALL).
+		LeftJoin(c, c.ID.EqCol(m.Competition)).
+		Where(
+			c.Year.Eq(season),
+			m.HomeTeam.Eq(team),
+			m.Date.Lt(getStartOfDay(date)),
+		).
+		Or(
+			c.Year.Eq(season),
+			m.AwayTeam.Eq(team),
+			m.Date.Lt(getStartOfDay(date)),
+		).
+		Order(m.Date.Desc()).
+		Limit(numGames).
 		Scan(&res)
 	return res, err
 }

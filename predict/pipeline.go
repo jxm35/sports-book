@@ -3,6 +3,7 @@ package predict
 import (
 	"errors"
 	"fmt"
+	"time"
 
 	"github.com/jxm35/go-results"
 
@@ -27,12 +28,12 @@ type Odds1x2 struct {
 	AwayWin float64
 }
 
-func (p *pipelineImpl) PredictMatch(homeTeam, awayTeam, season int32, league string) (domain.MatchProbability, OddsDelta, error) {
-	homeGoalsPredicted, awayGoalsPredicted, err := p.predictor.PredictScore(homeTeam, awayTeam, season, league)
+func (p *pipelineImpl) PredictMatch(homeTeam, awayTeam, season int32, league string, date time.Time, matchID int32) (domain.MatchProbability, OddsDelta, error) {
+	homeGoalsPredicted, awayGoalsPredicted, err := p.predictor.PredictScore(homeTeam, awayTeam, season, league, date, matchID)
 	if err != nil {
 		return domain.MatchProbability{}, OddsDelta{}, err
 	}
-	matchProbabilities := p.probabilityGenerator.Generate1x2Probabilities(homeGoalsPredicted, awayGoalsPredicted)
+	matchProbabilities := p.probabilityGenerator.Generate1x2Probabilities(homeGoalsPredicted, awayGoalsPredicted, league)
 	fmt.Printf("my probabilities: %+v\n", matchProbabilities)
 
 	bestOdds := util.GetBestOdds(homeTeam, awayTeam, season)

@@ -46,7 +46,7 @@ func testPredictSeason(pipeline predict.Pipeline, season int32, league string, p
 	}
 
 	for _, match := range matches {
-		customProbabilities, _, err := pipeline.PredictMatch(match.HomeTeam, match.AwayTeam, season, league)
+		customProbabilities, _, err := pipeline.PredictMatch(match.HomeTeam, match.AwayTeam, season, league, match.Date, match.ID)
 		if errors.Is(err, goals_predictor.ErrNoPreviousData) {
 			continue
 		}

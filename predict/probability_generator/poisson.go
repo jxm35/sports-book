@@ -8,7 +8,7 @@ import (
 
 type PoissonOddsGenerator struct{}
 
-func (p *PoissonOddsGenerator) Generate1x2Probabilities(homeProjected, awayProjected float64) domain.MatchProbability {
+func (p *PoissonOddsGenerator) Generate1x2Probabilities(homeProjected, awayProjected float64, league string) domain.MatchProbability {
 	var homeGoalProb = make(map[int]float64)
 	var awayGoalProb = make(map[int]float64)
 	for i := 0; i <= 10; i++ {
