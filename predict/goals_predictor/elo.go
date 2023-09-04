@@ -2,9 +2,10 @@ package goals_predictor
 
 import (
 	"fmt"
+	"time"
+
 	"sports-book.com/model"
 	"sports-book.com/util"
-	"time"
 )
 
 type eloGoalsPredictor struct {
@@ -27,6 +28,9 @@ func (e *eloGoalsPredictor) PredictScore(homeTeam, awayTeam, season int32, leagu
 	if seasonStats.TotalHG == 0 && seasonStats.TotalAG == 0 {
 		return -1, -1, ErrNoPreviousData
 	}
+	if seasonStats.MatchCount == 0 || seasonStats.MatchCount%2 != 0 {
+		return -1, -1, ErrInvalidSeason
+	}
 	defer func() {
 		if _, exists := e.predictions[matchID]; !exists {
 			e.predictions[matchID] = prediction{
@@ -35,8 +39,8 @@ func (e *eloGoalsPredictor) PredictScore(homeTeam, awayTeam, season int32, leagu
 			}
 		}
 	}()
-	avgHomeXg := seasonStats.TotalHomexG / 380
-	avgAwayXg := seasonStats.TotalAwayxG / 380
+	avgHomeXg := seasonStats.TotalHomexG / float64(seasonStats.MatchCount)
+	avgAwayXg := seasonStats.TotalAwayxG / float64(seasonStats.MatchCount)
 	avgHomeGoalsConceded := avgAwayXg
 	avgAwayGoalsConceded := avgHomeXg
 
@@ -48,12 +52,15 @@ func (e *eloGoalsPredictor) PredictScore(homeTeam, awayTeam, season int32, leagu
 	if homeSeason.XGScoredAtHome == 0 && homeSeason.XGConcededAtHome == 0 {
 		return -1, -1, ErrNoPreviousData
 	}
+	if homeSeason.HomeCount == 0 || homeSeason.AwayCount == 0 || homeSeason.HomeCount != homeSeason.AwayCount {
+		return -1, -1, ErrInvalidSeason
+	}
 
-	lastGames, _ := util.GetLastXGames(homeTeam, season, date, e.FormTimespan)
-	aForm, dForm := e.calcForm(homeTeam, lastGames)
+	lastGames, _ := util.GetHomeLastXGames(homeTeam, season, date, e.FormTimespan)
+	aForm, dForm := e.calcFormHome(homeTeam, lastGames)
 
-	homeAvgxG := homeSeason.XGScoredAtHome / float64(19)
-	homeAvgxGConceded := homeSeason.XGConcededAtHome / float64(19)
+	homeAvgxG := homeSeason.XGScoredAtHome / float64(homeSeason.AwayCount)
+	homeAvgxGConceded := homeSeason.XGConcededAtHome / float64(homeSeason.AwayCount)
 	homeAvgxG += aForm
 	homeAvgxGConceded += dForm
 	homeAttackStrength := homeAvgxG / avgHomeXg
@@ -67,11 +74,15 @@ func (e *eloGoalsPredictor) PredictScore(homeTeam, awayTeam, season int32, leagu
 	if awaySeason.XGScoredAtHome == 0 && awaySeason.XGConcededAtHome == 0 {
 		return -1, -1, ErrNoPreviousData
 	}
-	lastGames, _ = util.GetLastXGames(awayTeam, season, date, e.FormTimespan)
-	aForm, dForm = e.calcForm(awayTeam, lastGames)
+	if awaySeason.HomeCount == 0 || awaySeason.AwayCount == 0 || awaySeason.HomeCount != awaySeason.AwayCount {
+		return -1, -1, ErrInvalidSeason
+	}
 
-	awayAvgxG := awaySeason.XGScoredAway / float64(19)
-	awayAvgxGConceded := awaySeason.XGConcededAway / float64(19)
+	lastGames, _ = util.GetAwayLastXGames(awayTeam, season, date, e.FormTimespan)
+	aForm, dForm = e.calcFormAway(awayTeam, lastGames)
+
+	awayAvgxG := awaySeason.XGScoredAway / float64(awaySeason.AwayCount)
+	awayAvgxGConceded := awaySeason.XGConcededAway / float64(awaySeason.AwayCount)
 	awayAvgxG += aForm
 	awayAvgxGConceded += dForm
 	awayDefenseStrength := awayAvgxGConceded / avgAwayGoalsConceded

@@ -2,9 +2,11 @@ package predict
 
 type BackingType string
 
-var BackHomeWin BackingType = "BackHomeWin"
-var BackDraw BackingType = "BackDraw"
-var BackAwayWin BackingType = "BackAwayWin"
+var (
+	BackHomeWin BackingType = "BackHomeWin"
+	BackDraw    BackingType = "BackDraw"
+	BackAwayWin BackingType = "BackAwayWin"
+)
 
 type BetOrder struct {
 	MatchId   int32

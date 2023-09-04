@@ -97,8 +97,11 @@ func (e *ExponentialXgGoalPredictor) PredictScore(homeTeam, awayTeam, season int
 	if err != nil {
 		return -1, -1, err
 	}
-	avgHomeXg := seasonStats.TotalHomexG / 380
-	avgAwayXg := seasonStats.TotalAwayxG / 380
+	if seasonStats.MatchCount == 0 || seasonStats.MatchCount%2 != 0 {
+		return -1, -1, ErrInvalidSeason
+	}
+	avgHomeXg := seasonStats.TotalHomexG / float64(seasonStats.MatchCount)
+	avgAwayXg := seasonStats.TotalAwayxG / float64(seasonStats.MatchCount)
 	avgHomeGoalsConceded := avgAwayXg
 	avgAwayGoalsConceded := avgHomeXg
 

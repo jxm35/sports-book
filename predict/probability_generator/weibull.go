@@ -3,11 +3,13 @@ package probability_generator
 import (
 	"errors"
 	"fmt"
+	"math"
+	"math/big"
+
 	"gonum.org/v1/gonum/diff/fd"
 	"gonum.org/v1/gonum/mat"
 	"gonum.org/v1/gonum/optimize"
-	"math"
-	"math/big"
+
 	"sports-book.com/model"
 	"sports-book.com/predict/domain"
 	"sports-book.com/predict/goals_predictor"
@@ -26,7 +28,7 @@ var cache = map[alphaArgs]float64{}
 
 const (
 	// 0.9213043557296844 predicted by maximising with gradient threshold
-	weibullHomeShape = 0.6963436844 //0.7910484751 //0.9062415
+	weibullHomeShape = 0.6963436844 // 0.7910484751 //0.9062415
 	// 0.888478275810224 predicted by maximising with gradient threshold
 	weibullAwayShape = 0.6963436844 // 0.6016388937 //0.8491849
 )
@@ -53,7 +55,7 @@ func FindWeibullShapes() {
 		10: 2017,
 	}
 	cache = make(map[alphaArgs]float64)
-	var matches = make([]model.Match, 0)
+	matches := make([]model.Match, 0)
 	for i := 2017; i <= 2022; i++ {
 		yearMatches, err := util.GetMatchesInSeason(int32(i))
 		if err != nil {
@@ -100,12 +102,12 @@ func FindWeibullShapes() {
 
 func (p *WeibullOddsGenerator) Generate1x2Probabilities(homeProjected, awayProjected float64, league string) domain.MatchProbability {
 	cache = make(map[alphaArgs]float64)
-	var homeGoalProb = make(map[int]float64)
-	var awayGoalProb = make(map[int]float64)
-	//homeShape := util.GetHomexGVariance(season - 1)
-	//awayShape := util.GetAwayxGVariance(season - 1)
+	homeGoalProb := make(map[int]float64)
+	awayGoalProb := make(map[int]float64)
+	// homeShape := util.GetHomexGVariance(season - 1)
+	// awayShape := util.GetAwayxGVariance(season - 1)
 	shape, ok := weibullShape[league]
-	if ok {
+	if !ok {
 		panic("invalid league")
 	}
 	for i := 0; i <= 10; i++ {

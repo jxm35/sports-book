@@ -2,9 +2,10 @@ package goals_predictor
 
 import (
 	"fmt"
+	"time"
+
 	"github.com/samber/lo"
 	"sports-book.com/model"
-	"time"
 
 	"sports-book.com/util"
 )
@@ -22,8 +23,11 @@ func (l *LastSeasonXgGoalPredictor) PredictScore(homeTeam, awayTeam, season int3
 	if seasonStats.TotalHG == 0 && seasonStats.TotalAG == 0 {
 		return -1, -1, ErrNoPreviousData
 	}
-	avgHomeXg := seasonStats.TotalHomexG / 380
-	avgAwayXg := seasonStats.TotalAwayxG / 380
+	if seasonStats.MatchCount == 0 || seasonStats.MatchCount%2 != 0 {
+		return -1, -1, ErrInvalidSeason
+	}
+	avgHomeXg := seasonStats.TotalHomexG / float64(seasonStats.MatchCount)
+	avgAwayXg := seasonStats.TotalAwayxG / float64(seasonStats.MatchCount)
 	avgHomeGoalsConceded := avgAwayXg
 	avgAwayGoalsConceded := avgHomeXg
 
@@ -35,8 +39,11 @@ func (l *LastSeasonXgGoalPredictor) PredictScore(homeTeam, awayTeam, season int3
 	if homeSeason.XGScoredAtHome == 0 && homeSeason.XGConcededAtHome == 0 {
 		return -1, -1, ErrNoPreviousData
 	}
-	homeAvgxG := homeSeason.XGScoredAtHome / float64(19)
-	homeAvgxGConceded := homeSeason.XGConcededAtHome / float64(19)
+	if homeSeason.HomeCount == 0 || homeSeason.AwayCount == 0 || homeSeason.HomeCount != homeSeason.AwayCount {
+		return -1, -1, ErrInvalidSeason
+	}
+	homeAvgxG := homeSeason.XGScoredAtHome / float64(homeSeason.AwayCount)
+	homeAvgxGConceded := homeSeason.XGConcededAtHome / float64(homeSeason.AwayCount)
 	if l.LastXGames != 0 {
 		homeLastXGames, err := util.GetHomeLastXGames(homeTeam, season, date, l.LastXGames)
 		if err != nil {
@@ -65,9 +72,12 @@ func (l *LastSeasonXgGoalPredictor) PredictScore(homeTeam, awayTeam, season int3
 	if awaySeason.XGScoredAtHome == 0 && awaySeason.XGConcededAtHome == 0 {
 		return -1, -1, ErrNoPreviousData
 	}
+	if awaySeason.HomeCount == 0 || awaySeason.AwayCount == 0 || awaySeason.HomeCount != awaySeason.AwayCount {
+		return -1, -1, ErrInvalidSeason
+	}
 
-	awayAvgxG := awaySeason.XGScoredAway / float64(19)
-	awayAvgxGConceded := awaySeason.XGConcededAway / float64(19)
+	awayAvgxG := awaySeason.XGScoredAway / float64(awaySeason.AwayCount)
+	awayAvgxGConceded := awaySeason.XGConcededAway / float64(awaySeason.AwayCount)
 	if l.LastXGames != 0 {
 		awayLastXGames, err := util.GetAwayLastXGames(awayTeam, season, date, l.LastXGames)
 		if err != nil {

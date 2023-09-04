@@ -2,8 +2,9 @@ package scrape_stats
 
 import (
 	"fmt"
-	"github.com/xuri/excelize/v2"
 	"strconv"
+
+	"github.com/xuri/excelize/v2"
 )
 
 func CreateFile() error {
@@ -65,14 +66,14 @@ func CreateFile() error {
 		return err
 	}
 	return nil
-
 }
 
 func SaveData(
 	matchesToSave []Match,
 	teamsToSave []Team,
 	playersToSave []Player,
-	appearancesToSave []Appearance) {
+	appearancesToSave []Appearance,
+) {
 	f, err := excelize.OpenFile("data.xlsx")
 	if err != nil {
 		fmt.Println(err)

@@ -2,6 +2,7 @@ package main
 
 import (
 	"fmt"
+
 	"sports-book.com/backtest"
 	"sports-book.com/predict"
 	"sports-book.com/predict/bet_placer"
@@ -18,8 +19,8 @@ import (
 func main() {
 	util.ConnectDB()
 	pipeline, err := predict.NewPipelineBuilder().
-		SetPredictor(goals_predictor.NewEloGoalsPredictor(7)).
-		//SetPredictor(&goals_predictor.LastSeasonXgGoalPredictor{LastXGames: 0}).
+		SetPredictor(goals_predictor.NewEloGoalsPredictor(0)).
+		// SetPredictor(&goals_predictor.LastSeasonXgGoalPredictor{LastXGames: 0}).
 		SetProbabilityGenerator(&probability_generator.WeibullOddsGenerator{}).
 		SetBetPlacer(&bet_placer.KellyCriterionBetPlacer{
 			MaxPercentBetted: 0.2,
@@ -30,7 +31,7 @@ func main() {
 	if err != nil {
 		panic(err)
 	}
-	backtest.RunBacktests(2014, 2022, domain.LeagueEPL, pipeline, false)
+	backtest.RunBacktests(2014, 2022, domain.LeagueSerieA, pipeline, true)
 }
 
 func testDb() {

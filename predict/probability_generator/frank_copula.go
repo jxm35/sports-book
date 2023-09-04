@@ -2,6 +2,7 @@ package probability_generator
 
 import (
 	"math"
+
 	"sports-book.com/predict/domain"
 )
 

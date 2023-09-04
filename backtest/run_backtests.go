@@ -3,16 +3,17 @@ package backtest
 import (
 	"errors"
 	"fmt"
+	"strconv"
+
 	"sports-book.com/model"
 	"sports-book.com/predict"
 	"sports-book.com/predict/domain"
 	"sports-book.com/predict/goals_predictor"
 	"sports-book.com/util"
-	"strconv"
 )
 
 func RunBacktests(startYear, endYear int32, league string, pipeline predict.Pipeline, placeBets bool) {
-	var probabilitiesForCalibration = make(map[model.Match]domain.MatchProbability)
+	probabilitiesForCalibration := make(map[model.Match]domain.MatchProbability)
 	bank := float64(100)
 	for i := startYear; i <= endYear; i++ {
 		yearProbabilities, resultingBank, err := testPredictSeason(pipeline, i, league, placeBets, bank)
@@ -35,10 +36,9 @@ func RunBacktests(startYear, endYear int32, league string, pipeline predict.Pipe
 }
 
 func testPredictSeason(pipeline predict.Pipeline, season int32, league string, placeBets bool, bank float64) (map[model.Match]domain.MatchProbability, float64, error) {
-
-	var winningBets = make(map[model.Match]domain.BetOrder)
-	var losingBets = make(map[model.Match]domain.BetOrder)
-	var probabilitiesForCalibration = make(map[model.Match]domain.MatchProbability)
+	winningBets := make(map[model.Match]domain.BetOrder)
+	losingBets := make(map[model.Match]domain.BetOrder)
+	probabilitiesForCalibration := make(map[model.Match]domain.MatchProbability)
 
 	matches := util.GetFixtures(season, league)
 	if len(matches) <= 0 {
@@ -58,7 +58,7 @@ func testPredictSeason(pipeline predict.Pipeline, season int32, league string, p
 
 		if placeBets {
 			betOp := pipeline.PlaceBet(match.ID, customProbabilities, bank)
-			//betPlaced := predict.HandleOddsDelta(oddsDelta, match.ID)
+			// betPlaced := predict.HandleOddsDelta(oddsDelta, match.ID)
 			if betOp.IsNone() {
 				continue
 			}

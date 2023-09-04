@@ -136,6 +136,7 @@ type SeasonDetails struct {
 	TotalAG     int32
 	TotalHomexG float64
 	TotalAwayxG float64
+	MatchCount  int
 }
 
 func GetSeasonDetails(season int32, league string) (SeasonDetails, error) {
@@ -145,6 +146,7 @@ func GetSeasonDetails(season int32, league string) (SeasonDetails, error) {
 	var res SeasonDetails
 	err := m.WithContext(ctx).
 		Select(
+			m.ID.Count().As("MatchCount"),
 			m.HomeGoals.Sum().As("TotalHG"),
 			m.AwayGoals.Sum().As("TotalAG"),
 			m.HomeExpectedGoals.Sum().As("TotalHomexG"),
@@ -157,17 +159,17 @@ func GetSeasonDetails(season int32, league string) (SeasonDetails, error) {
 }
 
 type TeamSeasonDetails struct {
+	HomeCount           int
 	GoalsScoredAtHome   int32
 	GoalsConcededAtHome int32
 	XGScoredAtHome      float64
 	XGConcededAtHome    float64
 
+	AwayCount         int
 	GoalsScoredAway   int32
 	GoalsConcededAway int32
 	XGScoredAway      float64
 	XGConcededAway    float64
-
-	Matches int
 }
 
 func GetHomexGVariance(season int32) float64 {
@@ -278,6 +280,7 @@ func GetHomeLastXGames(team, season int32, date time.Time, numGames int) ([]mode
 		Scan(&res)
 	return res, err
 }
+
 func GetAwayLastXGames(team, season int32, date time.Time, numGames int) ([]model.Match, error) {
 	ctx := context.Background()
 	m := query.Match
@@ -331,6 +334,7 @@ func GetTeamSeasonDetails(season, team int32) (TeamSeasonDetails, error) {
 	var res TeamSeasonDetails
 	err := m.WithContext(ctx).
 		Select(
+			m.ID.Count().As("HomeCount"),
 			m.HomeGoals.Sum().As("GoalsScoredAtHome"),
 			m.AwayGoals.Sum().As("GoalsConcededAtHome"),
 			m.HomeExpectedGoals.Sum().As("XGScoredAtHome"),
@@ -342,6 +346,7 @@ func GetTeamSeasonDetails(season, team int32) (TeamSeasonDetails, error) {
 	}
 	err = m.WithContext(ctx).
 		Select(
+			m.ID.Count().As("AwayCount"),
 			m.AwayGoals.Sum().As("GoalsScoredAway"),
 			m.HomeGoals.Sum().As("GoalsConcededAway"),
 			m.AwayExpectedGoals.Sum().As("XGScoredAway"),

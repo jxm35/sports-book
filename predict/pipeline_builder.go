@@ -2,6 +2,7 @@ package predict
 
 import (
 	"errors"
+
 	"sports-book.com/predict/bet_placer"
 	"sports-book.com/predict/goals_predictor"
 	"sports-book.com/predict/probability_generator"
@@ -30,6 +31,7 @@ func (p *pipelineBuilderImpl) SetPredictor(predictor goals_predictor.GoalsPredic
 	p.predictor = predictor
 	return p
 }
+
 func (p *pipelineBuilderImpl) SetProbabilityGenerator(probabilityGenerator probability_generator.ProbabilityGenerator) PipelineBuilder {
 	p.probabilityGenerator = probabilityGenerator
 	return p

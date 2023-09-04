@@ -2,8 +2,9 @@ package scrape_stats
 
 import (
 	"fmt"
-	"github.com/xuri/excelize/v2"
 	"strconv"
+
+	"github.com/xuri/excelize/v2"
 )
 
 func ScrapeSeason(id, startWeek, maxWeek int) {

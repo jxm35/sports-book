@@ -3,10 +3,11 @@ package save_stats
 import (
 	"context"
 	"fmt"
+	"strconv"
+
 	"gorm.io/gorm"
 	"sports-book.com/model"
 	"sports-book.com/query"
-	"strconv"
 )
 
 func lookupPlayer(excelId string, db *gorm.DB, players []*model.Player) (int32, error) {
@@ -29,6 +30,7 @@ func lookupPlayer(excelId string, db *gorm.DB, players []*model.Player) (int32, 
 	}
 	return 0, fmt.Errorf("no player found")
 }
+
 func lookupMatch(excelId string, db *gorm.DB, matches []*model.Match) (int32, error) {
 	query.SetDefault(db)
 	idInt, err := strconv.Atoi(excelId)

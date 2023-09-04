@@ -2,11 +2,13 @@ package backtest
 
 import (
 	"fmt"
-	plot2 "gonum.org/v1/plot"
-	"gonum.org/v1/plot/plotter"
 	"image/color"
 	"math"
 	"os"
+
+	plot2 "gonum.org/v1/plot"
+	"gonum.org/v1/plot/plotter"
+
 	"sports-book.com/model"
 	"sports-book.com/predict/domain"
 )

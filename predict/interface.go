@@ -1,9 +1,10 @@
 package predict
 
 import (
+	"time"
+
 	"github.com/jxm35/go-results"
 	"sports-book.com/predict/domain"
-	"time"
 )
 
 type Pipeline interface {

@@ -5,13 +5,15 @@ import (
 	"encoding/csv"
 	"errors"
 	"fmt"
-	"gorm.io/driver/mysql"
-	"gorm.io/gorm"
 	"log"
 	"os"
+	"strconv"
+
+	"gorm.io/driver/mysql"
+	"gorm.io/gorm"
+
 	"sports-book.com/model"
 	"sports-book.com/query"
-	"strconv"
 )
 
 func SaveOdds(year int32, league string) {
@@ -111,7 +113,7 @@ func Get1x2Odds(fileName string, bookies, hw, d, aw string) ([]MatchOdds1x2, err
 
 func Save1x2odds(odds []MatchOdds1x2, year int32, league string) {
 	teamMap := getTeamMap()
-	var oddsToSave = make([]*model.Odds1x2, 0)
+	oddsToSave := make([]*model.Odds1x2, 0)
 	for _, odd := range odds {
 		match := getMatchId(teamMap[odd.HomeTeam], teamMap[odd.AwayTeam], year)
 		if match <= 0 {
@@ -149,7 +151,7 @@ func getMatchId(homeTeam, awayTeam, year int32) int32 {
 }
 
 func getTeamMap() map[string]int32 {
-	var resp = make(map[string]int32)
+	resp := make(map[string]int32)
 	var teams []model.Team
 	t := query.Team
 	err := t.WithContext(context.Background()).
