@@ -5,8 +5,8 @@ import (
 	"time"
 
 	"github.com/samber/lo"
-	"sports-book.com/model"
 
+	"sports-book.com/model"
 	"sports-book.com/util"
 )
 

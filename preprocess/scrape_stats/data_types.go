@@ -12,6 +12,7 @@ type Match struct {
 	HomexA    string
 	AwayxA    string
 }
+
 type Appearance struct {
 	Player  int
 	MatchId int
@@ -22,10 +23,12 @@ type Appearance struct {
 	Assists int
 	Minutes float32
 }
+
 type Team struct {
 	Id   int
 	Name string
 }
+
 type Player struct {
 	Id       int
 	Name     string

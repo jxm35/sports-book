@@ -5,7 +5,7 @@ import (
 	"fmt"
 	"time"
 
-	"github.com/jxm35/go-results"
+	results "github.com/jxm35/go-results"
 
 	"sports-book.com/predict/bet_placer"
 	"sports-book.com/predict/domain"

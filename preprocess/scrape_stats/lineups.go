@@ -12,18 +12,22 @@ type lineupResponse struct {
 	Home      teamLineupResponse `json:"home"`
 	Away      teamLineupResponse `json:"away"`
 }
+
 type teamLineupResponse struct {
 	Players []playerResponse `json:"players"`
 }
+
 type playerResponse struct {
 	Player     playerInnerResponse          `json:"player"`
 	Statistics appearanceStatisticsResponse `json:"statistics"`
 }
+
 type playerInnerResponse struct {
 	Id       int    `json:"id"`
 	Name     string `json:"name"`
 	Position string `json:"position"`
 }
+
 type appearanceStatisticsResponse struct {
 	MinutesPlayed   float32 `json:"minutesPlayed"`
 	ExpectedGoals   float32 `json:"expectedGoals"`

@@ -19,15 +19,11 @@ import (
 func main() {
 	util.ConnectDB()
 	pipeline, err := predict.NewPipelineBuilder().
-		SetPredictor(goals_predictor.NewEloGoalsPredictor(5, 0)).
+		SetPredictor(goals_predictor.NewEloGoalsPredictor(5, 11)).
 		// SetPredictor(&goals_predictor.LastSeasonXgGoalPredictor{LastXGames: 0}).
 		SetProbabilityGenerator(&probability_generator.WeibullOddsGenerator{}).
-		SetBetPlacer(&bet_placer.KellyCriterionBetPlacer{
-			MaxPercentBetted: 0.2,
-			MinOddsDelta:     0.1,
-			MaxOddsDelta:     0.3,
-			LinearAmounts:    false,
-		}).
+		//SetBetPlacer(bet_placer.NewKellyCriterionBetPlacer(0.1, 0.3, 0.05, true)).
+		SetBetPlacer(bet_placer.NewFixedAmountBetPlacer(0.1, 0.3, 0.2)).
 		Build()
 	if err != nil {
 		panic(err)

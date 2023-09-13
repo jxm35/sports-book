@@ -10,6 +10,7 @@ import (
 type matchResponse struct {
 	Events []matchEvent `json:"events"`
 }
+
 type matchEvent struct {
 	Id             int           `json:"id"`
 	AwayScore      scoreResponse `json:"awayScore"`

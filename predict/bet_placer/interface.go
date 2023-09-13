@@ -1,7 +1,8 @@
 package bet_placer
 
 import (
-	"github.com/jxm35/go-results"
+	results "github.com/jxm35/go-results"
+
 	"sports-book.com/predict/domain"
 )
 
