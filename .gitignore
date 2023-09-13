@@ -1,5 +1,6 @@
-preprocess/oddsFiles
-calibrations
+data/oddsFiles
+analysis
+data
 *.png
 .DS_Store
 
