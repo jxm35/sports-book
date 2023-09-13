@@ -5,15 +5,15 @@ import (
 	"fmt"
 	"strconv"
 
-	"sports-book.com/pkg/model"
-	"sports-book.com/pkg/predict"
-	"sports-book.com/pkg/predict/domain"
-	"sports-book.com/pkg/predict/goals_predictor"
-	"sports-book.com/pkg/util"
+	"sports-book.com/pkg/db_model"
+	"sports-book.com/pkg/domain"
+	"sports-book.com/pkg/entity"
+	"sports-book.com/pkg/pipeline"
+	"sports-book.com/pkg/score_predictor"
 )
 
-func RunBacktests(startYear, endYear int32, league string, pipeline predict.Pipeline, placeBets bool) {
-	probabilitiesForCalibration := make(map[model.Match]domain.MatchProbability)
+func RunBacktests(startYear, endYear int32, league domain.League, pipeline pipeline.Pipeline, placeBets bool) {
+	probabilitiesForCalibration := make(map[db_model.Match]domain.MatchProbability)
 	betResults := make([]betResult, 0)
 	bank := float64(100)
 	for i := startYear; i <= endYear; i++ {
@@ -49,20 +49,23 @@ type betResult struct {
 	Won       bool
 }
 
-func testPredictSeason(pipeline predict.Pipeline, season int32, league string, placeBets bool, bank float64) (map[model.Match]domain.MatchProbability, float64, []betResult, error) {
-	winningBets := make(map[model.Match]domain.BetOrder)
-	losingBets := make(map[model.Match]domain.BetOrder)
-	probabilitiesForCalibration := make(map[model.Match]domain.MatchProbability)
+func testPredictSeason(pipeline pipeline.Pipeline, season int32, league domain.League, placeBets bool, bank float64) (map[db_model.Match]domain.MatchProbability, float64, []betResult, error) {
+	winningBets := make(map[db_model.Match]domain.BetOrder)
+	losingBets := make(map[db_model.Match]domain.BetOrder)
+	probabilitiesForCalibration := make(map[db_model.Match]domain.MatchProbability)
 	betsPlaced := make([]betResult, 0)
 
-	matches := util.GetFixtures(season, league)
+	matches, err := entity.ListFixtures(season, league)
+	if err != nil {
+		return nil, 1, nil, err
+	}
 	if len(matches) <= 0 {
 		panic("invalid season provided")
 	}
 
 	for _, match := range matches {
 		customProbabilities, _, err := pipeline.PredictMatch(match.HomeTeam, match.AwayTeam, season, league, match.Date, match.ID)
-		if errors.Is(err, goals_predictor.ErrNoPreviousData) {
+		if errors.Is(err, score_predictor.ErrNoPreviousData) {
 			continue
 		}
 		if err != nil {

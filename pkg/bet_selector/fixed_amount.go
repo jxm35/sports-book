@@ -1,0 +1,81 @@
+package bet_selector
+
+import (
+	"errors"
+
+	results "github.com/jxm35/go-results"
+
+	"sports-book.com/pkg/domain"
+	"sports-book.com/pkg/entity"
+)
+
+var ErrInvalidConfig = errors.New("invalid bet placer config provided")
+
+type fixedAmountBetSelector struct {
+	minOddsDelta float64
+	maxOddsDelta float64
+	betAmount    float64
+}
+
+func NewFixedAmountBetSelector(minOddsDelta, maxOddsDelta, betAmount float64) BetSelector {
+	if betAmount < 0 {
+		// return nil, ErrInvalidConfig
+		panic(ErrInvalidConfig)
+	}
+	return &fixedAmountBetSelector{
+		minOddsDelta: minOddsDelta,
+		maxOddsDelta: maxOddsDelta,
+		betAmount:    betAmount,
+	}
+}
+
+func (f *fixedAmountBetSelector) Place1x2Bets(matchId int32, generatedOdds domain.MatchProbability, currentPot float64) results.Option[domain.BetOrder] {
+	if f.maxOddsDelta == 0 {
+		f.maxOddsDelta = 1
+	}
+	if f.betAmount > currentPot {
+		return results.None[domain.BetOrder]()
+	}
+
+	odds := entity.GetBestOddsForMatch(matchId)
+	bookieImpliedOdds := domain.MatchProbability{
+		HomeWin: 1 / odds.HomeWin,
+		Draw:    1 / odds.Draw,
+		AwayWin: 1 / odds.AwayWin,
+	}
+	if f.isWithinConstraints(generatedOdds.HomeWin, bookieImpliedOdds.HomeWin) {
+		return results.Some(domain.BetOrder{
+			MatchId:   matchId,
+			Backing:   domain.BackHomeWin,
+			BookMaker: odds.HomeBookie,
+			OddsTaken: odds.HomeWin,
+			Amount:    f.betAmount,
+		})
+	}
+	if f.isWithinConstraints(generatedOdds.Draw, bookieImpliedOdds.Draw) {
+		return results.Some(domain.BetOrder{
+			MatchId:   matchId,
+			Backing:   domain.BackDraw,
+			BookMaker: odds.DrawBookie,
+			OddsTaken: odds.Draw,
+			Amount:    f.betAmount,
+		})
+	}
+	if f.isWithinConstraints(generatedOdds.AwayWin, bookieImpliedOdds.AwayWin) {
+		return results.Some(domain.BetOrder{
+			MatchId:   matchId,
+			Backing:   domain.BackAwayWin,
+			BookMaker: odds.AwayBookie,
+			OddsTaken: odds.AwayWin,
+			Amount:    f.betAmount,
+		})
+	}
+	return results.None[domain.BetOrder]()
+}
+
+func (f *fixedAmountBetSelector) isWithinConstraints(myOdds, bookieOdds float64) bool {
+	if myOdds-bookieOdds > f.minOddsDelta && myOdds-bookieOdds < f.maxOddsDelta {
+		return true
+	}
+	return false
+}

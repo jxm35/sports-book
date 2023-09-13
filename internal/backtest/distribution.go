@@ -11,18 +11,18 @@ import (
 	"gonum.org/v1/plot/plotter"
 	"gonum.org/v1/plot/vg"
 
-	"sports-book.com/pkg/model"
-	"sports-book.com/pkg/predict/domain"
+	"sports-book.com/pkg/db_model"
+	"sports-book.com/pkg/domain"
 )
 
-func plotDistribution(caliMap map[model.Match]domain.MatchProbability, yearRange string) {
+func plotDistribution(caliMap map[db_model.Match]domain.MatchProbability, yearRange string) {
 	bucketSize := 0.1
 	numBuckets := int(1 / bucketSize)
 	buckets := make([]float64, numBuckets)
 
-	matchesHW := make(map[int][]model.Match, numBuckets)
-	matchesD := make(map[int][]model.Match, numBuckets)
-	matchesAW := make(map[int][]model.Match, numBuckets)
+	matchesHW := make(map[int][]db_model.Match, numBuckets)
+	matchesD := make(map[int][]db_model.Match, numBuckets)
+	matchesAW := make(map[int][]db_model.Match, numBuckets)
 
 	histoPtsHomeWin := make(plotter.Values, numBuckets)
 	histoPtsDraw := make(plotter.Values, numBuckets)

@@ -12,8 +12,8 @@ import (
 	"gorm.io/driver/mysql"
 	"gorm.io/gorm"
 
-	model2 "sports-book.com/pkg/model"
-	"sports-book.com/pkg/query"
+	model "sports-book.com/pkg/db_model"
+	"sports-book.com/pkg/db_query"
 )
 
 func SaveOdds(year int32, league string) {
@@ -22,7 +22,7 @@ func SaveOdds(year int32, league string) {
 		fmt.Println(err)
 		return
 	}
-	query.SetDefault(gormDb)
+	db_query.SetDefault(gormDb)
 
 	filename := fmt.Sprintf("./preprocess/oddsFiles/%s/%dodds.csv", league, year)
 	allOdds := make([]MatchOdds1x2, 0)
@@ -113,13 +113,13 @@ func Get1x2Odds(fileName string, bookies, hw, d, aw string) ([]MatchOdds1x2, err
 
 func Save1x2odds(odds []MatchOdds1x2, year int32, league string) {
 	teamMap := getTeamMap()
-	oddsToSave := make([]*model2.Odds1x2, 0)
+	oddsToSave := make([]*model.Odds1x2, 0)
 	for _, odd := range odds {
 		match := getMatchId(teamMap[odd.HomeTeam], teamMap[odd.AwayTeam], year)
 		if match <= 0 {
 			panic("could not find match")
 		}
-		toSave := model2.Odds1x2{
+		toSave := model.Odds1x2{
 			Bookmaker: odd.Bookie,
 			Match:     match,
 			HomeWin:   odd.HomeWin,
@@ -129,16 +129,16 @@ func Save1x2odds(odds []MatchOdds1x2, year int32, league string) {
 		oddsToSave = append(oddsToSave, &toSave)
 	}
 	log.Println(fmt.Sprintf("saved %d odds", len(oddsToSave)))
-	err := query.Odds1x2.WithContext(context.Background()).CreateInBatches(oddsToSave, 200)
+	err := db_query.Odds1x2.WithContext(context.Background()).CreateInBatches(oddsToSave, 200)
 	if err != nil {
 		fmt.Println(err)
 	}
 }
 
 func getMatchId(homeTeam, awayTeam, year int32) int32 {
-	m := query.Match
-	c := query.Competition
-	var match model2.Match
+	m := db_query.Match
+	c := db_query.Competition
+	var match model.Match
 	err := m.WithContext(context.Background()).
 		Select(m.ALL).
 		LeftJoin(c, m.Competition.EqCol(c.ID)).
@@ -152,8 +152,8 @@ func getMatchId(homeTeam, awayTeam, year int32) int32 {
 
 func getTeamMap() map[string]int32 {
 	resp := make(map[string]int32)
-	var teams []model2.Team
-	t := query.Team
+	var teams []model.Team
+	t := db_query.Team
 	err := t.WithContext(context.Background()).
 		Select(t.ALL).Scan(&teams)
 	if err != nil {

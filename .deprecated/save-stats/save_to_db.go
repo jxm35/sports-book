@@ -7,15 +7,15 @@ import (
 	"gorm.io/gorm"
 	"gorm.io/gorm/clause"
 
-	model2 "sports-book.com/pkg/model"
-	"sports-book.com/pkg/query"
+	model2 "sports-book.com/pkg/db_model"
+	"sports-book.com/pkg/db_query"
 )
 
 func saveAppearances(db *gorm.DB, apps []*model2.Appearance) {
-	query.SetDefault(db)
+	db_query.SetDefault(db)
 
 	// Update all columns, except primary keys, to new value on conflict
-	err := query.Appearance.WithContext(context.Background()).Clauses(clause.OnConflict{
+	err := db_query.Appearance.WithContext(context.Background()).Clauses(clause.OnConflict{
 		UpdateAll: true,
 	}).CreateInBatches(apps, 200)
 	if err != nil {
@@ -25,10 +25,10 @@ func saveAppearances(db *gorm.DB, apps []*model2.Appearance) {
 }
 
 func saveMatches(db *gorm.DB, matches []*model2.Match) {
-	query.SetDefault(db)
+	db_query.SetDefault(db)
 
 	// Update all columns, except primary keys, to new value on conflict
-	err := query.Match.WithContext(context.Background()).Clauses(clause.OnConflict{
+	err := db_query.Match.WithContext(context.Background()).Clauses(clause.OnConflict{
 		UpdateAll: true,
 	}).Create(matches...)
 	if err != nil {
@@ -38,10 +38,10 @@ func saveMatches(db *gorm.DB, matches []*model2.Match) {
 }
 
 func savePlayers(db *gorm.DB, players []*model2.Player) {
-	query.SetDefault(db)
+	db_query.SetDefault(db)
 
 	// Update all columns, except primary keys, to new value on conflict
-	err := query.Player.WithContext(context.Background()).Clauses(clause.OnConflict{
+	err := db_query.Player.WithContext(context.Background()).Clauses(clause.OnConflict{
 		UpdateAll: true,
 	}).Create(players...)
 	if err != nil {
@@ -51,10 +51,10 @@ func savePlayers(db *gorm.DB, players []*model2.Player) {
 }
 
 func saveTeams(db *gorm.DB, teams []*model2.Team) {
-	query.SetDefault(db)
+	db_query.SetDefault(db)
 
 	// Update all columns, except primary keys, to new value on conflict
-	err := query.Team.WithContext(context.Background()).Clauses(clause.OnConflict{
+	err := db_query.Team.WithContext(context.Background()).Clauses(clause.OnConflict{
 		UpdateAll: true,
 	}).Create(teams...)
 	if err != nil {
