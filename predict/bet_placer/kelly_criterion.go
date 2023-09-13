@@ -11,6 +11,7 @@ type KellyCriterionBetPlacer struct {
 	MaxPercentBetted float64
 	MinOddsDelta     float64
 	MaxOddsDelta     float64
+	LinearAmounts    bool
 }
 
 func (k *KellyCriterionBetPlacer) isWithinConstraints(myOdds, bookieOdds float64) bool {
@@ -27,6 +28,13 @@ func (k *KellyCriterionBetPlacer) Place1x2Bets(matchId int32, generatedOdds doma
 	if k.MaxPercentBetted == 0 {
 		k.MaxPercentBetted = 1
 	}
+	amountFunc := min
+	if k.LinearAmounts {
+		amountFunc = func(a, b float64) float64 {
+			return a * b
+		}
+	}
+
 	odds := util.GetBestOddsForMatch(matchId)
 	bookieImpliedOdds := domain.MatchProbability{
 		HomeWin: 1 / odds.HomeWin,
@@ -39,7 +47,7 @@ func (k *KellyCriterionBetPlacer) Place1x2Bets(matchId int32, generatedOdds doma
 			Backing:   domain.BackHomeWin,
 			BookMaker: odds.HomeBookie,
 			OddsTaken: odds.HomeWin,
-			Amount:    min(k.MaxPercentBetted, kellyCriterion(generatedOdds.HomeWin, odds.HomeWin, currentPot)),
+			Amount:    amountFunc(k.MaxPercentBetted, kellyCriterion(generatedOdds.HomeWin, odds.HomeWin, currentPot)),
 		})
 	}
 	if k.isWithinConstraints(generatedOdds.Draw, bookieImpliedOdds.Draw) {
@@ -48,7 +56,7 @@ func (k *KellyCriterionBetPlacer) Place1x2Bets(matchId int32, generatedOdds doma
 			Backing:   domain.BackDraw,
 			BookMaker: odds.DrawBookie,
 			OddsTaken: odds.Draw,
-			Amount:    min(k.MaxPercentBetted, kellyCriterion(generatedOdds.Draw, odds.Draw, currentPot)),
+			Amount:    amountFunc(k.MaxPercentBetted, kellyCriterion(generatedOdds.Draw, odds.Draw, currentPot)),
 		})
 	}
 	if k.isWithinConstraints(generatedOdds.AwayWin, bookieImpliedOdds.AwayWin) {
@@ -57,7 +65,7 @@ func (k *KellyCriterionBetPlacer) Place1x2Bets(matchId int32, generatedOdds doma
 			Backing:   domain.BackAwayWin,
 			BookMaker: odds.AwayBookie,
 			OddsTaken: odds.AwayWin,
-			Amount:    min(k.MaxPercentBetted, kellyCriterion(generatedOdds.AwayWin, odds.AwayWin, currentPot)),
+			Amount:    amountFunc(k.MaxPercentBetted, kellyCriterion(generatedOdds.AwayWin, odds.AwayWin, currentPot)),
 		})
 	}
 	return results.None[domain.BetOrder]()

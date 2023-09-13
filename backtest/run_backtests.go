@@ -14,13 +14,15 @@ import (
 
 func RunBacktests(startYear, endYear int32, league string, pipeline predict.Pipeline, placeBets bool) {
 	probabilitiesForCalibration := make(map[model.Match]domain.MatchProbability)
+	betResults := make([]betResult, 0)
 	bank := float64(100)
 	for i := startYear; i <= endYear; i++ {
-		yearProbabilities, resultingBank, err := testPredictSeason(pipeline, i, league, placeBets, bank)
+		yearProbabilities, resultingBank, bets, err := testPredictSeason(pipeline, i, league, placeBets, bank)
 		if err != nil {
 			fmt.Println(err)
 			return
 		}
+		betResults = append(betResults, bets...)
 		for k, v := range yearProbabilities {
 			probabilitiesForCalibration[k] = v
 		}
@@ -33,12 +35,25 @@ func RunBacktests(startYear, endYear int32, league string, pipeline predict.Pipe
 
 	getCalibration(probabilitiesForCalibration, yearTag)
 	plotDistribution(probabilitiesForCalibration, yearTag)
+	if placeBets {
+		plotBetDistribution(betResults, yearTag)
+		plotBetWinningsDistribution(betResults, yearTag)
+		plotBetsPlacedDistribution(betResults, yearTag)
+	}
 }
 
-func testPredictSeason(pipeline predict.Pipeline, season int32, league string, placeBets bool, bank float64) (map[model.Match]domain.MatchProbability, float64, error) {
+type betResult struct {
+	domain.BetOrder
+	domain.MatchProbability
+	AmountWon float64
+	Won       bool
+}
+
+func testPredictSeason(pipeline predict.Pipeline, season int32, league string, placeBets bool, bank float64) (map[model.Match]domain.MatchProbability, float64, []betResult, error) {
 	winningBets := make(map[model.Match]domain.BetOrder)
 	losingBets := make(map[model.Match]domain.BetOrder)
 	probabilitiesForCalibration := make(map[model.Match]domain.MatchProbability)
+	betsPlaced := make([]betResult, 0)
 
 	matches := util.GetFixtures(season, league)
 	if len(matches) <= 0 {
@@ -51,7 +66,7 @@ func testPredictSeason(pipeline predict.Pipeline, season int32, league string, p
 			continue
 		}
 		if err != nil {
-			return nil, -1, err
+			return nil, -1, nil, err
 		}
 
 		probabilitiesForCalibration[match] = customProbabilities
@@ -65,12 +80,14 @@ func testPredictSeason(pipeline predict.Pipeline, season int32, league string, p
 			bet := betOp.Value()
 			bank -= bet.Amount
 			potentitalReturn := bet.Amount * bet.OddsTaken
+			betWon := false
 
 			switch bet.Backing {
 			case domain.BackHomeWin:
 				if match.HomeGoals > match.AwayGoals {
 					bank += potentitalReturn
 					winningBets[match] = bet
+					betWon = true
 				} else {
 					losingBets[match] = bet
 				}
@@ -78,6 +95,7 @@ func testPredictSeason(pipeline predict.Pipeline, season int32, league string, p
 				if match.HomeGoals == match.AwayGoals {
 					bank += potentitalReturn
 					winningBets[match] = bet
+					betWon = true
 				} else {
 					losingBets[match] = bet
 				}
@@ -85,15 +103,21 @@ func testPredictSeason(pipeline predict.Pipeline, season int32, league string, p
 				if match.AwayGoals > match.HomeGoals {
 					bank += potentitalReturn
 					winningBets[match] = bet
+					betWon = true
 				} else {
 					losingBets[match] = bet
 				}
 			default:
-				return nil, -1, errors.New("invalid bet type")
+				return nil, -1, nil, errors.New("invalid bet type")
 			}
+			betsPlaced = append(betsPlaced, betResult{
+				BetOrder:         bet,
+				MatchProbability: customProbabilities,
+				Won:              betWon,
+			})
 		}
 
 	}
 
-	return probabilitiesForCalibration, bank, nil
+	return probabilitiesForCalibration, bank, betsPlaced, nil
 }

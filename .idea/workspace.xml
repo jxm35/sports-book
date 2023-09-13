@@ -5,14 +5,13 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="c12b77f7-ff21-404b-9dea-32d9f800b7fe" name="Changes" comment="">
+      <change beforePath="$PROJECT_DIR$/.idea/dataSources.local.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/dataSources.local.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/backtest/distribution.go" beforeDir="false" afterPath="$PROJECT_DIR$/backtest/distribution.go" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/backtest/run_backtests.go" beforeDir="false" afterPath="$PROJECT_DIR$/backtest/run_backtests.go" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/main.go" beforeDir="false" afterPath="$PROJECT_DIR$/main.go" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/predict/bet_placer/kelly_criterion.go" beforeDir="false" afterPath="$PROJECT_DIR$/predict/bet_placer/kelly_criterion.go" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/predict/goals_predictor/elo.go" beforeDir="false" afterPath="$PROJECT_DIR$/predict/goals_predictor/elo.go" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/predict/goals_predictor/exponential_xg.go" beforeDir="false" afterPath="$PROJECT_DIR$/predict/goals_predictor/exponential_xg.go" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/predict/goals_predictor/last_season_results.go" beforeDir="false" afterPath="$PROJECT_DIR$/predict/goals_predictor/last_season_results.go" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/predict/goals_predictor/last_season_xg.go" beforeDir="false" afterPath="$PROJECT_DIR$/predict/goals_predictor/last_season_xg.go" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/predict/probability_generator/weibull.go" beforeDir="false" afterPath="$PROJECT_DIR$/predict/probability_generator/weibull.go" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/util/misc.go" beforeDir="false" afterPath="$PROJECT_DIR$/util/misc.go" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -71,12 +70,29 @@
     </key>
   </component>
   <component name="RunManager" selected="Go Build.go build main.go">
+    <configuration default="true" type="GoApplicationRunConfiguration" factoryName="Go Application">
+      <module name="sports-book" />
+      <working_directory value="$PROJECT_DIR$" />
+      <kind value="FILE" />
+      <directory value="$PROJECT_DIR$" />
+      <filePath value="$PROJECT_DIR$" />
+      <method v="2" />
+    </configuration>
     <configuration name="go build main.go" type="GoApplicationRunConfiguration" factoryName="Go Application" temporary="true" nameIsGenerated="true">
       <module name="sports-book" />
       <working_directory value="$PROJECT_DIR$" />
       <kind value="FILE" />
       <directory value="$PROJECT_DIR$" />
       <filePath value="$PROJECT_DIR$/main.go" />
+      <method v="2" />
+    </configuration>
+    <configuration default="true" type="GoTestRunConfiguration" factoryName="Go Test">
+      <module name="sports-book" />
+      <working_directory value="$PROJECT_DIR$" />
+      <kind value="DIRECTORY" />
+      <directory value="$PROJECT_DIR$" />
+      <filePath value="$PROJECT_DIR$" />
+      <framework value="gotest" />
       <method v="2" />
     </configuration>
     <configuration name="main (1)" type="PythonConfigurationType" factoryName="Python" temporary="true" nameIsGenerated="true">
@@ -159,12 +175,12 @@
       <breakpoints>
         <line-breakpoint enabled="true" type="DlvLineBreakpoint">
           <url>file://$PROJECT_DIR$/predict/goals_predictor/last_season_xg.go</url>
-          <line>47</line>
+          <line>48</line>
           <option name="timeStamp" value="7" />
         </line-breakpoint>
         <line-breakpoint enabled="true" type="DlvLineBreakpoint">
           <url>file://$PROJECT_DIR$/backtest/run_backtests.go</url>
-          <line>32</line>
+          <line>35</line>
           <option name="timeStamp" value="18" />
         </line-breakpoint>
       </breakpoints>

@@ -19,19 +19,20 @@ import (
 func main() {
 	util.ConnectDB()
 	pipeline, err := predict.NewPipelineBuilder().
-		SetPredictor(goals_predictor.NewEloGoalsPredictor(0)).
+		SetPredictor(goals_predictor.NewEloGoalsPredictor(5, 0)).
 		// SetPredictor(&goals_predictor.LastSeasonXgGoalPredictor{LastXGames: 0}).
 		SetProbabilityGenerator(&probability_generator.WeibullOddsGenerator{}).
 		SetBetPlacer(&bet_placer.KellyCriterionBetPlacer{
 			MaxPercentBetted: 0.2,
 			MinOddsDelta:     0.1,
 			MaxOddsDelta:     0.3,
+			LinearAmounts:    false,
 		}).
 		Build()
 	if err != nil {
 		panic(err)
 	}
-	backtest.RunBacktests(2014, 2022, domain.LeagueSerieA, pipeline, true)
+	backtest.RunBacktests(2014, 2022, domain.LeagueEPL, pipeline, true)
 }
 
 func testDb() {

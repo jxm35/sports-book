@@ -9,14 +9,16 @@ import (
 )
 
 type eloGoalsPredictor struct {
-	predictions  map[int32]prediction
-	FormTimespan int
+	predictions               map[int32]prediction
+	FormTimespan              int
+	chanceConversionWeighting int
 }
 
-func NewEloGoalsPredictor(formTimespan int) GoalsPredictor {
+func NewEloGoalsPredictor(formTimespan, chanceConversionRating int) GoalsPredictor {
 	return &eloGoalsPredictor{
-		predictions:  make(map[int32]prediction),
-		FormTimespan: formTimespan,
+		predictions:               make(map[int32]prediction),
+		FormTimespan:              formTimespan,
+		chanceConversionWeighting: chanceConversionRating,
 	}
 }
 
@@ -58,10 +60,14 @@ func (e *eloGoalsPredictor) PredictScore(homeTeam, awayTeam, season int32, leagu
 
 	lastGames, _ := util.GetHomeLastXGames(homeTeam, season, date, e.FormTimespan)
 	aForm, dForm := e.calcFormHome(homeTeam, lastGames)
+	homeChanceConversion := e.calcGoalConversion(homeSeason, homeSeason.HomeCount+homeSeason.AwayCount)
 
 	homeAvgxG := homeSeason.XGScoredAtHome / float64(homeSeason.AwayCount)
 	homeAvgxGConceded := homeSeason.XGConcededAtHome / float64(homeSeason.AwayCount)
 	homeAvgxG += aForm
+	if e.chanceConversionWeighting != 0 {
+		homeAvgxG += homeChanceConversion / float64(e.chanceConversionWeighting)
+	}
 	homeAvgxGConceded += dForm
 	homeAttackStrength := homeAvgxG / avgHomeXg
 	homeDefenseStrength := homeAvgxGConceded / avgHomeGoalsConceded
@@ -80,10 +86,14 @@ func (e *eloGoalsPredictor) PredictScore(homeTeam, awayTeam, season int32, leagu
 
 	lastGames, _ = util.GetAwayLastXGames(awayTeam, season, date, e.FormTimespan)
 	aForm, dForm = e.calcFormAway(awayTeam, lastGames)
+	awayChanceConversion := e.calcGoalConversion(awaySeason, awaySeason.HomeCount+awaySeason.AwayCount)
 
 	awayAvgxG := awaySeason.XGScoredAway / float64(awaySeason.AwayCount)
 	awayAvgxGConceded := awaySeason.XGConcededAway / float64(awaySeason.AwayCount)
 	awayAvgxG += aForm
+	if e.chanceConversionWeighting != 0 {
+		awayAvgxG += awayChanceConversion / float64(e.chanceConversionWeighting)
+	}
 	awayAvgxGConceded += dForm
 	awayDefenseStrength := awayAvgxGConceded / avgAwayGoalsConceded
 	awayAttackStrength := awayAvgxG / avgAwayXg
@@ -186,4 +196,9 @@ func (e *eloGoalsPredictor) calcForm(team int32, matches []model.Match) (float64
 	attackForm = attackForm / float64(count)
 	defenseForm = defenseForm / float64(count)
 	return attackForm, defenseForm
+}
+
+func (e *eloGoalsPredictor) calcGoalConversion(lastSeason util.TeamSeasonDetails, matchesPlayed int) float64 {
+	diff := float64(lastSeason.GoalsScoredAtHome+lastSeason.GoalsScoredAway) - (lastSeason.XGScoredAtHome + lastSeason.XGScoredAway)
+	return diff / float64(matchesPlayed)
 }
