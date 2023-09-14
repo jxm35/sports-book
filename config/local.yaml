@@ -1,0 +1,9 @@
+notify.impl: logger
+
+score_predictor.impl: elo
+
+bet_selector.impl: kelly_criterion
+bet_selector.min_odds_delta: 0.1
+bet_selector.max_odds_delta: 0.3
+bet_selector.max_percent_bet: 0.05
+bet_selector.linear_amounts: true

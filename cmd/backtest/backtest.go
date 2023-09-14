@@ -2,25 +2,26 @@ package main
 
 import (
 	"sports-book.com/internal/backtest"
-	"sports-book.com/pkg/bet_selector"
 	"sports-book.com/pkg/db"
 	"sports-book.com/pkg/domain"
 	"sports-book.com/pkg/pipeline"
-	"sports-book.com/pkg/probability_generator"
-	"sports-book.com/pkg/score_predictor"
 )
 
 func main() {
-	db.Connect()
-	pipeline, err := pipeline.NewPipelineBuilder().
-		SetPredictor(score_predictor.NewEloGoalsPredictor(5, 11)).
-		// SetPredictor(&goals_predictor.LastSeasonXgGoalPredictor{LastXGames: 0}).
-		SetProbabilityGenerator(&probability_generator.WeibullOddsGenerator{}).
-		SetBetPlacer(bet_selector.NewKellyCriterionBetSelector(0.1, 0.3, 0.05, true)).
-		// SetBetPlacer(bet_selector.NewFixedAmountBetSelector(0.1, 0.3, 0.2)).
-		Build()
+	_, err := db.Connect()
 	if err != nil {
 		panic(err)
 	}
-	backtest.RunBacktests(2021, 2022, domain.LeagueEPL, pipeline, true)
+	// p, err := pipeline.NewPipelineBuilder().
+	//	SetPredictor(score_predictor.NewEloGoalsPredictor(5, 11)).
+	//	// SetPredictor(&goals_predictor.LastSeasonXgGoalPredictor{LastXGames: 0}).
+	//	SetProbabilityGenerator(&probability_generator.WeibullOddsGenerator{}).
+	//	SetBetPlacer(bet_selector.NewKellyCriterionBetSelector(0.1, 0.3, 0.05, true)).
+	//	// SetBetPlacer(bet_selector.NewFixedAmountBetSelector(0.1, 0.3, 0.2)).
+	//	Build()
+	p, err := pipeline.NewPipelineFromConfig()
+	if err != nil {
+		panic(err)
+	}
+	backtest.RunBacktests(2021, 2022, domain.LeagueEPL, p, true)
 }

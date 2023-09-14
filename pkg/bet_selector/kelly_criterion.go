@@ -3,9 +3,9 @@ package bet_selector
 import (
 	results "github.com/jxm35/go-results"
 
+	"sports-book.com/pkg/config"
 	"sports-book.com/pkg/db"
 	"sports-book.com/pkg/domain"
-	"sports-book.com/pkg/notify"
 )
 
 type kellyCriterionBetSelector struct {
@@ -34,6 +34,43 @@ func NewKellyCriterionBetSelector(minOddsDelta, maxOddsDelta, maxPercentBet floa
 		maxPercentBet: maxPercentBet,
 		amountFunc:    amountFunc,
 	}
+}
+
+func NewKellyCriterionBetSelectorFromConfig() (BetSelector, error) {
+	minOddsDelta, found := config.GetConfigVal[float64]("bet_selector.min_odds_delta").Get()
+	if !found {
+		return nil, ErrInvalidConfig
+	}
+	maxOddsDelta, found := config.GetConfigVal[float64]("bet_selector.max_odds_delta").Get()
+	if !found {
+		return nil, ErrInvalidConfig
+	}
+	maxPercentBet, found := config.GetConfigVal[float64]("bet_selector.max_percent_bet").Get()
+	if !found {
+		return nil, ErrInvalidConfig
+	}
+	linearAmounts, found := config.GetConfigVal[bool]("bet_selector.linear_amounts").Get()
+	if !found {
+		return nil, ErrInvalidConfig
+	}
+	if maxOddsDelta == 0 {
+		maxOddsDelta = 1
+	}
+	if maxPercentBet == 0 {
+		maxPercentBet = 1
+	}
+	amountFunc := min
+	if linearAmounts {
+		amountFunc = func(maxPercentBet, kellysProportion float64) float64 {
+			return maxPercentBet * kellysProportion
+		}
+	}
+	return &kellyCriterionBetSelector{
+		minOddsDelta:  minOddsDelta,
+		maxOddsDelta:  maxOddsDelta,
+		maxPercentBet: maxPercentBet,
+		amountFunc:    amountFunc,
+	}, nil
 }
 
 func (k *kellyCriterionBetSelector) Place1x2Bets(matchId int32, generatedOdds domain.MatchProbability, currentPot float64) results.Option[domain.BetOrder] {
@@ -72,7 +109,6 @@ func (k *kellyCriterionBetSelector) Place1x2Bets(matchId int32, generatedOdds do
 			Amount:               k.amountFunc(k.maxPercentBet, kellyCriterion(generatedOdds.AwayWin, odds.AwayWin)) * currentPot,
 			PredictedProbability: generatedOdds.AwayWin,
 		}
-		notify.NotifyBetPlaced(bet)
 		return results.Some(bet)
 	}
 	return results.None[domain.BetOrder]()

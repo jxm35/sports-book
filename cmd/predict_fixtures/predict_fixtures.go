@@ -63,7 +63,7 @@ func handle(ctx context.Context, event events.SQSEvent, predictionPipeline pipel
 			)
 			bet := predictionPipeline.PlaceBet(match.ID, probabilities, 100)
 			if bet.IsPresent() {
-				if err := notify.NotifyBetPlaced(bet.Value()); err != nil {
+				if err := notify.GetNotifier().NotifyBetPlaced(bet.Value()); err != nil {
 					return fmt.Errorf("failed to add notify bet order: %w", err)
 				}
 			}

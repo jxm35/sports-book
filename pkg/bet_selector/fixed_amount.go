@@ -5,6 +5,7 @@ import (
 
 	results "github.com/jxm35/go-results"
 
+	"sports-book.com/pkg/config"
 	"sports-book.com/pkg/db"
 	"sports-book.com/pkg/domain"
 )
@@ -27,6 +28,29 @@ func NewFixedAmountBetSelector(minOddsDelta, maxOddsDelta, betAmount float64) Be
 		maxOddsDelta: maxOddsDelta,
 		betAmount:    betAmount,
 	}
+}
+
+func NewFixedAmountBetSelectorFromConfig() (BetSelector, error) {
+	minOddsDelta, found := config.GetConfigVal[float64]("bet_selector.min_odds_delta").Get()
+	if !found {
+		return nil, ErrInvalidConfig
+	}
+	maxOddsDelta, found := config.GetConfigVal[float64]("bet_selector.max_odds_delta").Get()
+	if !found {
+		return nil, ErrInvalidConfig
+	}
+	betAmount, found := config.GetConfigVal[float64]("bet_selector.bet_amount").Get()
+	if !found {
+		return nil, ErrInvalidConfig
+	}
+	if betAmount < 0 {
+		return nil, ErrInvalidConfig
+	}
+	return &fixedAmountBetSelector{
+		minOddsDelta: minOddsDelta,
+		maxOddsDelta: maxOddsDelta,
+		betAmount:    betAmount,
+	}, nil
 }
 
 func (f *fixedAmountBetSelector) Place1x2Bets(matchId int32, generatedOdds domain.MatchProbability, currentPot float64) results.Option[domain.BetOrder] {

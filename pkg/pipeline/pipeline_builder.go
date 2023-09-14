@@ -23,6 +23,22 @@ type pipelineBuilderImpl struct {
 	betPlacer            bet_selector.BetSelector
 }
 
+func NewPipelineFromConfig() (Pipeline, error) {
+	predictor, err := score_predictor.NewScorePredictorFromConfig()
+	if err != nil {
+		return nil, err
+	}
+	betSelector, err := bet_selector.NewBetSelectorFromConfig()
+	if err != nil {
+		return nil, err
+	}
+	return &pipelineImpl{
+		predictor:            predictor,
+		probabilityGenerator: &probability_generator.WeibullOddsGenerator{},
+		betPlacer:            betSelector,
+	}, nil
+}
+
 func NewPipelineBuilder() PipelineBuilder {
 	return &pipelineBuilderImpl{}
 }

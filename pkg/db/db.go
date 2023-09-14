@@ -6,13 +6,15 @@ import (
 
 	"gorm.io/driver/mysql"
 	"gorm.io/gorm"
+
+	"sports-book.com/pkg/db_query"
 )
 
 var dbConn *gorm.DB
 
 // Connect opens a connection to the database, so that other functions may query against it
 func Connect() (*gorm.DB, error) {
-	return gorm.Open(
+	db, err := gorm.Open(
 		mysql.Open(
 			fmt.Sprintf(
 				"%s:%s@tcp(%s:3306)/%s?charset=utf8mb4&parseTime=True&loc=Local",
@@ -23,6 +25,9 @@ func Connect() (*gorm.DB, error) {
 			),
 		),
 	)
+	db_query.SetDefault(db)
+	dbConn = db
+	return db, err
 }
 
 func getConn() *gorm.DB {
