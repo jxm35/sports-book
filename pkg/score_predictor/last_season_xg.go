@@ -6,9 +6,9 @@ import (
 
 	"github.com/samber/lo"
 
+	"sports-book.com/pkg/db"
 	"sports-book.com/pkg/db_model"
 	"sports-book.com/pkg/domain"
-	"sports-book.com/pkg/entity"
 )
 
 type LastSeasonXgScorePredictor struct {
@@ -17,7 +17,7 @@ type LastSeasonXgScorePredictor struct {
 
 func (l *LastSeasonXgScorePredictor) PredictScore(homeTeam, awayTeam, season int32, league domain.League, date time.Time, matchID int32) (float64, float64, error) {
 	// calculate standard for the year before
-	seasonStats, err := entity.GetSeasonDetails(season-1, league)
+	seasonStats, err := db.GetSeasonDetails(season-1, league)
 	if err != nil {
 		return -1, -1, err
 	}
@@ -33,7 +33,7 @@ func (l *LastSeasonXgScorePredictor) PredictScore(homeTeam, awayTeam, season int
 	avgAwayGoalsConceded := avgHomeXg
 
 	// calculate home team's strengths
-	homeSeason, err := entity.GetTeamSeasonDetails(season-1, homeTeam)
+	homeSeason, err := db.GetTeamSeasonDetails(season-1, homeTeam)
 	if err != nil {
 		return -1, -1, err
 	}
@@ -46,7 +46,7 @@ func (l *LastSeasonXgScorePredictor) PredictScore(homeTeam, awayTeam, season int
 	homeAvgxG := homeSeason.XGScoredAtHome / float64(homeSeason.AwayCount)
 	homeAvgxGConceded := homeSeason.XGConcededAtHome / float64(homeSeason.AwayCount)
 	if l.LastXGames != 0 {
-		homeLastXGames, err := entity.GetHomeLastXMatches(homeTeam, season, date, l.LastXGames)
+		homeLastXGames, err := db.GetHomeLastXMatches(homeTeam, season, date, l.LastXGames)
 		if err != nil {
 			return -1, -1, err
 		}
@@ -66,7 +66,7 @@ func (l *LastSeasonXgScorePredictor) PredictScore(homeTeam, awayTeam, season int
 	homeDefenseStrength := homeAvgxGConceded / avgHomeGoalsConceded
 
 	// calculate away team's strengths
-	awaySeason, err := entity.GetTeamSeasonDetails(season-1, awayTeam)
+	awaySeason, err := db.GetTeamSeasonDetails(season-1, awayTeam)
 	if err != nil {
 		return -1, -1, err
 	}
@@ -80,7 +80,7 @@ func (l *LastSeasonXgScorePredictor) PredictScore(homeTeam, awayTeam, season int
 	awayAvgxG := awaySeason.XGScoredAway / float64(awaySeason.AwayCount)
 	awayAvgxGConceded := awaySeason.XGConcededAway / float64(awaySeason.AwayCount)
 	if l.LastXGames != 0 {
-		awayLastXGames, err := entity.GetAwayLastXMatches(awayTeam, season, date, l.LastXGames)
+		awayLastXGames, err := db.GetAwayLastXMatches(awayTeam, season, date, l.LastXGames)
 		if err != nil {
 			return -1, -1, err
 		}

@@ -1,8 +1,9 @@
-package entity
+package db
 
 import (
 	"context"
 	"fmt"
+	"strconv"
 	"time"
 
 	model "sports-book.com/pkg/db_model"
@@ -125,6 +126,30 @@ func GetTeam(teamId int32) (model.Team, error) {
 	err := t.WithContext(context.Background()).
 		Select(t.ALL).
 		Where(t.ID.Eq(teamId)).Scan(&team)
+	return team, err
+}
+
+// GetTeamByName retrieves a team from the database given it's name
+func GetTeamByName(name string) (model.Team, error) {
+	t := db_query.Team
+	var team model.Team
+	err := t.WithContext(context.Background()).
+		Select(t.ALL).
+		Where(t.Name.Eq(name)).Scan(&team)
+	return team, err
+}
+
+// GetTeamByUsId retrieves a team from the database given it's Understat id
+func GetTeamByUsId(usId string) (model.Team, error) {
+	id, err := strconv.Atoi(usId)
+	if err != nil {
+		return model.Team{}, err
+	}
+	t := db_query.Team
+	var team model.Team
+	err = t.WithContext(context.Background()).
+		Select(t.ALL).
+		Where(t.UsID.Eq(int32(id))).Scan(&team)
 	return team, err
 }
 

@@ -3,8 +3,8 @@ package bet_selector
 import (
 	results "github.com/jxm35/go-results"
 
+	"sports-book.com/pkg/db"
 	"sports-book.com/pkg/domain"
-	"sports-book.com/pkg/entity"
 	"sports-book.com/pkg/notify"
 )
 
@@ -37,7 +37,7 @@ func NewKellyCriterionBetSelector(minOddsDelta, maxOddsDelta, maxPercentBet floa
 }
 
 func (k *kellyCriterionBetSelector) Place1x2Bets(matchId int32, generatedOdds domain.MatchProbability, currentPot float64) results.Option[domain.BetOrder] {
-	odds := entity.GetBestOddsForMatch(matchId)
+	odds := db.GetBestOddsForMatch(matchId)
 	bookieImpliedOdds := domain.MatchProbability{
 		HomeWin: 1 / odds.HomeWin,
 		Draw:    1 / odds.Draw,

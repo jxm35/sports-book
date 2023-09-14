@@ -1,13 +1,52 @@
-package entity
+package db
 
 import (
 	"context"
+	"strconv"
 	"time"
 
 	model "sports-book.com/pkg/db_model"
 	"sports-book.com/pkg/db_query"
 	"sports-book.com/pkg/domain"
 )
+
+func CreateFixture(ctx context.Context, fixture domain.Fixture, competition int32) (model.Match, error) {
+	var res model.Match
+	date := time.Now()
+	homeTeam, err := GetTeamByUsId(fixture.HomeTeam.UsId)
+	if err != nil {
+		return res, err
+	}
+	awayTeam, err := GetTeamByUsId(fixture.AwayTeam.UsId)
+	if err != nil {
+		return res, err
+	}
+	usId, err := strconv.Atoi(fixture.Id)
+	if err != nil {
+		return res, err
+	}
+	fix := model.Match{
+		Date:              date,
+		HomeTeam:          homeTeam.ID,
+		AwayTeam:          awayTeam.ID,
+		Competition:       competition,
+		HomeGoals:         -1,
+		AwayGoals:         -1,
+		HomeExpectedGoals: -1,
+		AwayExpectedGoals: -1,
+		UsID:              int32(usId),
+	}
+	m := db_query.Match
+	err = m.WithContext(ctx).Create(&fix)
+	if err != nil {
+		return res, err
+	}
+	err = m.WithContext(ctx).
+		Select(m.ID).
+		Where(m.HomeTeam.Eq(fix.HomeTeam),
+			m.AwayTeam.Eq(fix.AwayTeam)).Scan(&res)
+	return res, err
+}
 
 // ListFixtures returns all the fixtures stored in the database for the given league for the league starting in the given year.
 func ListFixtures(seasonYear int32, league domain.League) ([]model.Match, error) {

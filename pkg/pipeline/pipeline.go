@@ -8,8 +8,8 @@ import (
 	results "github.com/jxm35/go-results"
 
 	"sports-book.com/pkg/bet_selector"
+	"sports-book.com/pkg/db"
 	"sports-book.com/pkg/domain"
-	"sports-book.com/pkg/entity"
 	"sports-book.com/pkg/probability_generator"
 	"sports-book.com/pkg/score_predictor"
 )
@@ -22,15 +22,15 @@ type pipelineImpl struct {
 	betPlacer            bet_selector.BetSelector
 }
 
-func (p *pipelineImpl) PredictMatch(homeTeam, awayTeam, season int32, league domain.League, date time.Time, matchID int32) (domain.MatchProbability, domain.OddsDelta, error) {
-	homeGoalsPredicted, awayGoalsPredicted, err := p.predictor.PredictScore(homeTeam, awayTeam, season, league, date, matchID)
+func (p *pipelineImpl) PredictMatch(homeTeam, awayTeam, seasonYear int32, league domain.League, date time.Time, matchID int32) (domain.MatchProbability, domain.OddsDelta, error) {
+	homeGoalsPredicted, awayGoalsPredicted, err := p.predictor.PredictScore(homeTeam, awayTeam, seasonYear, league, date, matchID)
 	if err != nil {
 		return domain.MatchProbability{}, domain.OddsDelta{}, err
 	}
 	matchProbabilities := p.probabilityGenerator.Generate1x2Probabilities(homeGoalsPredicted, awayGoalsPredicted, league)
 	fmt.Printf("my probabilities: %+v\n", matchProbabilities)
 
-	bestOdds := entity.GetBestOdds(homeTeam, awayTeam, season)
+	bestOdds := db.GetBestOdds(homeTeam, awayTeam, seasonYear)
 	fmt.Printf("best odds:%+v\n", bestOdds)
 
 	impliedOdds := domain.MatchProbability{

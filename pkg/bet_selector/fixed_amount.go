@@ -5,8 +5,8 @@ import (
 
 	results "github.com/jxm35/go-results"
 
+	"sports-book.com/pkg/db"
 	"sports-book.com/pkg/domain"
-	"sports-book.com/pkg/entity"
 )
 
 var ErrInvalidConfig = errors.New("invalid bet placer config provided")
@@ -37,7 +37,7 @@ func (f *fixedAmountBetSelector) Place1x2Bets(matchId int32, generatedOdds domai
 		return results.None[domain.BetOrder]()
 	}
 
-	odds := entity.GetBestOddsForMatch(matchId)
+	odds := db.GetBestOddsForMatch(matchId)
 	bookieImpliedOdds := domain.MatchProbability{
 		HomeWin: 1 / odds.HomeWin,
 		Draw:    1 / odds.Draw,

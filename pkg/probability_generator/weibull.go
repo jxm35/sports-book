@@ -10,9 +10,9 @@ import (
 	"gonum.org/v1/gonum/mat"
 	"gonum.org/v1/gonum/optimize"
 
+	"sports-book.com/pkg/db"
 	"sports-book.com/pkg/db_model"
 	"sports-book.com/pkg/domain"
-	"sports-book.com/pkg/entity"
 	"sports-book.com/pkg/score_predictor"
 )
 
@@ -57,7 +57,7 @@ func FindWeibullShapes() {
 	cache = make(map[alphaArgs]float64)
 	matches := make([]db_model.Match, 0)
 	for i := 2017; i <= 2022; i++ {
-		yearMatches, err := entity.ListFixtures(int32(i), league)
+		yearMatches, err := db.ListFixtures(int32(i), league)
 		if err != nil {
 			panic(err)
 		}

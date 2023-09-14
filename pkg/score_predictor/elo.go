@@ -4,9 +4,9 @@ import (
 	"fmt"
 	"time"
 
+	"sports-book.com/pkg/db"
 	"sports-book.com/pkg/db_model"
 	"sports-book.com/pkg/domain"
-	"sports-book.com/pkg/entity"
 )
 
 type eloGoalsPredictor struct {
@@ -24,7 +24,7 @@ func NewEloGoalsPredictor(formTimespan, chanceConversionRating int) ScorePredict
 }
 
 func (e *eloGoalsPredictor) PredictScore(homeTeam, awayTeam, season int32, league domain.League, date time.Time, matchID int32) (float64, float64, error) {
-	seasonStats, err := entity.GetSeasonDetails(season-1, league)
+	seasonStats, err := db.GetSeasonDetails(season-1, league)
 	if err != nil {
 		return -1, -1, err
 	}
@@ -48,7 +48,7 @@ func (e *eloGoalsPredictor) PredictScore(homeTeam, awayTeam, season int32, leagu
 	avgAwayGoalsConceded := avgHomeXg
 
 	// calculate home team's strengths
-	homeSeason, err := entity.GetTeamSeasonDetails(season-1, homeTeam)
+	homeSeason, err := db.GetTeamSeasonDetails(season-1, homeTeam)
 	if err != nil {
 		return -1, -1, err
 	}
@@ -59,7 +59,7 @@ func (e *eloGoalsPredictor) PredictScore(homeTeam, awayTeam, season int32, leagu
 		return -1, -1, ErrInvalidSeason
 	}
 
-	lastGames, _ := entity.GetHomeLastXMatches(homeTeam, season, date, e.FormTimespan)
+	lastGames, _ := db.GetHomeLastXMatches(homeTeam, season, date, e.FormTimespan)
 	aForm, dForm := e.calcFormHome(homeTeam, lastGames)
 	homeChanceConversion := e.calcGoalConversion(homeSeason, homeSeason.HomeCount+homeSeason.AwayCount)
 
@@ -74,7 +74,7 @@ func (e *eloGoalsPredictor) PredictScore(homeTeam, awayTeam, season int32, leagu
 	homeDefenseStrength := homeAvgxGConceded / avgHomeGoalsConceded
 
 	// calculate away team's strengths
-	awaySeason, err := entity.GetTeamSeasonDetails(season-1, awayTeam)
+	awaySeason, err := db.GetTeamSeasonDetails(season-1, awayTeam)
 	if err != nil {
 		return -1, -1, err
 	}
@@ -85,7 +85,7 @@ func (e *eloGoalsPredictor) PredictScore(homeTeam, awayTeam, season int32, leagu
 		return -1, -1, ErrInvalidSeason
 	}
 
-	lastGames, _ = entity.GetAwayLastXMatches(awayTeam, season, date, e.FormTimespan)
+	lastGames, _ = db.GetAwayLastXMatches(awayTeam, season, date, e.FormTimespan)
 	aForm, dForm = e.calcFormAway(awayTeam, lastGames)
 	awayChanceConversion := e.calcGoalConversion(awaySeason, awaySeason.HomeCount+awaySeason.AwayCount)
 

@@ -5,9 +5,9 @@ import (
 	"fmt"
 	"strconv"
 
+	"sports-book.com/pkg/db"
 	"sports-book.com/pkg/db_model"
 	"sports-book.com/pkg/domain"
-	"sports-book.com/pkg/entity"
 	"sports-book.com/pkg/pipeline"
 	"sports-book.com/pkg/score_predictor"
 )
@@ -55,7 +55,7 @@ func testPredictSeason(pipeline pipeline.Pipeline, season int32, league domain.L
 	probabilitiesForCalibration := make(map[db_model.Match]domain.MatchProbability)
 	betsPlaced := make([]betResult, 0)
 
-	matches, err := entity.ListFixtures(season, league)
+	matches, err := db.ListFixtures(season, league)
 	if err != nil {
 		return nil, 1, nil, err
 	}

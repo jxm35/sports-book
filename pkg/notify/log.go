@@ -4,22 +4,22 @@ import (
 	"fmt"
 	"log"
 
+	"sports-book.com/pkg/db"
 	"sports-book.com/pkg/domain"
-	"sports-book.com/pkg/entity"
 )
 
 type logNotifier struct{}
 
 func (l *logNotifier) NotifyBetPlaced(bet domain.BetOrder) error {
-	match, err := entity.GetMatch(bet.MatchId)
+	match, err := db.GetMatch(bet.MatchId)
 	if err != nil {
 		return err
 	}
-	homeTeam, err := entity.GetTeam(match.HomeTeam)
+	homeTeam, err := db.GetTeam(match.HomeTeam)
 	if err != nil {
 		return err
 	}
-	awayTeam, err := entity.GetTeam(match.AwayTeam)
+	awayTeam, err := db.GetTeam(match.AwayTeam)
 	if err != nil {
 		return err
 	}

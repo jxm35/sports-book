@@ -5,8 +5,8 @@ import (
 	"math"
 	"time"
 
+	"sports-book.com/pkg/db"
 	"sports-book.com/pkg/domain"
-	"sports-book.com/pkg/entity"
 )
 
 type ExponentialXgGoalPredictor struct {
@@ -94,7 +94,7 @@ func (e *ExponentialXgGoalPredictor) PredictScore(homeTeam, awayTeam, season int
 	}
 
 	// calculate standard for the year before
-	seasonStats, err := entity.GetSeasonDetails(season-1, league)
+	seasonStats, err := db.GetSeasonDetails(season-1, league)
 	if err != nil {
 		return -1, -1, err
 	}
@@ -107,7 +107,7 @@ func (e *ExponentialXgGoalPredictor) PredictScore(homeTeam, awayTeam, season int
 	avgAwayGoalsConceded := avgHomeXg
 
 	// calculate home team's strengths
-	homeMatches, err := entity.GetTeamHomeMatchesSince(homeTeam, time.Now().AddDate(-3, 0, 0))
+	homeMatches, err := db.GetTeamHomeMatchesSince(homeTeam, time.Now().AddDate(-3, 0, 0))
 	if err != nil {
 		return -1, -1, err
 	}
@@ -126,7 +126,7 @@ func (e *ExponentialXgGoalPredictor) PredictScore(homeTeam, awayTeam, season int
 	homeWeightedxGConceded := sumConcededAtHome / sumWeightsHome
 
 	// calculate away team's strengths
-	awayMatches, err := entity.GetTeamAwayMatchesSince(awayTeam, time.Now().AddDate(-3, 0, 0))
+	awayMatches, err := db.GetTeamAwayMatchesSince(awayTeam, time.Now().AddDate(-3, 0, 0))
 	if err != nil {
 		return -1, -1, err
 	}

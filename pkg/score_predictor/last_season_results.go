@@ -5,8 +5,8 @@ import (
 	"fmt"
 	"time"
 
+	"sports-book.com/pkg/db"
 	"sports-book.com/pkg/domain"
-	"sports-book.com/pkg/entity"
 )
 
 var (
@@ -18,7 +18,7 @@ type LastSeasonResultScorePredictor struct{}
 
 func (l *LastSeasonResultScorePredictor) PredictScore(homeTeam, awayTeam, season int32, league domain.League, date time.Time, matchID int32) (float64, float64, error) {
 	// calculate standard for the year before
-	seasonStats, err := entity.GetSeasonDetails(season-1, league)
+	seasonStats, err := db.GetSeasonDetails(season-1, league)
 	if err != nil {
 		return -1, -1, err
 	}
@@ -31,7 +31,7 @@ func (l *LastSeasonResultScorePredictor) PredictScore(homeTeam, awayTeam, season
 	avgAwayGoalsConceded := avgHomeGoals
 
 	// calculate home team's strengths
-	homeSeason, err := entity.GetTeamSeasonDetails(season-1, homeTeam)
+	homeSeason, err := db.GetTeamSeasonDetails(season-1, homeTeam)
 	if err != nil {
 		return -1, -1, err
 	}
@@ -45,7 +45,7 @@ func (l *LastSeasonResultScorePredictor) PredictScore(homeTeam, awayTeam, season
 	homeDefenseStrength := (float64(homeSeason.GoalsConcededAtHome) / float64(homeSeason.AwayCount)) / avgHomeGoalsConceded
 
 	// calculate away team's strengths
-	awaySeason, err := entity.GetTeamSeasonDetails(season-1, awayTeam)
+	awaySeason, err := db.GetTeamSeasonDetails(season-1, awayTeam)
 	if err != nil {
 		return -1, -1, err
 	}
