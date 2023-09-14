@@ -69,6 +69,15 @@ async def getResults(conn, teamDict, year, yearId):
             saveMatch(conn=conn, date=dateString, home_team=homeTeam, away_team=awayTeam, home_goals=homeGoals,
                       away_goals=awayGoals, home_expected_goals=homeXg, away_expected_goals=awayXg, us_id=id, yearId=yearId)
 
+async def getFixtures(conn):
+    async with aiohttp.ClientSession() as session:
+        understat = Understat(session)
+        results = await understat.get_league_fixtures(
+            "epl",
+            2023,
+        )
+        print(results)
+
 
 async def getTeams(conn, year):
     async with aiohttp.ClientSession() as session:
@@ -199,29 +208,32 @@ def loadMatchTeams(conn):
 if __name__ == "__main__":
     print("started")
     conn = getConnection()
-    print("db connection made")
-    year = 2022
-    yearId = 37
-
     loop = asyncio.new_event_loop()
     asyncio.set_event_loop(loop)
-
-    loop.run_until_complete(getTeams(conn, year))
-    print("teams retrieved")
-
-    loop.run_until_complete(getPlayersInTeam(conn, year))
-    print("players retrieved")
-
-    teamsDict = loadTeamsMap(conn)
-    loop.run_until_complete(getResults(conn, teamsDict, year, yearId))
-    print("results retrieved")
-
-    matchesDict = loadMatches(conn, yearId)
-    playersDict = loadPlayers(conn)
-    matchTeamsDict = loadMatchTeams(conn)
-    print("loaded matches, players, and lineups")
-    loop.run_until_complete(getPlayersInMatch(conn, matchTeamsDict, matchesDict, playersDict, 'h'))
-    print("home appearances complete")
-    loop.run_until_complete(getPlayersInMatch(conn, matchTeamsDict, matchesDict, playersDict, 'a'))
-    print("away appearances complete")
-    print("finished season")
+    loop.run_until_complete(getFixtures(conn))
+    # print("db connection made")
+    # year = 2022
+    # yearId = 37
+    #
+    # loop = asyncio.new_event_loop()
+    # asyncio.set_event_loop(loop)
+    #
+    # loop.run_until_complete(getTeams(conn, year))
+    # print("teams retrieved")
+    #
+    # loop.run_until_complete(getPlayersInTeam(conn, year))
+    # print("players retrieved")
+    #
+    # teamsDict = loadTeamsMap(conn)
+    # loop.run_until_complete(getResults(conn, teamsDict, year, yearId))
+    # print("results retrieved")
+    #
+    # matchesDict = loadMatches(conn, yearId)
+    # playersDict = loadPlayers(conn)
+    # matchTeamsDict = loadMatchTeams(conn)
+    # print("loaded matches, players, and lineups")
+    # loop.run_until_complete(getPlayersInMatch(conn, matchTeamsDict, matchesDict, playersDict, 'h'))
+    # print("home appearances complete")
+    # loop.run_until_complete(getPlayersInMatch(conn, matchTeamsDict, matchesDict, playersDict, 'a'))
+    # print("away appearances complete")
+    # print("finished season")

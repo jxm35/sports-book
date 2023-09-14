@@ -56,11 +56,12 @@ type MatchProbability struct {
 }
 
 type BetOrder struct {
-	MatchId   int32
-	Backing   BackingType
-	BookMaker string
-	OddsTaken float64
-	Amount    float64
+	MatchId              int32
+	Backing              BackingType
+	BookMaker            string
+	OddsTaken            float64
+	Amount               float64
+	PredictedProbability float64
 }
 
 type OddsDelta struct {

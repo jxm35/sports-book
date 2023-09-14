@@ -5,55 +5,18 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="c12b77f7-ff21-404b-9dea-32d9f800b7fe" name="Changes" comment="">
-      <change afterPath="$PROJECT_DIR$/pkg/domain/structs.go" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/pkg/entity/db.go" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/pkg/entity/helpers.go" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/pkg/entity/matches.go" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/pkg/entity/odds.go" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/pkg/entity/teams.go" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/pkg/pipeline/pipeline.go" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/pkg/score_predictor/interface.go" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/.deprecated/save-stats/lookup.go" beforeDir="false" afterPath="$PROJECT_DIR$/.deprecated/save-stats/lookup.go" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/.deprecated/save-stats/save_to_db.go" beforeDir="false" afterPath="$PROJECT_DIR$/.deprecated/save-stats/save_to_db.go" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/sqldialects.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/sqldialects.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.gitignore" beforeDir="false" afterPath="$PROJECT_DIR$/.gitignore" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/dataSources.local.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/dataSources.local.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/cmd/backtest/backtest.go" beforeDir="false" afterPath="$PROJECT_DIR$/cmd/backtest/backtest.go" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/internal/backtest/calibrate.go" beforeDir="false" afterPath="$PROJECT_DIR$/internal/backtest/calibrate.go" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/internal/backtest/distribution.go" beforeDir="false" afterPath="$PROJECT_DIR$/internal/backtest/distribution.go" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/internal/backtest/run_backtests.go" beforeDir="false" afterPath="$PROJECT_DIR$/internal/backtest/run_backtests.go" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/pkg/model/appearance.gen.go" beforeDir="false" afterPath="$PROJECT_DIR$/pkg/db_model/appearance.gen.go" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/pkg/model/competition.gen.go" beforeDir="false" afterPath="$PROJECT_DIR$/pkg/db_model/competition.gen.go" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/pkg/model/match.gen.go" beforeDir="false" afterPath="$PROJECT_DIR$/pkg/db_model/match.gen.go" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/pkg/model/odds_1x2.gen.go" beforeDir="false" afterPath="$PROJECT_DIR$/pkg/db_model/odds_1x2.gen.go" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/pkg/model/player.gen.go" beforeDir="false" afterPath="$PROJECT_DIR$/pkg/db_model/player.gen.go" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/pkg/model/team.gen.go" beforeDir="false" afterPath="$PROJECT_DIR$/pkg/db_model/team.gen.go" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/pkg/predict/bet.go" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/pkg/predict/bet_placer/fixed_amount.go" beforeDir="false" afterPath="$PROJECT_DIR$/pkg/bet_selector/fixed_amount.go" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/pkg/predict/bet_placer/interface.go" beforeDir="false" afterPath="$PROJECT_DIR$/pkg/bet_selector/interface.go" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/pkg/predict/bet_placer/kelly_criterion.go" beforeDir="false" afterPath="$PROJECT_DIR$/pkg/bet_selector/kelly_criterion.go" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/pkg/predict/domain/structs.go" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/pkg/predict/goals_predictor/elo.go" beforeDir="false" afterPath="$PROJECT_DIR$/pkg/score_predictor/elo.go" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/pkg/predict/goals_predictor/exponential_xg.go" beforeDir="false" afterPath="$PROJECT_DIR$/pkg/score_predictor/exponential_xg.go" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/pkg/predict/goals_predictor/interface.go" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/pkg/predict/goals_predictor/last_season_results.go" beforeDir="false" afterPath="$PROJECT_DIR$/pkg/score_predictor/last_season_results.go" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/pkg/predict/goals_predictor/last_season_xg.go" beforeDir="false" afterPath="$PROJECT_DIR$/pkg/score_predictor/last_season_xg.go" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/pkg/predict/interface.go" beforeDir="false" afterPath="$PROJECT_DIR$/pkg/pipeline/interface.go" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/pkg/predict/odds.go" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/pkg/predict/pipeline.go" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/pkg/predict/pipeline_builder.go" beforeDir="false" afterPath="$PROJECT_DIR$/pkg/pipeline/pipeline_builder.go" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/pkg/predict/probability_generator/frank_copula.go" beforeDir="false" afterPath="$PROJECT_DIR$/pkg/probability_generator/frank_copula.go" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/pkg/predict/probability_generator/interface.go" beforeDir="false" afterPath="$PROJECT_DIR$/pkg/probability_generator/interface.go" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/pkg/predict/probability_generator/poisson.go" beforeDir="false" afterPath="$PROJECT_DIR$/pkg/probability_generator/poisson.go" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/pkg/predict/probability_generator/weibull.go" beforeDir="false" afterPath="$PROJECT_DIR$/pkg/probability_generator/weibull.go" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/pkg/query/appearance.gen.go" beforeDir="false" afterPath="$PROJECT_DIR$/pkg/db_query/appearance.gen.go" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/pkg/query/competition.gen.go" beforeDir="false" afterPath="$PROJECT_DIR$/pkg/db_query/competition.gen.go" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/pkg/query/gen.go" beforeDir="false" afterPath="$PROJECT_DIR$/pkg/db_query/gen.go" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/pkg/query/match.gen.go" beforeDir="false" afterPath="$PROJECT_DIR$/pkg/db_query/match.gen.go" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/pkg/query/odds_1x2.gen.go" beforeDir="false" afterPath="$PROJECT_DIR$/pkg/db_query/odds_1x2.gen.go" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/pkg/query/player.gen.go" beforeDir="false" afterPath="$PROJECT_DIR$/pkg/db_query/player.gen.go" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/pkg/query/team.gen.go" beforeDir="false" afterPath="$PROJECT_DIR$/pkg/db_query/team.gen.go" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/pkg/util/misc.go" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/tools/get_historic_odds.go" beforeDir="false" afterPath="$PROJECT_DIR$/tools/get_historic_odds.go" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/go.mod" beforeDir="false" afterPath="$PROJECT_DIR$/go.mod" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/go.sum" beforeDir="false" afterPath="$PROJECT_DIR$/go.sum" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/pkg/bet_selector/fixed_amount.go" beforeDir="false" afterPath="$PROJECT_DIR$/pkg/bet_selector/fixed_amount.go" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/pkg/bet_selector/kelly_criterion.go" beforeDir="false" afterPath="$PROJECT_DIR$/pkg/bet_selector/kelly_criterion.go" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/pkg/domain/structs.go" beforeDir="false" afterPath="$PROJECT_DIR$/pkg/domain/structs.go" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/pkg/entity/matches.go" beforeDir="false" afterPath="$PROJECT_DIR$/pkg/entity/matches.go" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/pkg/entity/teams.go" beforeDir="false" afterPath="$PROJECT_DIR$/pkg/entity/teams.go" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/python/scrape_understat/main.py" beforeDir="false" afterPath="$PROJECT_DIR$/python/scrape_understat/main.py" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -80,32 +43,32 @@
     <option name="hideEmptyMiddlePackages" value="true" />
     <option name="showLibraryContents" value="true" />
   </component>
-  <component name="PropertiesComponent"><![CDATA[{
-  "keyToString": {
-    "DefaultGoTemplateProperty": "Go File",
-    "RunOnceActivity.OpenProjectViewOnStart": "true",
-    "RunOnceActivity.ShowReadmeOnStart": "true",
-    "RunOnceActivity.go.formatter.settings.were.checked": "true",
-    "RunOnceActivity.go.migrated.go.modules.settings": "true",
-    "RunOnceActivity.go.modules.go.list.on.any.changes.was.set": "true",
-    "SHARE_PROJECT_CONFIGURATION_FILES": "true",
-    "WebServerToolWindowFactoryState": "false",
-    "go.import.settings.migrated": "true",
-    "go.sdk.automatically.set": "true",
-    "last_opened_file_path": "/Users/james/Documents/sideProjects/sports-book",
-    "node.js.detected.package.eslint": "true",
-    "node.js.detected.package.tslint": "true",
-    "node.js.selected.package.eslint": "(autodetect)",
-    "node.js.selected.package.tslint": "(autodetect)",
-    "settings.editor.selected.configurable": "watcher.settings",
-    "vue.rearranger.settings.migration": "true"
+  <component name="PropertiesComponent">{
+  &quot;keyToString&quot;: {
+    &quot;DefaultGoTemplateProperty&quot;: &quot;Go File&quot;,
+    &quot;RunOnceActivity.OpenProjectViewOnStart&quot;: &quot;true&quot;,
+    &quot;RunOnceActivity.ShowReadmeOnStart&quot;: &quot;true&quot;,
+    &quot;RunOnceActivity.go.formatter.settings.were.checked&quot;: &quot;true&quot;,
+    &quot;RunOnceActivity.go.migrated.go.modules.settings&quot;: &quot;true&quot;,
+    &quot;RunOnceActivity.go.modules.go.list.on.any.changes.was.set&quot;: &quot;true&quot;,
+    &quot;SHARE_PROJECT_CONFIGURATION_FILES&quot;: &quot;true&quot;,
+    &quot;WebServerToolWindowFactoryState&quot;: &quot;false&quot;,
+    &quot;go.import.settings.migrated&quot;: &quot;true&quot;,
+    &quot;go.sdk.automatically.set&quot;: &quot;true&quot;,
+    &quot;last_opened_file_path&quot;: &quot;/Users/james/Documents/sideProjects/sports-book&quot;,
+    &quot;node.js.detected.package.eslint&quot;: &quot;true&quot;,
+    &quot;node.js.detected.package.tslint&quot;: &quot;true&quot;,
+    &quot;node.js.selected.package.eslint&quot;: &quot;(autodetect)&quot;,
+    &quot;node.js.selected.package.tslint&quot;: &quot;(autodetect)&quot;,
+    &quot;settings.editor.selected.configurable&quot;: &quot;watcher.settings&quot;,
+    &quot;vue.rearranger.settings.migration&quot;: &quot;true&quot;
   },
-  "keyToStringList": {
-    "DatabaseDriversLRU": [
-      "mysql"
+  &quot;keyToStringList&quot;: {
+    &quot;DatabaseDriversLRU&quot;: [
+      &quot;mysql&quot;
     ]
   }
-}]]></component>
+}</component>
   <component name="RecentsManager">
     <key name="MoveFile.RECENT_KEYS">
       <recent name="$PROJECT_DIR$/pkg" />
@@ -135,6 +98,9 @@
     <configuration name="go build sports-book.com/cmd/backtest" type="GoApplicationRunConfiguration" factoryName="Go Application" temporary="true" nameIsGenerated="true">
       <module name="sports-book" />
       <working_directory value="$PROJECT_DIR$" />
+      <envs>
+        <env name="DISCORD_WEBHOOK_URL" value="https://discordapp.com/api/webhooks/1151587748319350835/afvwuMzlWHLwqI4-WJEy-9BMOh60oTP1CVM2YqSEy7_MDPR7tCqOSAir9Yfj8qUmvPa3" />
+      </envs>
       <kind value="PACKAGE" />
       <package value="sports-book.com/cmd/backtest" />
       <directory value="$PROJECT_DIR$" />
@@ -172,6 +138,28 @@
       <option name="INPUT_FILE" value="" />
       <method v="2" />
     </configuration>
+    <configuration name="main (2)" type="PythonConfigurationType" factoryName="Python" temporary="true" nameIsGenerated="true">
+      <module name="sports-book" />
+      <option name="INTERPRETER_OPTIONS" value="" />
+      <option name="PARENT_ENVS" value="true" />
+      <envs>
+        <env name="PYTHONUNBUFFERED" value="1" />
+      </envs>
+      <option name="SDK_HOME" value="" />
+      <option name="WORKING_DIRECTORY" value="$PROJECT_DIR$/python/scrape_understat" />
+      <option name="IS_MODULE_SDK" value="true" />
+      <option name="ADD_CONTENT_ROOTS" value="true" />
+      <option name="ADD_SOURCE_ROOTS" value="true" />
+      <EXTENSION ID="PythonCoverageRunConfigurationExtension" runner="coverage.py" />
+      <option name="SCRIPT_NAME" value="$PROJECT_DIR$/python/scrape_understat/main.py" />
+      <option name="PARAMETERS" value="" />
+      <option name="SHOW_COMMAND_LINE" value="false" />
+      <option name="EMULATE_TERMINAL" value="false" />
+      <option name="MODULE_MODE" value="false" />
+      <option name="REDIRECT_INPUT" value="false" />
+      <option name="INPUT_FILE" value="" />
+      <method v="2" />
+    </configuration>
     <configuration name="main" type="PythonConfigurationType" factoryName="Python" temporary="true" nameIsGenerated="true">
       <module name="sports-book" />
       <option name="INTERPRETER_OPTIONS" value="" />
@@ -194,10 +182,16 @@
       <option name="INPUT_FILE" value="" />
       <method v="2" />
     </configuration>
+    <list>
+      <item itemvalue="Go Build.go build main.go" />
+      <item itemvalue="Go Build.go build sports-book.com/cmd/backtest" />
+      <item itemvalue="Python.main (2)" />
+      <item itemvalue="Python.main" />
+      <item itemvalue="Python.main (1)" />
+    </list>
     <recent_temporary>
       <list>
-        <item itemvalue="Go Build.go build sports-book.com/cmd/backtest" />
-        <item itemvalue="Go Build.go build main.go" />
+        <item itemvalue="Python.main (2)" />
         <item itemvalue="Python.main (1)" />
         <item itemvalue="Python.main" />
       </list>
@@ -217,6 +211,7 @@
       <workItem from="1688759338978" duration="1740000" />
       <workItem from="1693167569062" duration="19000" />
       <workItem from="1693393040612" duration="9054000" />
+      <workItem from="1694636359145" duration="411000" />
     </task>
     <servers />
   </component>
@@ -229,20 +224,10 @@
   <component name="XDebuggerManager">
     <breakpoint-manager>
       <breakpoints>
-        <line-breakpoint enabled="true" type="DlvLineBreakpoint">
-          <url>file://$PROJECT_DIR$/pkg/score_predictor/last_season_xg.go</url>
-          <line>48</line>
-          <option name="timeStamp" value="7" />
-        </line-breakpoint>
-        <line-breakpoint enabled="true" type="DlvLineBreakpoint">
-          <url>file://$PROJECT_DIR$/internal/backtest/run_backtests.go</url>
-          <line>36</line>
-          <option name="timeStamp" value="18" />
-        </line-breakpoint>
-        <line-breakpoint enabled="true" type="DlvLineBreakpoint">
-          <url>file://$PROJECT_DIR$/internal/backtest/run_backtests.go</url>
-          <line>25</line>
-          <option name="timeStamp" value="33" />
+        <line-breakpoint enabled="true" suspend="THREAD" type="python-line">
+          <url>file://$PROJECT_DIR$/python/scrape_understat/main.py</url>
+          <line>78</line>
+          <option name="timeStamp" value="36" />
         </line-breakpoint>
       </breakpoints>
     </breakpoint-manager>

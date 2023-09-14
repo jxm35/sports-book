@@ -1,6 +1,9 @@
 data/oddsFiles
 analysis
 data
+python/venv
+.idea
+python/.idea
 *.png
 .DS_Store
 

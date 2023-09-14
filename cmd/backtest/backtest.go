@@ -16,8 +16,8 @@ func main() {
 		SetPredictor(score_predictor.NewEloGoalsPredictor(5, 11)).
 		// SetPredictor(&goals_predictor.LastSeasonXgGoalPredictor{LastXGames: 0}).
 		SetProbabilityGenerator(&probability_generator.WeibullOddsGenerator{}).
-		// SetBetPlacer(bet_placer.NewKellyCriterionBetPlacer(0.1, 0.3, 0.05, true)).
-		SetBetPlacer(bet_selector.NewFixedAmountBetSelector(0.1, 0.3, 0.2)).
+		SetBetPlacer(bet_selector.NewKellyCriterionBetSelector(0.1, 0.3, 0.05, true)).
+		// SetBetPlacer(bet_selector.NewFixedAmountBetSelector(0.1, 0.3, 0.2)).
 		Build()
 	if err != nil {
 		panic(err)

@@ -45,29 +45,32 @@ func (f *fixedAmountBetSelector) Place1x2Bets(matchId int32, generatedOdds domai
 	}
 	if f.isWithinConstraints(generatedOdds.HomeWin, bookieImpliedOdds.HomeWin) {
 		return results.Some(domain.BetOrder{
-			MatchId:   matchId,
-			Backing:   domain.BackHomeWin,
-			BookMaker: odds.HomeBookie,
-			OddsTaken: odds.HomeWin,
-			Amount:    f.betAmount,
+			MatchId:              matchId,
+			Backing:              domain.BackHomeWin,
+			BookMaker:            odds.HomeBookie,
+			OddsTaken:            odds.HomeWin,
+			Amount:               f.betAmount,
+			PredictedProbability: generatedOdds.HomeWin,
 		})
 	}
 	if f.isWithinConstraints(generatedOdds.Draw, bookieImpliedOdds.Draw) {
 		return results.Some(domain.BetOrder{
-			MatchId:   matchId,
-			Backing:   domain.BackDraw,
-			BookMaker: odds.DrawBookie,
-			OddsTaken: odds.Draw,
-			Amount:    f.betAmount,
+			MatchId:              matchId,
+			Backing:              domain.BackDraw,
+			BookMaker:            odds.DrawBookie,
+			OddsTaken:            odds.Draw,
+			Amount:               f.betAmount,
+			PredictedProbability: generatedOdds.Draw,
 		})
 	}
 	if f.isWithinConstraints(generatedOdds.AwayWin, bookieImpliedOdds.AwayWin) {
 		return results.Some(domain.BetOrder{
-			MatchId:   matchId,
-			Backing:   domain.BackAwayWin,
-			BookMaker: odds.AwayBookie,
-			OddsTaken: odds.AwayWin,
-			Amount:    f.betAmount,
+			MatchId:              matchId,
+			Backing:              domain.BackAwayWin,
+			BookMaker:            odds.AwayBookie,
+			OddsTaken:            odds.AwayWin,
+			Amount:               f.betAmount,
+			PredictedProbability: generatedOdds.AwayWin,
 		})
 	}
 	return results.None[domain.BetOrder]()

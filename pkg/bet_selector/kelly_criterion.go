@@ -5,6 +5,7 @@ import (
 
 	"sports-book.com/pkg/domain"
 	"sports-book.com/pkg/entity"
+	"sports-book.com/pkg/notify"
 )
 
 type kellyCriterionBetSelector struct {
@@ -44,30 +45,35 @@ func (k *kellyCriterionBetSelector) Place1x2Bets(matchId int32, generatedOdds do
 	}
 	if k.isWithinConstraints(generatedOdds.HomeWin, bookieImpliedOdds.HomeWin) {
 		return results.Some(domain.BetOrder{
-			MatchId:   matchId,
-			Backing:   domain.BackHomeWin,
-			BookMaker: odds.HomeBookie,
-			OddsTaken: odds.HomeWin,
-			Amount:    k.amountFunc(k.maxPercentBet, kellyCriterion(generatedOdds.HomeWin, odds.HomeWin)) * currentPot,
+			MatchId:              matchId,
+			Backing:              domain.BackHomeWin,
+			BookMaker:            odds.HomeBookie,
+			OddsTaken:            odds.HomeWin,
+			Amount:               k.amountFunc(k.maxPercentBet, kellyCriterion(generatedOdds.HomeWin, odds.HomeWin)) * currentPot,
+			PredictedProbability: generatedOdds.HomeWin,
 		})
 	}
 	if k.isWithinConstraints(generatedOdds.Draw, bookieImpliedOdds.Draw) {
 		return results.Some(domain.BetOrder{
-			MatchId:   matchId,
-			Backing:   domain.BackDraw,
-			BookMaker: odds.DrawBookie,
-			OddsTaken: odds.Draw,
-			Amount:    k.amountFunc(k.maxPercentBet, kellyCriterion(generatedOdds.Draw, odds.Draw)) * currentPot,
+			MatchId:              matchId,
+			Backing:              domain.BackDraw,
+			BookMaker:            odds.DrawBookie,
+			OddsTaken:            odds.Draw,
+			Amount:               k.amountFunc(k.maxPercentBet, kellyCriterion(generatedOdds.Draw, odds.Draw)) * currentPot,
+			PredictedProbability: generatedOdds.Draw,
 		})
 	}
 	if k.isWithinConstraints(generatedOdds.AwayWin, bookieImpliedOdds.AwayWin) {
-		return results.Some(domain.BetOrder{
-			MatchId:   matchId,
-			Backing:   domain.BackAwayWin,
-			BookMaker: odds.AwayBookie,
-			OddsTaken: odds.AwayWin,
-			Amount:    k.amountFunc(k.maxPercentBet, kellyCriterion(generatedOdds.AwayWin, odds.AwayWin)) * currentPot,
-		})
+		bet := domain.BetOrder{
+			MatchId:              matchId,
+			Backing:              domain.BackAwayWin,
+			BookMaker:            odds.AwayBookie,
+			OddsTaken:            odds.AwayWin,
+			Amount:               k.amountFunc(k.maxPercentBet, kellyCriterion(generatedOdds.AwayWin, odds.AwayWin)) * currentPot,
+			PredictedProbability: generatedOdds.AwayWin,
+		}
+		notify.NotifyBetPlaced(bet)
+		return results.Some(bet)
 	}
 	return results.None[domain.BetOrder]()
 }
