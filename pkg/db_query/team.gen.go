@@ -10,19 +10,20 @@ import (
 	"gorm.io/gorm"
 	"gorm.io/gorm/clause"
 	"gorm.io/gorm/schema"
-	"sports-book.com/pkg/db_model"
 
 	"gorm.io/gen"
 	"gorm.io/gen/field"
 
 	"gorm.io/plugin/dbresolver"
+
+	model "sports-book.com/pkg/db_model"
 )
 
 func newTeam(db *gorm.DB, opts ...gen.DOOption) team {
 	_team := team{}
 
 	_team.teamDo.UseDB(db, opts...)
-	_team.teamDo.UseModel(&db_model.Team{})
+	_team.teamDo.UseModel(&model.Team{})
 
 	tableName := _team.teamDo.TableName()
 	_team.ALL = field.NewAsterisk(tableName)
@@ -124,17 +125,17 @@ type ITeamDo interface {
 	Count() (count int64, err error)
 	Scopes(funcs ...func(gen.Dao) gen.Dao) ITeamDo
 	Unscoped() ITeamDo
-	Create(values ...*db_model.Team) error
-	CreateInBatches(values []*db_model.Team, batchSize int) error
-	Save(values ...*db_model.Team) error
-	First() (*db_model.Team, error)
-	Take() (*db_model.Team, error)
-	Last() (*db_model.Team, error)
-	Find() ([]*db_model.Team, error)
-	FindInBatch(batchSize int, fc func(tx gen.Dao, batch int) error) (results []*db_model.Team, err error)
-	FindInBatches(result *[]*db_model.Team, batchSize int, fc func(tx gen.Dao, batch int) error) error
+	Create(values ...*model.Team) error
+	CreateInBatches(values []*model.Team, batchSize int) error
+	Save(values ...*model.Team) error
+	First() (*model.Team, error)
+	Take() (*model.Team, error)
+	Last() (*model.Team, error)
+	Find() ([]*model.Team, error)
+	FindInBatch(batchSize int, fc func(tx gen.Dao, batch int) error) (results []*model.Team, err error)
+	FindInBatches(result *[]*model.Team, batchSize int, fc func(tx gen.Dao, batch int) error) error
 	Pluck(column field.Expr, dest interface{}) error
-	Delete(...*db_model.Team) (info gen.ResultInfo, err error)
+	Delete(...*model.Team) (info gen.ResultInfo, err error)
 	Update(column field.Expr, value interface{}) (info gen.ResultInfo, err error)
 	UpdateSimple(columns ...field.AssignExpr) (info gen.ResultInfo, err error)
 	Updates(value interface{}) (info gen.ResultInfo, err error)
@@ -146,9 +147,9 @@ type ITeamDo interface {
 	Assign(attrs ...field.AssignExpr) ITeamDo
 	Joins(fields ...field.RelationField) ITeamDo
 	Preload(fields ...field.RelationField) ITeamDo
-	FirstOrInit() (*db_model.Team, error)
-	FirstOrCreate() (*db_model.Team, error)
-	FindByPage(offset int, limit int) (result []*db_model.Team, count int64, err error)
+	FirstOrInit() (*model.Team, error)
+	FirstOrCreate() (*model.Team, error)
+	FindByPage(offset int, limit int) (result []*model.Team, count int64, err error)
 	ScanByPage(result interface{}, offset int, limit int) (count int64, err error)
 	Scan(result interface{}) (err error)
 	Returning(value interface{}, columns ...string) ITeamDo
@@ -252,57 +253,57 @@ func (t teamDo) Unscoped() ITeamDo {
 	return t.withDO(t.DO.Unscoped())
 }
 
-func (t teamDo) Create(values ...*db_model.Team) error {
+func (t teamDo) Create(values ...*model.Team) error {
 	if len(values) == 0 {
 		return nil
 	}
 	return t.DO.Create(values)
 }
 
-func (t teamDo) CreateInBatches(values []*db_model.Team, batchSize int) error {
+func (t teamDo) CreateInBatches(values []*model.Team, batchSize int) error {
 	return t.DO.CreateInBatches(values, batchSize)
 }
 
 // Save : !!! underlying implementation is different with GORM
 // The method is equivalent to executing the statement: db.Clauses(clause.OnConflict{UpdateAll: true}).Create(values)
-func (t teamDo) Save(values ...*db_model.Team) error {
+func (t teamDo) Save(values ...*model.Team) error {
 	if len(values) == 0 {
 		return nil
 	}
 	return t.DO.Save(values)
 }
 
-func (t teamDo) First() (*db_model.Team, error) {
+func (t teamDo) First() (*model.Team, error) {
 	if result, err := t.DO.First(); err != nil {
 		return nil, err
 	} else {
-		return result.(*db_model.Team), nil
+		return result.(*model.Team), nil
 	}
 }
 
-func (t teamDo) Take() (*db_model.Team, error) {
+func (t teamDo) Take() (*model.Team, error) {
 	if result, err := t.DO.Take(); err != nil {
 		return nil, err
 	} else {
-		return result.(*db_model.Team), nil
+		return result.(*model.Team), nil
 	}
 }
 
-func (t teamDo) Last() (*db_model.Team, error) {
+func (t teamDo) Last() (*model.Team, error) {
 	if result, err := t.DO.Last(); err != nil {
 		return nil, err
 	} else {
-		return result.(*db_model.Team), nil
+		return result.(*model.Team), nil
 	}
 }
 
-func (t teamDo) Find() ([]*db_model.Team, error) {
+func (t teamDo) Find() ([]*model.Team, error) {
 	result, err := t.DO.Find()
-	return result.([]*db_model.Team), err
+	return result.([]*model.Team), err
 }
 
-func (t teamDo) FindInBatch(batchSize int, fc func(tx gen.Dao, batch int) error) (results []*db_model.Team, err error) {
-	buf := make([]*db_model.Team, 0, batchSize)
+func (t teamDo) FindInBatch(batchSize int, fc func(tx gen.Dao, batch int) error) (results []*model.Team, err error) {
+	buf := make([]*model.Team, 0, batchSize)
 	err = t.DO.FindInBatches(&buf, batchSize, func(tx gen.Dao, batch int) error {
 		defer func() { results = append(results, buf...) }()
 		return fc(tx, batch)
@@ -310,7 +311,7 @@ func (t teamDo) FindInBatch(batchSize int, fc func(tx gen.Dao, batch int) error)
 	return results, err
 }
 
-func (t teamDo) FindInBatches(result *[]*db_model.Team, batchSize int, fc func(tx gen.Dao, batch int) error) error {
+func (t teamDo) FindInBatches(result *[]*model.Team, batchSize int, fc func(tx gen.Dao, batch int) error) error {
 	return t.DO.FindInBatches(result, batchSize, fc)
 }
 
@@ -336,23 +337,23 @@ func (t teamDo) Preload(fields ...field.RelationField) ITeamDo {
 	return &t
 }
 
-func (t teamDo) FirstOrInit() (*db_model.Team, error) {
+func (t teamDo) FirstOrInit() (*model.Team, error) {
 	if result, err := t.DO.FirstOrInit(); err != nil {
 		return nil, err
 	} else {
-		return result.(*db_model.Team), nil
+		return result.(*model.Team), nil
 	}
 }
 
-func (t teamDo) FirstOrCreate() (*db_model.Team, error) {
+func (t teamDo) FirstOrCreate() (*model.Team, error) {
 	if result, err := t.DO.FirstOrCreate(); err != nil {
 		return nil, err
 	} else {
-		return result.(*db_model.Team), nil
+		return result.(*model.Team), nil
 	}
 }
 
-func (t teamDo) FindByPage(offset int, limit int) (result []*db_model.Team, count int64, err error) {
+func (t teamDo) FindByPage(offset int, limit int) (result []*model.Team, count int64, err error) {
 	result, err = t.Offset(offset).Limit(limit).Find()
 	if err != nil {
 		return
@@ -381,7 +382,7 @@ func (t teamDo) Scan(result interface{}) (err error) {
 	return t.DO.Scan(result)
 }
 
-func (t teamDo) Delete(models ...*db_model.Team) (result gen.ResultInfo, err error) {
+func (t teamDo) Delete(models ...*model.Team) (result gen.ResultInfo, err error) {
 	return t.DO.Delete(models)
 }
 

@@ -13,6 +13,7 @@ import (
 	"github.com/samber/lo"
 
 	"sports-book.com/pkg/db"
+	model "sports-book.com/pkg/db_model"
 	"sports-book.com/pkg/domain"
 	"sports-book.com/pkg/notify"
 )
@@ -22,21 +23,21 @@ type apiRetriever struct{}
 // oddsApiNames maps from the name in our database to the name as stored on oddsApi
 // todo: finish this
 var oddsApiNames = map[string]string{
-	"Everton":                 "sdf",
-	"Bournemouth":             "73",
+	"Everton":                 "Everton",
+	"Bournemouth":             "Bournemouth",
 	"Southampton":             "74",
 	"Leicester":               "75",
 	"Crystal Palace":          "Crystal Palace",
-	"Chelsea":                 "80",
+	"Chelsea":                 "Chelsea",
 	"West Ham":                "West Ham United",
 	"Tottenham":               "Tottenham Hotspur",
-	"Arsenal":                 "83",
+	"Arsenal":                 "Arsenal",
 	"Newcastle United":        "Newcastle United",
 	"Liverpool":               "Liverpool",
 	"Manchester City":         "Manchester City",
 	"Manchester United":       "Manchester United",
 	"Watford":                 "90",
-	"Burnley":                 "92",
+	"Burnley":                 "Burnley",
 	"Huddersfield":            "219",
 	"Brighton":                "Brighton and Hove Albion",
 	"Cardiff":                 "227",
@@ -48,7 +49,7 @@ var oddsApiNames = map[string]string{
 	"West Bromwich Albion":    "76",
 	"Leeds":                   "245",
 	"Brentford":               "Brentford",
-	"Nottingham Forest":       "249",
+	"Nottingham Forest":       "Nottingham Forest",
 	"Sunderland":              "77",
 	"Swansea":                 "84",
 	"Stoke":                   "85",
@@ -91,24 +92,43 @@ func (a *apiRetriever) GetBestOdds(ctx context.Context, matchId int32, league do
 	}
 
 	bestOdds = lo.Reduce(odds.Bookmakers, func(agg domain.BookmakerMatchOdds, bookmakerOdds domain.BookmakerOddsResponse, index int) domain.BookmakerMatchOdds {
+		var homeWin, draw, awayWin float64
 		for _, market := range bookmakerOdds.Markets {
 			if market.Key == "h2h" {
 				for _, outcome := range market.Outcomes {
 					if outcome.Name == odds.HomeTeam && outcome.Price > agg.HomeWin {
 						agg.HomeWin = outcome.Price
 						agg.HomeBookie = bookmakerOdds.Title
+						homeWin = outcome.Price
 					}
 					if outcome.Name == odds.AwayTeam && outcome.Price > agg.AwayWin {
 						agg.AwayWin = outcome.Price
 						agg.AwayBookie = bookmakerOdds.Title
+						awayWin = outcome.Price
 					}
 					if outcome.Name == "Draw" && outcome.Price > agg.Draw {
 						agg.Draw = outcome.Price
 						agg.DrawBookie = bookmakerOdds.Title
+						draw = outcome.Price
 					}
 				}
 			}
 		}
+		go func() {
+			bookmaker := bookmakerOdds.Title
+			err := db.SaveOdds(ctx, model.Odds1x2{
+				Bookmaker: bookmaker,
+				Match:     matchId,
+				HomeWin:   homeWin,
+				Draw:      draw,
+				AwayWin:   awayWin,
+			})
+			if err != nil {
+				notify.GetNotifier().NotifyError(
+					fmt.Sprintf("could not save odds: %s", err.Error()),
+				)
+			}
+		}()
 		return agg
 	}, bestOdds)
 

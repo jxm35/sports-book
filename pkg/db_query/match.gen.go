@@ -10,19 +10,20 @@ import (
 	"gorm.io/gorm"
 	"gorm.io/gorm/clause"
 	"gorm.io/gorm/schema"
-	"sports-book.com/pkg/db_model"
 
 	"gorm.io/gen"
 	"gorm.io/gen/field"
 
 	"gorm.io/plugin/dbresolver"
+
+	model "sports-book.com/pkg/db_model"
 )
 
 func newMatch(db *gorm.DB, opts ...gen.DOOption) match {
 	_match := match{}
 
 	_match.matchDo.UseDB(db, opts...)
-	_match.matchDo.UseModel(&db_model.Match{})
+	_match.matchDo.UseModel(&model.Match{})
 
 	tableName := _match.matchDo.TableName()
 	_match.ALL = field.NewAsterisk(tableName)
@@ -152,17 +153,17 @@ type IMatchDo interface {
 	Count() (count int64, err error)
 	Scopes(funcs ...func(gen.Dao) gen.Dao) IMatchDo
 	Unscoped() IMatchDo
-	Create(values ...*db_model.Match) error
-	CreateInBatches(values []*db_model.Match, batchSize int) error
-	Save(values ...*db_model.Match) error
-	First() (*db_model.Match, error)
-	Take() (*db_model.Match, error)
-	Last() (*db_model.Match, error)
-	Find() ([]*db_model.Match, error)
-	FindInBatch(batchSize int, fc func(tx gen.Dao, batch int) error) (results []*db_model.Match, err error)
-	FindInBatches(result *[]*db_model.Match, batchSize int, fc func(tx gen.Dao, batch int) error) error
+	Create(values ...*model.Match) error
+	CreateInBatches(values []*model.Match, batchSize int) error
+	Save(values ...*model.Match) error
+	First() (*model.Match, error)
+	Take() (*model.Match, error)
+	Last() (*model.Match, error)
+	Find() ([]*model.Match, error)
+	FindInBatch(batchSize int, fc func(tx gen.Dao, batch int) error) (results []*model.Match, err error)
+	FindInBatches(result *[]*model.Match, batchSize int, fc func(tx gen.Dao, batch int) error) error
 	Pluck(column field.Expr, dest interface{}) error
-	Delete(...*db_model.Match) (info gen.ResultInfo, err error)
+	Delete(...*model.Match) (info gen.ResultInfo, err error)
 	Update(column field.Expr, value interface{}) (info gen.ResultInfo, err error)
 	UpdateSimple(columns ...field.AssignExpr) (info gen.ResultInfo, err error)
 	Updates(value interface{}) (info gen.ResultInfo, err error)
@@ -174,9 +175,9 @@ type IMatchDo interface {
 	Assign(attrs ...field.AssignExpr) IMatchDo
 	Joins(fields ...field.RelationField) IMatchDo
 	Preload(fields ...field.RelationField) IMatchDo
-	FirstOrInit() (*db_model.Match, error)
-	FirstOrCreate() (*db_model.Match, error)
-	FindByPage(offset int, limit int) (result []*db_model.Match, count int64, err error)
+	FirstOrInit() (*model.Match, error)
+	FirstOrCreate() (*model.Match, error)
+	FindByPage(offset int, limit int) (result []*model.Match, count int64, err error)
 	ScanByPage(result interface{}, offset int, limit int) (count int64, err error)
 	Scan(result interface{}) (err error)
 	Returning(value interface{}, columns ...string) IMatchDo
@@ -280,57 +281,57 @@ func (m matchDo) Unscoped() IMatchDo {
 	return m.withDO(m.DO.Unscoped())
 }
 
-func (m matchDo) Create(values ...*db_model.Match) error {
+func (m matchDo) Create(values ...*model.Match) error {
 	if len(values) == 0 {
 		return nil
 	}
 	return m.DO.Create(values)
 }
 
-func (m matchDo) CreateInBatches(values []*db_model.Match, batchSize int) error {
+func (m matchDo) CreateInBatches(values []*model.Match, batchSize int) error {
 	return m.DO.CreateInBatches(values, batchSize)
 }
 
 // Save : !!! underlying implementation is different with GORM
 // The method is equivalent to executing the statement: db.Clauses(clause.OnConflict{UpdateAll: true}).Create(values)
-func (m matchDo) Save(values ...*db_model.Match) error {
+func (m matchDo) Save(values ...*model.Match) error {
 	if len(values) == 0 {
 		return nil
 	}
 	return m.DO.Save(values)
 }
 
-func (m matchDo) First() (*db_model.Match, error) {
+func (m matchDo) First() (*model.Match, error) {
 	if result, err := m.DO.First(); err != nil {
 		return nil, err
 	} else {
-		return result.(*db_model.Match), nil
+		return result.(*model.Match), nil
 	}
 }
 
-func (m matchDo) Take() (*db_model.Match, error) {
+func (m matchDo) Take() (*model.Match, error) {
 	if result, err := m.DO.Take(); err != nil {
 		return nil, err
 	} else {
-		return result.(*db_model.Match), nil
+		return result.(*model.Match), nil
 	}
 }
 
-func (m matchDo) Last() (*db_model.Match, error) {
+func (m matchDo) Last() (*model.Match, error) {
 	if result, err := m.DO.Last(); err != nil {
 		return nil, err
 	} else {
-		return result.(*db_model.Match), nil
+		return result.(*model.Match), nil
 	}
 }
 
-func (m matchDo) Find() ([]*db_model.Match, error) {
+func (m matchDo) Find() ([]*model.Match, error) {
 	result, err := m.DO.Find()
-	return result.([]*db_model.Match), err
+	return result.([]*model.Match), err
 }
 
-func (m matchDo) FindInBatch(batchSize int, fc func(tx gen.Dao, batch int) error) (results []*db_model.Match, err error) {
-	buf := make([]*db_model.Match, 0, batchSize)
+func (m matchDo) FindInBatch(batchSize int, fc func(tx gen.Dao, batch int) error) (results []*model.Match, err error) {
+	buf := make([]*model.Match, 0, batchSize)
 	err = m.DO.FindInBatches(&buf, batchSize, func(tx gen.Dao, batch int) error {
 		defer func() { results = append(results, buf...) }()
 		return fc(tx, batch)
@@ -338,7 +339,7 @@ func (m matchDo) FindInBatch(batchSize int, fc func(tx gen.Dao, batch int) error
 	return results, err
 }
 
-func (m matchDo) FindInBatches(result *[]*db_model.Match, batchSize int, fc func(tx gen.Dao, batch int) error) error {
+func (m matchDo) FindInBatches(result *[]*model.Match, batchSize int, fc func(tx gen.Dao, batch int) error) error {
 	return m.DO.FindInBatches(result, batchSize, fc)
 }
 
@@ -364,23 +365,23 @@ func (m matchDo) Preload(fields ...field.RelationField) IMatchDo {
 	return &m
 }
 
-func (m matchDo) FirstOrInit() (*db_model.Match, error) {
+func (m matchDo) FirstOrInit() (*model.Match, error) {
 	if result, err := m.DO.FirstOrInit(); err != nil {
 		return nil, err
 	} else {
-		return result.(*db_model.Match), nil
+		return result.(*model.Match), nil
 	}
 }
 
-func (m matchDo) FirstOrCreate() (*db_model.Match, error) {
+func (m matchDo) FirstOrCreate() (*model.Match, error) {
 	if result, err := m.DO.FirstOrCreate(); err != nil {
 		return nil, err
 	} else {
-		return result.(*db_model.Match), nil
+		return result.(*model.Match), nil
 	}
 }
 
-func (m matchDo) FindByPage(offset int, limit int) (result []*db_model.Match, count int64, err error) {
+func (m matchDo) FindByPage(offset int, limit int) (result []*model.Match, count int64, err error) {
 	result, err = m.Offset(offset).Limit(limit).Find()
 	if err != nil {
 		return
@@ -409,7 +410,7 @@ func (m matchDo) Scan(result interface{}) (err error) {
 	return m.DO.Scan(result)
 }
 
-func (m matchDo) Delete(models ...*db_model.Match) (result gen.ResultInfo, err error) {
+func (m matchDo) Delete(models ...*model.Match) (result gen.ResultInfo, err error) {
 	return m.DO.Delete(models)
 }
 

@@ -10,19 +10,20 @@ import (
 	"gorm.io/gorm"
 	"gorm.io/gorm/clause"
 	"gorm.io/gorm/schema"
-	"sports-book.com/pkg/db_model"
 
 	"gorm.io/gen"
 	"gorm.io/gen/field"
 
 	"gorm.io/plugin/dbresolver"
+
+	model "sports-book.com/pkg/db_model"
 )
 
 func newOdds1x2(db *gorm.DB, opts ...gen.DOOption) odds1x2 {
 	_odds1x2 := odds1x2{}
 
 	_odds1x2.odds1x2Do.UseDB(db, opts...)
-	_odds1x2.odds1x2Do.UseModel(&db_model.Odds1x2{})
+	_odds1x2.odds1x2Do.UseModel(&model.Odds1x2{})
 
 	tableName := _odds1x2.odds1x2Do.TableName()
 	_odds1x2.ALL = field.NewAsterisk(tableName)
@@ -136,17 +137,17 @@ type IOdds1x2Do interface {
 	Count() (count int64, err error)
 	Scopes(funcs ...func(gen.Dao) gen.Dao) IOdds1x2Do
 	Unscoped() IOdds1x2Do
-	Create(values ...*db_model.Odds1x2) error
-	CreateInBatches(values []*db_model.Odds1x2, batchSize int) error
-	Save(values ...*db_model.Odds1x2) error
-	First() (*db_model.Odds1x2, error)
-	Take() (*db_model.Odds1x2, error)
-	Last() (*db_model.Odds1x2, error)
-	Find() ([]*db_model.Odds1x2, error)
-	FindInBatch(batchSize int, fc func(tx gen.Dao, batch int) error) (results []*db_model.Odds1x2, err error)
-	FindInBatches(result *[]*db_model.Odds1x2, batchSize int, fc func(tx gen.Dao, batch int) error) error
+	Create(values ...*model.Odds1x2) error
+	CreateInBatches(values []*model.Odds1x2, batchSize int) error
+	Save(values ...*model.Odds1x2) error
+	First() (*model.Odds1x2, error)
+	Take() (*model.Odds1x2, error)
+	Last() (*model.Odds1x2, error)
+	Find() ([]*model.Odds1x2, error)
+	FindInBatch(batchSize int, fc func(tx gen.Dao, batch int) error) (results []*model.Odds1x2, err error)
+	FindInBatches(result *[]*model.Odds1x2, batchSize int, fc func(tx gen.Dao, batch int) error) error
 	Pluck(column field.Expr, dest interface{}) error
-	Delete(...*db_model.Odds1x2) (info gen.ResultInfo, err error)
+	Delete(...*model.Odds1x2) (info gen.ResultInfo, err error)
 	Update(column field.Expr, value interface{}) (info gen.ResultInfo, err error)
 	UpdateSimple(columns ...field.AssignExpr) (info gen.ResultInfo, err error)
 	Updates(value interface{}) (info gen.ResultInfo, err error)
@@ -158,9 +159,9 @@ type IOdds1x2Do interface {
 	Assign(attrs ...field.AssignExpr) IOdds1x2Do
 	Joins(fields ...field.RelationField) IOdds1x2Do
 	Preload(fields ...field.RelationField) IOdds1x2Do
-	FirstOrInit() (*db_model.Odds1x2, error)
-	FirstOrCreate() (*db_model.Odds1x2, error)
-	FindByPage(offset int, limit int) (result []*db_model.Odds1x2, count int64, err error)
+	FirstOrInit() (*model.Odds1x2, error)
+	FirstOrCreate() (*model.Odds1x2, error)
+	FindByPage(offset int, limit int) (result []*model.Odds1x2, count int64, err error)
 	ScanByPage(result interface{}, offset int, limit int) (count int64, err error)
 	Scan(result interface{}) (err error)
 	Returning(value interface{}, columns ...string) IOdds1x2Do
@@ -264,57 +265,57 @@ func (o odds1x2Do) Unscoped() IOdds1x2Do {
 	return o.withDO(o.DO.Unscoped())
 }
 
-func (o odds1x2Do) Create(values ...*db_model.Odds1x2) error {
+func (o odds1x2Do) Create(values ...*model.Odds1x2) error {
 	if len(values) == 0 {
 		return nil
 	}
 	return o.DO.Create(values)
 }
 
-func (o odds1x2Do) CreateInBatches(values []*db_model.Odds1x2, batchSize int) error {
+func (o odds1x2Do) CreateInBatches(values []*model.Odds1x2, batchSize int) error {
 	return o.DO.CreateInBatches(values, batchSize)
 }
 
 // Save : !!! underlying implementation is different with GORM
 // The method is equivalent to executing the statement: db.Clauses(clause.OnConflict{UpdateAll: true}).Create(values)
-func (o odds1x2Do) Save(values ...*db_model.Odds1x2) error {
+func (o odds1x2Do) Save(values ...*model.Odds1x2) error {
 	if len(values) == 0 {
 		return nil
 	}
 	return o.DO.Save(values)
 }
 
-func (o odds1x2Do) First() (*db_model.Odds1x2, error) {
+func (o odds1x2Do) First() (*model.Odds1x2, error) {
 	if result, err := o.DO.First(); err != nil {
 		return nil, err
 	} else {
-		return result.(*db_model.Odds1x2), nil
+		return result.(*model.Odds1x2), nil
 	}
 }
 
-func (o odds1x2Do) Take() (*db_model.Odds1x2, error) {
+func (o odds1x2Do) Take() (*model.Odds1x2, error) {
 	if result, err := o.DO.Take(); err != nil {
 		return nil, err
 	} else {
-		return result.(*db_model.Odds1x2), nil
+		return result.(*model.Odds1x2), nil
 	}
 }
 
-func (o odds1x2Do) Last() (*db_model.Odds1x2, error) {
+func (o odds1x2Do) Last() (*model.Odds1x2, error) {
 	if result, err := o.DO.Last(); err != nil {
 		return nil, err
 	} else {
-		return result.(*db_model.Odds1x2), nil
+		return result.(*model.Odds1x2), nil
 	}
 }
 
-func (o odds1x2Do) Find() ([]*db_model.Odds1x2, error) {
+func (o odds1x2Do) Find() ([]*model.Odds1x2, error) {
 	result, err := o.DO.Find()
-	return result.([]*db_model.Odds1x2), err
+	return result.([]*model.Odds1x2), err
 }
 
-func (o odds1x2Do) FindInBatch(batchSize int, fc func(tx gen.Dao, batch int) error) (results []*db_model.Odds1x2, err error) {
-	buf := make([]*db_model.Odds1x2, 0, batchSize)
+func (o odds1x2Do) FindInBatch(batchSize int, fc func(tx gen.Dao, batch int) error) (results []*model.Odds1x2, err error) {
+	buf := make([]*model.Odds1x2, 0, batchSize)
 	err = o.DO.FindInBatches(&buf, batchSize, func(tx gen.Dao, batch int) error {
 		defer func() { results = append(results, buf...) }()
 		return fc(tx, batch)
@@ -322,7 +323,7 @@ func (o odds1x2Do) FindInBatch(batchSize int, fc func(tx gen.Dao, batch int) err
 	return results, err
 }
 
-func (o odds1x2Do) FindInBatches(result *[]*db_model.Odds1x2, batchSize int, fc func(tx gen.Dao, batch int) error) error {
+func (o odds1x2Do) FindInBatches(result *[]*model.Odds1x2, batchSize int, fc func(tx gen.Dao, batch int) error) error {
 	return o.DO.FindInBatches(result, batchSize, fc)
 }
 
@@ -348,23 +349,23 @@ func (o odds1x2Do) Preload(fields ...field.RelationField) IOdds1x2Do {
 	return &o
 }
 
-func (o odds1x2Do) FirstOrInit() (*db_model.Odds1x2, error) {
+func (o odds1x2Do) FirstOrInit() (*model.Odds1x2, error) {
 	if result, err := o.DO.FirstOrInit(); err != nil {
 		return nil, err
 	} else {
-		return result.(*db_model.Odds1x2), nil
+		return result.(*model.Odds1x2), nil
 	}
 }
 
-func (o odds1x2Do) FirstOrCreate() (*db_model.Odds1x2, error) {
+func (o odds1x2Do) FirstOrCreate() (*model.Odds1x2, error) {
 	if result, err := o.DO.FirstOrCreate(); err != nil {
 		return nil, err
 	} else {
-		return result.(*db_model.Odds1x2), nil
+		return result.(*model.Odds1x2), nil
 	}
 }
 
-func (o odds1x2Do) FindByPage(offset int, limit int) (result []*db_model.Odds1x2, count int64, err error) {
+func (o odds1x2Do) FindByPage(offset int, limit int) (result []*model.Odds1x2, count int64, err error) {
 	result, err = o.Offset(offset).Limit(limit).Find()
 	if err != nil {
 		return
@@ -393,7 +394,7 @@ func (o odds1x2Do) Scan(result interface{}) (err error) {
 	return o.DO.Scan(result)
 }
 
-func (o odds1x2Do) Delete(models ...*db_model.Odds1x2) (result gen.ResultInfo, err error) {
+func (o odds1x2Do) Delete(models ...*model.Odds1x2) (result gen.ResultInfo, err error) {
 	return o.DO.Delete(models)
 }
 

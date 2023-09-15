@@ -10,19 +10,20 @@ import (
 	"gorm.io/gorm"
 	"gorm.io/gorm/clause"
 	"gorm.io/gorm/schema"
-	"sports-book.com/pkg/db_model"
 
 	"gorm.io/gen"
 	"gorm.io/gen/field"
 
 	"gorm.io/plugin/dbresolver"
+
+	model "sports-book.com/pkg/db_model"
 )
 
 func newAppearance(db *gorm.DB, opts ...gen.DOOption) appearance {
 	_appearance := appearance{}
 
 	_appearance.appearanceDo.UseDB(db, opts...)
-	_appearance.appearanceDo.UseModel(&db_model.Appearance{})
+	_appearance.appearanceDo.UseModel(&model.Appearance{})
 
 	tableName := _appearance.appearanceDo.TableName()
 	_appearance.ALL = field.NewAsterisk(tableName)
@@ -172,17 +173,17 @@ type IAppearanceDo interface {
 	Count() (count int64, err error)
 	Scopes(funcs ...func(gen.Dao) gen.Dao) IAppearanceDo
 	Unscoped() IAppearanceDo
-	Create(values ...*db_model.Appearance) error
-	CreateInBatches(values []*db_model.Appearance, batchSize int) error
-	Save(values ...*db_model.Appearance) error
-	First() (*db_model.Appearance, error)
-	Take() (*db_model.Appearance, error)
-	Last() (*db_model.Appearance, error)
-	Find() ([]*db_model.Appearance, error)
-	FindInBatch(batchSize int, fc func(tx gen.Dao, batch int) error) (results []*db_model.Appearance, err error)
-	FindInBatches(result *[]*db_model.Appearance, batchSize int, fc func(tx gen.Dao, batch int) error) error
+	Create(values ...*model.Appearance) error
+	CreateInBatches(values []*model.Appearance, batchSize int) error
+	Save(values ...*model.Appearance) error
+	First() (*model.Appearance, error)
+	Take() (*model.Appearance, error)
+	Last() (*model.Appearance, error)
+	Find() ([]*model.Appearance, error)
+	FindInBatch(batchSize int, fc func(tx gen.Dao, batch int) error) (results []*model.Appearance, err error)
+	FindInBatches(result *[]*model.Appearance, batchSize int, fc func(tx gen.Dao, batch int) error) error
 	Pluck(column field.Expr, dest interface{}) error
-	Delete(...*db_model.Appearance) (info gen.ResultInfo, err error)
+	Delete(...*model.Appearance) (info gen.ResultInfo, err error)
 	Update(column field.Expr, value interface{}) (info gen.ResultInfo, err error)
 	UpdateSimple(columns ...field.AssignExpr) (info gen.ResultInfo, err error)
 	Updates(value interface{}) (info gen.ResultInfo, err error)
@@ -194,9 +195,9 @@ type IAppearanceDo interface {
 	Assign(attrs ...field.AssignExpr) IAppearanceDo
 	Joins(fields ...field.RelationField) IAppearanceDo
 	Preload(fields ...field.RelationField) IAppearanceDo
-	FirstOrInit() (*db_model.Appearance, error)
-	FirstOrCreate() (*db_model.Appearance, error)
-	FindByPage(offset int, limit int) (result []*db_model.Appearance, count int64, err error)
+	FirstOrInit() (*model.Appearance, error)
+	FirstOrCreate() (*model.Appearance, error)
+	FindByPage(offset int, limit int) (result []*model.Appearance, count int64, err error)
 	ScanByPage(result interface{}, offset int, limit int) (count int64, err error)
 	Scan(result interface{}) (err error)
 	Returning(value interface{}, columns ...string) IAppearanceDo
@@ -300,57 +301,57 @@ func (a appearanceDo) Unscoped() IAppearanceDo {
 	return a.withDO(a.DO.Unscoped())
 }
 
-func (a appearanceDo) Create(values ...*db_model.Appearance) error {
+func (a appearanceDo) Create(values ...*model.Appearance) error {
 	if len(values) == 0 {
 		return nil
 	}
 	return a.DO.Create(values)
 }
 
-func (a appearanceDo) CreateInBatches(values []*db_model.Appearance, batchSize int) error {
+func (a appearanceDo) CreateInBatches(values []*model.Appearance, batchSize int) error {
 	return a.DO.CreateInBatches(values, batchSize)
 }
 
 // Save : !!! underlying implementation is different with GORM
 // The method is equivalent to executing the statement: db.Clauses(clause.OnConflict{UpdateAll: true}).Create(values)
-func (a appearanceDo) Save(values ...*db_model.Appearance) error {
+func (a appearanceDo) Save(values ...*model.Appearance) error {
 	if len(values) == 0 {
 		return nil
 	}
 	return a.DO.Save(values)
 }
 
-func (a appearanceDo) First() (*db_model.Appearance, error) {
+func (a appearanceDo) First() (*model.Appearance, error) {
 	if result, err := a.DO.First(); err != nil {
 		return nil, err
 	} else {
-		return result.(*db_model.Appearance), nil
+		return result.(*model.Appearance), nil
 	}
 }
 
-func (a appearanceDo) Take() (*db_model.Appearance, error) {
+func (a appearanceDo) Take() (*model.Appearance, error) {
 	if result, err := a.DO.Take(); err != nil {
 		return nil, err
 	} else {
-		return result.(*db_model.Appearance), nil
+		return result.(*model.Appearance), nil
 	}
 }
 
-func (a appearanceDo) Last() (*db_model.Appearance, error) {
+func (a appearanceDo) Last() (*model.Appearance, error) {
 	if result, err := a.DO.Last(); err != nil {
 		return nil, err
 	} else {
-		return result.(*db_model.Appearance), nil
+		return result.(*model.Appearance), nil
 	}
 }
 
-func (a appearanceDo) Find() ([]*db_model.Appearance, error) {
+func (a appearanceDo) Find() ([]*model.Appearance, error) {
 	result, err := a.DO.Find()
-	return result.([]*db_model.Appearance), err
+	return result.([]*model.Appearance), err
 }
 
-func (a appearanceDo) FindInBatch(batchSize int, fc func(tx gen.Dao, batch int) error) (results []*db_model.Appearance, err error) {
-	buf := make([]*db_model.Appearance, 0, batchSize)
+func (a appearanceDo) FindInBatch(batchSize int, fc func(tx gen.Dao, batch int) error) (results []*model.Appearance, err error) {
+	buf := make([]*model.Appearance, 0, batchSize)
 	err = a.DO.FindInBatches(&buf, batchSize, func(tx gen.Dao, batch int) error {
 		defer func() { results = append(results, buf...) }()
 		return fc(tx, batch)
@@ -358,7 +359,7 @@ func (a appearanceDo) FindInBatch(batchSize int, fc func(tx gen.Dao, batch int) 
 	return results, err
 }
 
-func (a appearanceDo) FindInBatches(result *[]*db_model.Appearance, batchSize int, fc func(tx gen.Dao, batch int) error) error {
+func (a appearanceDo) FindInBatches(result *[]*model.Appearance, batchSize int, fc func(tx gen.Dao, batch int) error) error {
 	return a.DO.FindInBatches(result, batchSize, fc)
 }
 
@@ -384,23 +385,23 @@ func (a appearanceDo) Preload(fields ...field.RelationField) IAppearanceDo {
 	return &a
 }
 
-func (a appearanceDo) FirstOrInit() (*db_model.Appearance, error) {
+func (a appearanceDo) FirstOrInit() (*model.Appearance, error) {
 	if result, err := a.DO.FirstOrInit(); err != nil {
 		return nil, err
 	} else {
-		return result.(*db_model.Appearance), nil
+		return result.(*model.Appearance), nil
 	}
 }
 
-func (a appearanceDo) FirstOrCreate() (*db_model.Appearance, error) {
+func (a appearanceDo) FirstOrCreate() (*model.Appearance, error) {
 	if result, err := a.DO.FirstOrCreate(); err != nil {
 		return nil, err
 	} else {
-		return result.(*db_model.Appearance), nil
+		return result.(*model.Appearance), nil
 	}
 }
 
-func (a appearanceDo) FindByPage(offset int, limit int) (result []*db_model.Appearance, count int64, err error) {
+func (a appearanceDo) FindByPage(offset int, limit int) (result []*model.Appearance, count int64, err error) {
 	result, err = a.Offset(offset).Limit(limit).Find()
 	if err != nil {
 		return
@@ -429,7 +430,7 @@ func (a appearanceDo) Scan(result interface{}) (err error) {
 	return a.DO.Scan(result)
 }
 
-func (a appearanceDo) Delete(models ...*db_model.Appearance) (result gen.ResultInfo, err error) {
+func (a appearanceDo) Delete(models ...*model.Appearance) (result gen.ResultInfo, err error) {
 	return a.DO.Delete(models)
 }
 

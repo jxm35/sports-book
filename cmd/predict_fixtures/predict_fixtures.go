@@ -9,13 +9,10 @@ import (
 	"github.com/aws/aws-lambda-go/events"
 	"github.com/aws/aws-lambda-go/lambda"
 
-	"sports-book.com/pkg/bet_selector"
 	"sports-book.com/pkg/db"
 	"sports-book.com/pkg/domain"
 	"sports-book.com/pkg/notify"
 	"sports-book.com/pkg/pipeline"
-	"sports-book.com/pkg/probability_generator"
-	"sports-book.com/pkg/score_predictor"
 )
 
 func main() {
@@ -24,13 +21,7 @@ func main() {
 		panic(err)
 	}
 
-	predictionPipeline, err := pipeline.NewPipelineBuilder().
-		SetPredictor(score_predictor.NewEloGoalsPredictor(5, 11)).
-		// SetPredictor(&goals_predictor.LastSeasonXgGoalPredictor{LastXGames: 0}).
-		SetProbabilityGenerator(&probability_generator.WeibullOddsGenerator{}).
-		SetBetPlacer(bet_selector.NewKellyCriterionBetSelector(0.1, 0.3, 0.05, true)).
-		// SetBetPlacer(bet_selector.NewFixedAmountBetSelector(0.1, 0.3, 0.2)).
-		Build()
+	predictionPipeline, err := pipeline.NewPipelineFromConfig()
 	if err != nil {
 		panic(err)
 	}
@@ -43,11 +34,13 @@ func main() {
 func handle(ctx context.Context, event events.SQSEvent, predictionPipeline pipeline.Pipeline) error {
 	for _, record := range event.Records {
 		var fixtures []domain.Fixture
+		bets := make([]domain.BetOrder, 0)
 
 		if err := json.Unmarshal([]byte(record.Body), &fixtures); err != nil {
 			fmt.Println("Failed to unmarshal fixtures: ", record.Body)
 			return fmt.Errorf("failed to unmarshal fixtures: %w", err)
 		}
+
 		for _, fixture := range fixtures {
 			match, err := db.CreateFixture(ctx, fixture, -1)
 			if err != nil {
@@ -64,9 +57,20 @@ func handle(ctx context.Context, event events.SQSEvent, predictionPipeline pipel
 			)
 			bet := predictionPipeline.PlaceBet(ctx, match.ID, probabilities, 100)
 			if bet.IsPresent() {
-				if err := notify.GetNotifier().NotifyBetPlaced(ctx, bet.Value()); err != nil {
-					return fmt.Errorf("failed to add notify bet order: %w", err)
-				}
+				bets = append(bets, bet.Value())
+			}
+		}
+		// sleep to ensure all odds have been entered into the database
+		time.Sleep(5 * time.Second)
+
+		for _, bet := range bets {
+			if err := notify.GetNotifier().NotifyBetPlaced(ctx, bet); err != nil {
+				return fmt.Errorf("failed to add notify bet order: %w", err)
+			}
+
+			// enter bet into the database
+			if err := db.SaveBetPlaced(ctx, bet); err != nil {
+				return fmt.Errorf("failed to save placed bet: %w", err)
 			}
 		}
 	}

@@ -2,6 +2,7 @@ package db
 
 import (
 	"context"
+	"errors"
 	"strconv"
 	"time"
 
@@ -91,6 +92,30 @@ func GetMatch(ctx context.Context, matchId int32) (model.Match, error) {
 		Where(m.ID.Eq(matchId)).
 		Scan(&res)
 	return res, err
+}
+
+func GetMatchByUsId(ctx context.Context, id int32) (model.Match, error) {
+	m := db_query.Match
+	var res model.Match
+	err := m.WithContext(ctx).
+		Select(m.ALL).
+		Where(m.UsID.Eq(id)).
+		Scan(&res)
+	return res, err
+}
+
+func UpdateMatch(ctx context.Context, id int32, match model.Match) error {
+	m := db_query.Match
+	info, err := m.WithContext(ctx).
+		Where(m.ID.Eq(id)).
+		Updates(match)
+	if err != nil {
+		return err
+	}
+	if info.RowsAffected != 1 {
+		return errors.New("no rows affected")
+	}
+	return nil
 }
 
 /*

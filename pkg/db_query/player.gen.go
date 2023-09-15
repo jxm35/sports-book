@@ -10,19 +10,20 @@ import (
 	"gorm.io/gorm"
 	"gorm.io/gorm/clause"
 	"gorm.io/gorm/schema"
-	"sports-book.com/pkg/db_model"
 
 	"gorm.io/gen"
 	"gorm.io/gen/field"
 
 	"gorm.io/plugin/dbresolver"
+
+	model "sports-book.com/pkg/db_model"
 )
 
 func newPlayer(db *gorm.DB, opts ...gen.DOOption) player {
 	_player := player{}
 
 	_player.playerDo.UseDB(db, opts...)
-	_player.playerDo.UseModel(&db_model.Player{})
+	_player.playerDo.UseModel(&model.Player{})
 
 	tableName := _player.playerDo.TableName()
 	_player.ALL = field.NewAsterisk(tableName)
@@ -128,17 +129,17 @@ type IPlayerDo interface {
 	Count() (count int64, err error)
 	Scopes(funcs ...func(gen.Dao) gen.Dao) IPlayerDo
 	Unscoped() IPlayerDo
-	Create(values ...*db_model.Player) error
-	CreateInBatches(values []*db_model.Player, batchSize int) error
-	Save(values ...*db_model.Player) error
-	First() (*db_model.Player, error)
-	Take() (*db_model.Player, error)
-	Last() (*db_model.Player, error)
-	Find() ([]*db_model.Player, error)
-	FindInBatch(batchSize int, fc func(tx gen.Dao, batch int) error) (results []*db_model.Player, err error)
-	FindInBatches(result *[]*db_model.Player, batchSize int, fc func(tx gen.Dao, batch int) error) error
+	Create(values ...*model.Player) error
+	CreateInBatches(values []*model.Player, batchSize int) error
+	Save(values ...*model.Player) error
+	First() (*model.Player, error)
+	Take() (*model.Player, error)
+	Last() (*model.Player, error)
+	Find() ([]*model.Player, error)
+	FindInBatch(batchSize int, fc func(tx gen.Dao, batch int) error) (results []*model.Player, err error)
+	FindInBatches(result *[]*model.Player, batchSize int, fc func(tx gen.Dao, batch int) error) error
 	Pluck(column field.Expr, dest interface{}) error
-	Delete(...*db_model.Player) (info gen.ResultInfo, err error)
+	Delete(...*model.Player) (info gen.ResultInfo, err error)
 	Update(column field.Expr, value interface{}) (info gen.ResultInfo, err error)
 	UpdateSimple(columns ...field.AssignExpr) (info gen.ResultInfo, err error)
 	Updates(value interface{}) (info gen.ResultInfo, err error)
@@ -150,9 +151,9 @@ type IPlayerDo interface {
 	Assign(attrs ...field.AssignExpr) IPlayerDo
 	Joins(fields ...field.RelationField) IPlayerDo
 	Preload(fields ...field.RelationField) IPlayerDo
-	FirstOrInit() (*db_model.Player, error)
-	FirstOrCreate() (*db_model.Player, error)
-	FindByPage(offset int, limit int) (result []*db_model.Player, count int64, err error)
+	FirstOrInit() (*model.Player, error)
+	FirstOrCreate() (*model.Player, error)
+	FindByPage(offset int, limit int) (result []*model.Player, count int64, err error)
 	ScanByPage(result interface{}, offset int, limit int) (count int64, err error)
 	Scan(result interface{}) (err error)
 	Returning(value interface{}, columns ...string) IPlayerDo
@@ -256,57 +257,57 @@ func (p playerDo) Unscoped() IPlayerDo {
 	return p.withDO(p.DO.Unscoped())
 }
 
-func (p playerDo) Create(values ...*db_model.Player) error {
+func (p playerDo) Create(values ...*model.Player) error {
 	if len(values) == 0 {
 		return nil
 	}
 	return p.DO.Create(values)
 }
 
-func (p playerDo) CreateInBatches(values []*db_model.Player, batchSize int) error {
+func (p playerDo) CreateInBatches(values []*model.Player, batchSize int) error {
 	return p.DO.CreateInBatches(values, batchSize)
 }
 
 // Save : !!! underlying implementation is different with GORM
 // The method is equivalent to executing the statement: db.Clauses(clause.OnConflict{UpdateAll: true}).Create(values)
-func (p playerDo) Save(values ...*db_model.Player) error {
+func (p playerDo) Save(values ...*model.Player) error {
 	if len(values) == 0 {
 		return nil
 	}
 	return p.DO.Save(values)
 }
 
-func (p playerDo) First() (*db_model.Player, error) {
+func (p playerDo) First() (*model.Player, error) {
 	if result, err := p.DO.First(); err != nil {
 		return nil, err
 	} else {
-		return result.(*db_model.Player), nil
+		return result.(*model.Player), nil
 	}
 }
 
-func (p playerDo) Take() (*db_model.Player, error) {
+func (p playerDo) Take() (*model.Player, error) {
 	if result, err := p.DO.Take(); err != nil {
 		return nil, err
 	} else {
-		return result.(*db_model.Player), nil
+		return result.(*model.Player), nil
 	}
 }
 
-func (p playerDo) Last() (*db_model.Player, error) {
+func (p playerDo) Last() (*model.Player, error) {
 	if result, err := p.DO.Last(); err != nil {
 		return nil, err
 	} else {
-		return result.(*db_model.Player), nil
+		return result.(*model.Player), nil
 	}
 }
 
-func (p playerDo) Find() ([]*db_model.Player, error) {
+func (p playerDo) Find() ([]*model.Player, error) {
 	result, err := p.DO.Find()
-	return result.([]*db_model.Player), err
+	return result.([]*model.Player), err
 }
 
-func (p playerDo) FindInBatch(batchSize int, fc func(tx gen.Dao, batch int) error) (results []*db_model.Player, err error) {
-	buf := make([]*db_model.Player, 0, batchSize)
+func (p playerDo) FindInBatch(batchSize int, fc func(tx gen.Dao, batch int) error) (results []*model.Player, err error) {
+	buf := make([]*model.Player, 0, batchSize)
 	err = p.DO.FindInBatches(&buf, batchSize, func(tx gen.Dao, batch int) error {
 		defer func() { results = append(results, buf...) }()
 		return fc(tx, batch)
@@ -314,7 +315,7 @@ func (p playerDo) FindInBatch(batchSize int, fc func(tx gen.Dao, batch int) erro
 	return results, err
 }
 
-func (p playerDo) FindInBatches(result *[]*db_model.Player, batchSize int, fc func(tx gen.Dao, batch int) error) error {
+func (p playerDo) FindInBatches(result *[]*model.Player, batchSize int, fc func(tx gen.Dao, batch int) error) error {
 	return p.DO.FindInBatches(result, batchSize, fc)
 }
 
@@ -340,23 +341,23 @@ func (p playerDo) Preload(fields ...field.RelationField) IPlayerDo {
 	return &p
 }
 
-func (p playerDo) FirstOrInit() (*db_model.Player, error) {
+func (p playerDo) FirstOrInit() (*model.Player, error) {
 	if result, err := p.DO.FirstOrInit(); err != nil {
 		return nil, err
 	} else {
-		return result.(*db_model.Player), nil
+		return result.(*model.Player), nil
 	}
 }
 
-func (p playerDo) FirstOrCreate() (*db_model.Player, error) {
+func (p playerDo) FirstOrCreate() (*model.Player, error) {
 	if result, err := p.DO.FirstOrCreate(); err != nil {
 		return nil, err
 	} else {
-		return result.(*db_model.Player), nil
+		return result.(*model.Player), nil
 	}
 }
 
-func (p playerDo) FindByPage(offset int, limit int) (result []*db_model.Player, count int64, err error) {
+func (p playerDo) FindByPage(offset int, limit int) (result []*model.Player, count int64, err error) {
 	result, err = p.Offset(offset).Limit(limit).Find()
 	if err != nil {
 		return
@@ -385,7 +386,7 @@ func (p playerDo) Scan(result interface{}) (err error) {
 	return p.DO.Scan(result)
 }
 
-func (p playerDo) Delete(models ...*db_model.Player) (result gen.ResultInfo, err error) {
+func (p playerDo) Delete(models ...*model.Player) (result gen.ResultInfo, err error) {
 	return p.DO.Delete(models)
 }
 

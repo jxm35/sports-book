@@ -18,6 +18,7 @@ import (
 var (
 	Q           = new(Query)
 	Appearance  *appearance
+	BetsPlaced  *betsPlaced
 	Competition *competition
 	Match       *match
 	Odds1x2     *odds1x2
@@ -28,6 +29,7 @@ var (
 func SetDefault(db *gorm.DB, opts ...gen.DOOption) {
 	*Q = *Use(db, opts...)
 	Appearance = &Q.Appearance
+	BetsPlaced = &Q.BetsPlaced
 	Competition = &Q.Competition
 	Match = &Q.Match
 	Odds1x2 = &Q.Odds1x2
@@ -39,6 +41,7 @@ func Use(db *gorm.DB, opts ...gen.DOOption) *Query {
 	return &Query{
 		db:          db,
 		Appearance:  newAppearance(db, opts...),
+		BetsPlaced:  newBetsPlaced(db, opts...),
 		Competition: newCompetition(db, opts...),
 		Match:       newMatch(db, opts...),
 		Odds1x2:     newOdds1x2(db, opts...),
@@ -51,6 +54,7 @@ type Query struct {
 	db *gorm.DB
 
 	Appearance  appearance
+	BetsPlaced  betsPlaced
 	Competition competition
 	Match       match
 	Odds1x2     odds1x2
@@ -64,6 +68,7 @@ func (q *Query) clone(db *gorm.DB) *Query {
 	return &Query{
 		db:          db,
 		Appearance:  q.Appearance.clone(db),
+		BetsPlaced:  q.BetsPlaced.clone(db),
 		Competition: q.Competition.clone(db),
 		Match:       q.Match.clone(db),
 		Odds1x2:     q.Odds1x2.clone(db),
@@ -84,6 +89,7 @@ func (q *Query) ReplaceDB(db *gorm.DB) *Query {
 	return &Query{
 		db:          db,
 		Appearance:  q.Appearance.replaceDB(db),
+		BetsPlaced:  q.BetsPlaced.replaceDB(db),
 		Competition: q.Competition.replaceDB(db),
 		Match:       q.Match.replaceDB(db),
 		Odds1x2:     q.Odds1x2.replaceDB(db),
@@ -94,6 +100,7 @@ func (q *Query) ReplaceDB(db *gorm.DB) *Query {
 
 type queryCtx struct {
 	Appearance  IAppearanceDo
+	BetsPlaced  IBetsPlacedDo
 	Competition ICompetitionDo
 	Match       IMatchDo
 	Odds1x2     IOdds1x2Do
@@ -104,6 +111,7 @@ type queryCtx struct {
 func (q *Query) WithContext(ctx context.Context) *queryCtx {
 	return &queryCtx{
 		Appearance:  q.Appearance.WithContext(ctx),
+		BetsPlaced:  q.BetsPlaced.WithContext(ctx),
 		Competition: q.Competition.WithContext(ctx),
 		Match:       q.Match.WithContext(ctx),
 		Odds1x2:     q.Odds1x2.WithContext(ctx),

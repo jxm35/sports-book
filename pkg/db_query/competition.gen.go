@@ -10,19 +10,20 @@ import (
 	"gorm.io/gorm"
 	"gorm.io/gorm/clause"
 	"gorm.io/gorm/schema"
-	"sports-book.com/pkg/db_model"
 
 	"gorm.io/gen"
 	"gorm.io/gen/field"
 
 	"gorm.io/plugin/dbresolver"
+
+	model "sports-book.com/pkg/db_model"
 )
 
 func newCompetition(db *gorm.DB, opts ...gen.DOOption) competition {
 	_competition := competition{}
 
 	_competition.competitionDo.UseDB(db, opts...)
-	_competition.competitionDo.UseModel(&db_model.Competition{})
+	_competition.competitionDo.UseModel(&model.Competition{})
 
 	tableName := _competition.competitionDo.TableName()
 	_competition.ALL = field.NewAsterisk(tableName)
@@ -128,17 +129,17 @@ type ICompetitionDo interface {
 	Count() (count int64, err error)
 	Scopes(funcs ...func(gen.Dao) gen.Dao) ICompetitionDo
 	Unscoped() ICompetitionDo
-	Create(values ...*db_model.Competition) error
-	CreateInBatches(values []*db_model.Competition, batchSize int) error
-	Save(values ...*db_model.Competition) error
-	First() (*db_model.Competition, error)
-	Take() (*db_model.Competition, error)
-	Last() (*db_model.Competition, error)
-	Find() ([]*db_model.Competition, error)
-	FindInBatch(batchSize int, fc func(tx gen.Dao, batch int) error) (results []*db_model.Competition, err error)
-	FindInBatches(result *[]*db_model.Competition, batchSize int, fc func(tx gen.Dao, batch int) error) error
+	Create(values ...*model.Competition) error
+	CreateInBatches(values []*model.Competition, batchSize int) error
+	Save(values ...*model.Competition) error
+	First() (*model.Competition, error)
+	Take() (*model.Competition, error)
+	Last() (*model.Competition, error)
+	Find() ([]*model.Competition, error)
+	FindInBatch(batchSize int, fc func(tx gen.Dao, batch int) error) (results []*model.Competition, err error)
+	FindInBatches(result *[]*model.Competition, batchSize int, fc func(tx gen.Dao, batch int) error) error
 	Pluck(column field.Expr, dest interface{}) error
-	Delete(...*db_model.Competition) (info gen.ResultInfo, err error)
+	Delete(...*model.Competition) (info gen.ResultInfo, err error)
 	Update(column field.Expr, value interface{}) (info gen.ResultInfo, err error)
 	UpdateSimple(columns ...field.AssignExpr) (info gen.ResultInfo, err error)
 	Updates(value interface{}) (info gen.ResultInfo, err error)
@@ -150,9 +151,9 @@ type ICompetitionDo interface {
 	Assign(attrs ...field.AssignExpr) ICompetitionDo
 	Joins(fields ...field.RelationField) ICompetitionDo
 	Preload(fields ...field.RelationField) ICompetitionDo
-	FirstOrInit() (*db_model.Competition, error)
-	FirstOrCreate() (*db_model.Competition, error)
-	FindByPage(offset int, limit int) (result []*db_model.Competition, count int64, err error)
+	FirstOrInit() (*model.Competition, error)
+	FirstOrCreate() (*model.Competition, error)
+	FindByPage(offset int, limit int) (result []*model.Competition, count int64, err error)
 	ScanByPage(result interface{}, offset int, limit int) (count int64, err error)
 	Scan(result interface{}) (err error)
 	Returning(value interface{}, columns ...string) ICompetitionDo
@@ -256,57 +257,57 @@ func (c competitionDo) Unscoped() ICompetitionDo {
 	return c.withDO(c.DO.Unscoped())
 }
 
-func (c competitionDo) Create(values ...*db_model.Competition) error {
+func (c competitionDo) Create(values ...*model.Competition) error {
 	if len(values) == 0 {
 		return nil
 	}
 	return c.DO.Create(values)
 }
 
-func (c competitionDo) CreateInBatches(values []*db_model.Competition, batchSize int) error {
+func (c competitionDo) CreateInBatches(values []*model.Competition, batchSize int) error {
 	return c.DO.CreateInBatches(values, batchSize)
 }
 
 // Save : !!! underlying implementation is different with GORM
 // The method is equivalent to executing the statement: db.Clauses(clause.OnConflict{UpdateAll: true}).Create(values)
-func (c competitionDo) Save(values ...*db_model.Competition) error {
+func (c competitionDo) Save(values ...*model.Competition) error {
 	if len(values) == 0 {
 		return nil
 	}
 	return c.DO.Save(values)
 }
 
-func (c competitionDo) First() (*db_model.Competition, error) {
+func (c competitionDo) First() (*model.Competition, error) {
 	if result, err := c.DO.First(); err != nil {
 		return nil, err
 	} else {
-		return result.(*db_model.Competition), nil
+		return result.(*model.Competition), nil
 	}
 }
 
-func (c competitionDo) Take() (*db_model.Competition, error) {
+func (c competitionDo) Take() (*model.Competition, error) {
 	if result, err := c.DO.Take(); err != nil {
 		return nil, err
 	} else {
-		return result.(*db_model.Competition), nil
+		return result.(*model.Competition), nil
 	}
 }
 
-func (c competitionDo) Last() (*db_model.Competition, error) {
+func (c competitionDo) Last() (*model.Competition, error) {
 	if result, err := c.DO.Last(); err != nil {
 		return nil, err
 	} else {
-		return result.(*db_model.Competition), nil
+		return result.(*model.Competition), nil
 	}
 }
 
-func (c competitionDo) Find() ([]*db_model.Competition, error) {
+func (c competitionDo) Find() ([]*model.Competition, error) {
 	result, err := c.DO.Find()
-	return result.([]*db_model.Competition), err
+	return result.([]*model.Competition), err
 }
 
-func (c competitionDo) FindInBatch(batchSize int, fc func(tx gen.Dao, batch int) error) (results []*db_model.Competition, err error) {
-	buf := make([]*db_model.Competition, 0, batchSize)
+func (c competitionDo) FindInBatch(batchSize int, fc func(tx gen.Dao, batch int) error) (results []*model.Competition, err error) {
+	buf := make([]*model.Competition, 0, batchSize)
 	err = c.DO.FindInBatches(&buf, batchSize, func(tx gen.Dao, batch int) error {
 		defer func() { results = append(results, buf...) }()
 		return fc(tx, batch)
@@ -314,7 +315,7 @@ func (c competitionDo) FindInBatch(batchSize int, fc func(tx gen.Dao, batch int)
 	return results, err
 }
 
-func (c competitionDo) FindInBatches(result *[]*db_model.Competition, batchSize int, fc func(tx gen.Dao, batch int) error) error {
+func (c competitionDo) FindInBatches(result *[]*model.Competition, batchSize int, fc func(tx gen.Dao, batch int) error) error {
 	return c.DO.FindInBatches(result, batchSize, fc)
 }
 
@@ -340,23 +341,23 @@ func (c competitionDo) Preload(fields ...field.RelationField) ICompetitionDo {
 	return &c
 }
 
-func (c competitionDo) FirstOrInit() (*db_model.Competition, error) {
+func (c competitionDo) FirstOrInit() (*model.Competition, error) {
 	if result, err := c.DO.FirstOrInit(); err != nil {
 		return nil, err
 	} else {
-		return result.(*db_model.Competition), nil
+		return result.(*model.Competition), nil
 	}
 }
 
-func (c competitionDo) FirstOrCreate() (*db_model.Competition, error) {
+func (c competitionDo) FirstOrCreate() (*model.Competition, error) {
 	if result, err := c.DO.FirstOrCreate(); err != nil {
 		return nil, err
 	} else {
-		return result.(*db_model.Competition), nil
+		return result.(*model.Competition), nil
 	}
 }
 
-func (c competitionDo) FindByPage(offset int, limit int) (result []*db_model.Competition, count int64, err error) {
+func (c competitionDo) FindByPage(offset int, limit int) (result []*model.Competition, count int64, err error) {
 	result, err = c.Offset(offset).Limit(limit).Find()
 	if err != nil {
 		return
@@ -385,7 +386,7 @@ func (c competitionDo) Scan(result interface{}) (err error) {
 	return c.DO.Scan(result)
 }
 
-func (c competitionDo) Delete(models ...*db_model.Competition) (result gen.ResultInfo, err error) {
+func (c competitionDo) Delete(models ...*model.Competition) (result gen.ResultInfo, err error) {
 	return c.DO.Delete(models)
 }
 

@@ -1,4 +1,4 @@
-package tools
+package main
 
 import (
 	"fmt"
@@ -8,7 +8,11 @@ import (
 	"gorm.io/gorm"
 )
 
-func GenModels() {
+func main() {
+	genModels()
+}
+
+func genModels() {
 	g := gen.NewGenerator(gen.Config{
 		OutPath: "./query",
 		Mode:    gen.WithoutContext | gen.WithDefaultQuery | gen.WithQueryInterface, // generate mode

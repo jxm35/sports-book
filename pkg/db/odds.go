@@ -2,7 +2,9 @@ package db
 
 import (
 	"context"
+	"errors"
 
+	model "sports-book.com/pkg/db_model"
 	"sports-book.com/pkg/db_query"
 	"sports-book.com/pkg/domain"
 )
@@ -45,13 +47,51 @@ func GetBestOddsForMatch(ctx context.Context, matchId int32) (domain.BookmakerMa
 	return resp, err
 }
 
+func SaveOdds(ctx context.Context, odds model.Odds1x2) error {
+	o := db_query.Odds1x2
+	err := o.WithContext(ctx).Create(&odds)
+	return err
+}
+
+func SaveBetPlaced(ctx context.Context, bet domain.BetOrder) error {
+	b := db_query.BetsPlaced
+
+	oddsTaken, err := getOddsFromBookmakerAndPrice(ctx, bet.BookMaker, bet.OddsTaken, bet.Backing)
+	if err != nil {
+		return err
+	}
+	err = b.WithContext(ctx).Create(&model.BetsPlaced{
+		MatchID: bet.MatchId,
+		Odds:    oddsTaken.ID,
+		Amount:  bet.Amount,
+	})
+	return err
+}
+
+func getOddsFromBookmakerAndPrice(ctx context.Context, bookmaker string, oddsTaken float64, backing domain.BackingType) (model.Odds1x2, error) {
+	o := db_query.Odds1x2
+	var err error
+	var res model.Odds1x2
+	switch backing {
+	case domain.BackHomeWin:
+		err = o.WithContext(ctx).Select(o.ALL).Where(o.Bookmaker.Eq(bookmaker), o.HomeWin.Eq(oddsTaken)).Scan(&res)
+	case domain.BackDraw:
+		err = o.WithContext(ctx).Select(o.ALL).Where(o.Bookmaker.Eq(bookmaker), o.Draw.Eq(oddsTaken)).Scan(&res)
+	case domain.BackAwayWin:
+		err = o.WithContext(ctx).Select(o.ALL).Where(o.Bookmaker.Eq(bookmaker), o.AwayWin.Eq(oddsTaken)).Scan(&res)
+	default:
+		return model.Odds1x2{}, errors.New("invalid backing type")
+	}
+	return res, err
+}
+
 /*
 	Unused
 */
 
-// GetBestOdds returns the best odds of found for a given match, as found in the database.
+// getBestOdds returns the best odds of found for a given match, as found in the database.
 // The odds can each be provided by different bookmakers.
-func GetBestOdds(homeTeam, awayTeam, year int32) domain.BookmakerMatchOdds {
+func getBestOdds(homeTeam, awayTeam, year int32) domain.BookmakerMatchOdds {
 	var resp domain.BookmakerMatchOdds
 	m := db_query.Match
 	o := db_query.Odds1x2
