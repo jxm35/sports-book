@@ -10,8 +10,8 @@ import (
 	"github.com/aws/aws-lambda-go/lambda"
 
 	"sports-book.com/pkg/db"
-	model "sports-book.com/pkg/db_model"
 	"sports-book.com/pkg/domain"
+	"sports-book.com/pkg/gorm/model"
 )
 
 func main() {

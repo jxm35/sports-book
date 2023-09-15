@@ -9,26 +9,26 @@ import (
 	plot2 "gonum.org/v1/plot"
 	"gonum.org/v1/plot/plotter"
 
-	"sports-book.com/pkg/db_model"
 	"sports-book.com/pkg/domain"
+	"sports-book.com/pkg/gorm/model"
 )
 
 func getCalibration(
-	caliMap map[db_model.Match]domain.MatchProbability,
+	caliMap map[model.Match]domain.MatchProbability,
 	yearString string,
 ) {
 	bucketSize := 0.1
 	numBuckets := int(1 / bucketSize)
 
-	matchesHW := make(map[int][]db_model.Match, numBuckets)
+	matchesHW := make(map[int][]model.Match, numBuckets)
 	bucketsHW := make([]float64, numBuckets)
 	HWCount := 0
 
-	matchesD := make(map[int][]db_model.Match, numBuckets)
+	matchesD := make(map[int][]model.Match, numBuckets)
 	bucketsD := make([]float64, numBuckets)
 	DCount := 0
 
-	matchesAW := make(map[int][]db_model.Match, numBuckets)
+	matchesAW := make(map[int][]model.Match, numBuckets)
 	bucketsAW := make([]float64, numBuckets)
 	AWCount := 0
 

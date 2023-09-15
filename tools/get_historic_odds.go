@@ -12,8 +12,8 @@ import (
 	"gorm.io/driver/mysql"
 	"gorm.io/gorm"
 
-	model "sports-book.com/pkg/db_model"
-	"sports-book.com/pkg/db_query"
+	model "sports-book.com/pkg/gorm/model"
+	"sports-book.com/pkg/gorm/query"
 )
 
 func SaveOdds(year int32, league string) {
@@ -22,7 +22,7 @@ func SaveOdds(year int32, league string) {
 		fmt.Println(err)
 		return
 	}
-	db_query.SetDefault(gormDb)
+	query.SetDefault(gormDb)
 
 	filename := fmt.Sprintf("./preprocess/oddsFiles/%s/%dodds.csv", league, year)
 	allOdds := make([]MatchOdds1x2, 0)
@@ -129,15 +129,15 @@ func Save1x2odds(odds []MatchOdds1x2, year int32, league string) {
 		oddsToSave = append(oddsToSave, &toSave)
 	}
 	log.Println(fmt.Sprintf("saved %d odds", len(oddsToSave)))
-	err := db_query.Odds1x2.WithContext(context.Background()).CreateInBatches(oddsToSave, 200)
+	err := query.Odds1x2.WithContext(context.Background()).CreateInBatches(oddsToSave, 200)
 	if err != nil {
 		fmt.Println(err)
 	}
 }
 
 func getMatchId(homeTeam, awayTeam, year int32) int32 {
-	m := db_query.Match
-	c := db_query.Competition
+	m := query.Match
+	c := query.Competition
 	var match model.Match
 	err := m.WithContext(context.Background()).
 		Select(m.ALL).
@@ -153,7 +153,7 @@ func getMatchId(homeTeam, awayTeam, year int32) int32 {
 func getTeamMap() map[string]int32 {
 	resp := make(map[string]int32)
 	var teams []model.Team
-	t := db_query.Team
+	t := query.Team
 	err := t.WithContext(context.Background()).
 		Select(t.ALL).Scan(&teams)
 	if err != nil {

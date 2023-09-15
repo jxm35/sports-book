@@ -6,17 +6,17 @@ import (
 	"strconv"
 	"time"
 
-	model "sports-book.com/pkg/db_model"
-	"sports-book.com/pkg/db_query"
 	"sports-book.com/pkg/domain"
+	"sports-book.com/pkg/gorm/model"
+	"sports-book.com/pkg/gorm/query"
 )
 
 // GetTeamSeasonDetails returns details of the supplied team's goals and xG for the season that starts with the
 // specified year.
 func GetTeamSeasonDetails(seasonYear, teamId int32) (domain.TeamSeasonDetails, error) {
 	ctx := context.Background()
-	m := db_query.Match
-	c := db_query.Competition
+	m := query.Match
+	c := query.Competition
 
 	var res domain.TeamSeasonDetails
 	err := m.WithContext(ctx).
@@ -47,8 +47,8 @@ func GetTeamSeasonDetails(seasonYear, teamId int32) (domain.TeamSeasonDetails, e
 // These are ordered from most recent to oldest.
 func GetHomeLastXMatches(teamId, seasonYear int32, date time.Time, numGames int) ([]model.Match, error) {
 	ctx := context.Background()
-	m := db_query.Match
-	c := db_query.Competition
+	m := query.Match
+	c := query.Competition
 
 	var res []model.Match
 	err := m.WithContext(ctx).
@@ -69,8 +69,8 @@ func GetHomeLastXMatches(teamId, seasonYear int32, date time.Time, numGames int)
 // These are ordered from most recent to oldest.
 func GetAwayLastXMatches(team, season int32, date time.Time, numGames int) ([]model.Match, error) {
 	ctx := context.Background()
-	m := db_query.Match
-	c := db_query.Competition
+	m := query.Match
+	c := query.Competition
 
 	var res []model.Match
 	err := m.WithContext(ctx).
@@ -91,7 +91,7 @@ func GetAwayLastXMatches(team, season int32, date time.Time, numGames int) ([]mo
 func GetTeamHomeMatchesSince(team int32, since time.Time) ([]model.Match, error) {
 	ctx := context.Background()
 	var res []model.Match
-	m := db_query.Match
+	m := query.Match
 	err := m.WithContext(ctx).
 		Select(m.ALL).
 		Where(
@@ -107,7 +107,7 @@ func GetTeamHomeMatchesSince(team int32, since time.Time) ([]model.Match, error)
 func GetTeamAwayMatchesSince(team int32, since time.Time) ([]model.Match, error) {
 	ctx := context.Background()
 	var res []model.Match
-	m := db_query.Match
+	m := query.Match
 	err := m.WithContext(ctx).
 		Select(m.ALL).
 		Where(
@@ -121,22 +121,28 @@ func GetTeamAwayMatchesSince(team int32, since time.Time) ([]model.Match, error)
 
 // GetTeam retrieves a team from the database given it's id
 func GetTeam(ctx context.Context, teamId int32) (model.Team, error) {
-	t := db_query.Team
-	var team model.Team
-	err := t.WithContext(ctx).
+	t := query.Team
+	team, err := t.WithContext(ctx).
 		Select(t.ALL).
-		Where(t.ID.Eq(teamId)).Scan(&team)
-	return team, err
+		Where(t.ID.Eq(teamId)).
+		First()
+	if err != nil {
+		return model.Team{}, err
+	}
+	return *team, err
 }
 
 // GetTeamByName retrieves a team from the database given it's name
 func GetTeamByName(name string) (model.Team, error) {
-	t := db_query.Team
-	var team model.Team
-	err := t.WithContext(context.Background()).
+	t := query.Team
+	team, err := t.WithContext(context.Background()).
 		Select(t.ALL).
-		Where(t.Name.Eq(name)).Scan(&team)
-	return team, err
+		Where(t.Name.Eq(name)).
+		First()
+	if err != nil {
+		return model.Team{}, err
+	}
+	return *team, err
 }
 
 // GetTeamByUsId retrieves a team from the database given it's Understat id
@@ -145,12 +151,15 @@ func GetTeamByUsId(usId string) (model.Team, error) {
 	if err != nil {
 		return model.Team{}, err
 	}
-	t := db_query.Team
-	var team model.Team
-	err = t.WithContext(context.Background()).
+	t := query.Team
+	team, err := t.WithContext(context.Background()).
 		Select(t.ALL).
-		Where(t.UsID.Eq(int32(id))).Scan(&team)
-	return team, err
+		Where(t.UsID.Eq(int32(id))).
+		First()
+	if err != nil {
+		return model.Team{}, err
+	}
+	return *team, err
 }
 
 /*
@@ -160,7 +169,7 @@ func GetTeamByUsId(usId string) (model.Team, error) {
 func ListTeamHomeMatchesBefore(team int32, since time.Time) ([]model.Match, error) {
 	ctx := context.Background()
 	var res []model.Match
-	m := db_query.Match
+	m := query.Match
 	err := m.WithContext(ctx).
 		Select(m.ALL).
 		Where(
@@ -175,7 +184,7 @@ func ListTeamHomeMatchesBefore(team int32, since time.Time) ([]model.Match, erro
 func ListTeamAwayMatchesBefore(team int32, since time.Time) ([]model.Match, error) {
 	ctx := context.Background()
 	var res []model.Match
-	m := db_query.Match
+	m := query.Match
 	err := m.WithContext(ctx).
 		Select(m.ALL).
 		Where(
@@ -188,10 +197,10 @@ func ListTeamAwayMatchesBefore(team int32, since time.Time) ([]model.Match, erro
 }
 
 func GetLineup(team string, day time.Time) []model.Player {
-	p := db_query.Player
-	a := db_query.Appearance
-	t := db_query.Team
-	m := db_query.Match
+	p := query.Player
+	a := query.Appearance
+	t := query.Team
+	m := query.Match
 
 	var lRes []model.Player
 	err := m.WithContext(context.Background()).Select(p.ALL).
@@ -218,9 +227,9 @@ func GetPlayersForTeam(team string) {
 	}
 
 	var res Result
-	p := db_query.Player
-	a := db_query.Appearance
-	t := db_query.Team
+	p := query.Player
+	a := query.Appearance
+	t := query.Team
 	err := p.WithContext(ctx).
 		Select(p.Name.As("PlayerName"), a.Minutes, t.Name.As("TeamName")).
 		LeftJoin(a, a.Player.EqCol(p.ID)).

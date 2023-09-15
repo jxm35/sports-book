@@ -13,8 +13,8 @@ import (
 	"github.com/samber/lo"
 
 	"sports-book.com/pkg/db"
-	model "sports-book.com/pkg/db_model"
 	"sports-book.com/pkg/domain"
+	"sports-book.com/pkg/gorm/model"
 	"sports-book.com/pkg/notify"
 )
 

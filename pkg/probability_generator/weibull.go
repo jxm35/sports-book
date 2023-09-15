@@ -1,6 +1,7 @@
 package probability_generator
 
 import (
+	"context"
 	"errors"
 	"fmt"
 	"math"
@@ -11,8 +12,8 @@ import (
 	"gonum.org/v1/gonum/optimize"
 
 	"sports-book.com/pkg/db"
-	"sports-book.com/pkg/db_model"
 	"sports-book.com/pkg/domain"
+	"sports-book.com/pkg/gorm/model"
 	"sports-book.com/pkg/score_predictor"
 )
 
@@ -55,7 +56,7 @@ func FindWeibullShapes() {
 		10: 2017,
 	}
 	cache = make(map[alphaArgs]float64)
-	matches := make([]db_model.Match, 0)
+	matches := make([]model.Match, 0)
 	for i := 2017; i <= 2022; i++ {
 		yearMatches, err := db.ListFixtures(int32(i), league)
 		if err != nil {
@@ -63,9 +64,9 @@ func FindWeibullShapes() {
 		}
 		matches = append(matches, yearMatches...)
 	}
-	maxFunc := func(match db_model.Match, shape float64) float64 {
+	maxFunc := func(match model.Match, shape float64) float64 {
 		l := &score_predictor.LastSeasonXgScorePredictor{}
-		_, awayExp, err := l.PredictScore(match.HomeTeam, match.AwayTeam, competitionYearMap[match.Competition], league, match.Date, match.ID)
+		_, awayExp, err := l.PredictScore(context.Background(), match.HomeTeam, match.AwayTeam, competitionYearMap[match.Competition], league, match.Date, match.ID)
 		if errors.Is(err, score_predictor.ErrNoPreviousData) {
 			return 0
 		}

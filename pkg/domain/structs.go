@@ -77,3 +77,8 @@ type OddsDelta struct {
 	AwayWinDelta float64
 	AwayWinOdds  float64
 }
+
+type Prediction struct {
+	HomexG float64
+	AwayxG float64
+}

@@ -5,28 +5,42 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="c12b77f7-ff21-404b-9dea-32d9f800b7fe" name="Changes" comment="">
-      <change beforePath="$PROJECT_DIR$/.idea/dataSources.local.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/dataSources.local.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.deprecated/save-stats/lookup.go" beforeDir="false" afterPath="$PROJECT_DIR$/.deprecated/save-stats/lookup.go" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.deprecated/save-stats/save_to_db.go" beforeDir="false" afterPath="$PROJECT_DIR$/.deprecated/save-stats/save_to_db.go" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/cmd/predict_fixtures/predict_fixtures.go" beforeDir="false" afterPath="$PROJECT_DIR$/cmd/predict_fixtures/predict_fixtures.go" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/cmd/save_results/save_results.go" beforeDir="false" afterPath="$PROJECT_DIR$/cmd/save_results/save_results.go" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/config/local.yaml" beforeDir="false" afterPath="$PROJECT_DIR$/config/local.yaml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/internal/backtest/calibrate.go" beforeDir="false" afterPath="$PROJECT_DIR$/internal/backtest/calibrate.go" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/internal/backtest/distribution.go" beforeDir="false" afterPath="$PROJECT_DIR$/internal/backtest/distribution.go" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/internal/backtest/run_backtests.go" beforeDir="false" afterPath="$PROJECT_DIR$/internal/backtest/run_backtests.go" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/pkg/db/db.go" beforeDir="false" afterPath="$PROJECT_DIR$/pkg/db/db.go" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/pkg/db/matches.go" beforeDir="false" afterPath="$PROJECT_DIR$/pkg/db/matches.go" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/pkg/db/odds.go" beforeDir="false" afterPath="$PROJECT_DIR$/pkg/db/odds.go" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/pkg/db/teams.go" beforeDir="false" afterPath="$PROJECT_DIR$/pkg/db/teams.go" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/pkg/db_model/appearance.gen.go" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/pkg/db_model/bets_placed.gen.go" beforeDir="false" />
       <change beforePath="$PROJECT_DIR$/pkg/db_model/competition.gen.go" beforeDir="false" />
       <change beforePath="$PROJECT_DIR$/pkg/db_model/match.gen.go" beforeDir="false" />
       <change beforePath="$PROJECT_DIR$/pkg/db_model/odds_1x2.gen.go" beforeDir="false" />
       <change beforePath="$PROJECT_DIR$/pkg/db_model/player.gen.go" beforeDir="false" />
       <change beforePath="$PROJECT_DIR$/pkg/db_model/team.gen.go" beforeDir="false" />
       <change beforePath="$PROJECT_DIR$/pkg/db_query/appearance.gen.go" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/pkg/db_query/bets_placed.gen.go" beforeDir="false" />
       <change beforePath="$PROJECT_DIR$/pkg/db_query/competition.gen.go" beforeDir="false" />
       <change beforePath="$PROJECT_DIR$/pkg/db_query/gen.go" beforeDir="false" />
       <change beforePath="$PROJECT_DIR$/pkg/db_query/match.gen.go" beforeDir="false" />
       <change beforePath="$PROJECT_DIR$/pkg/db_query/odds_1x2.gen.go" beforeDir="false" />
       <change beforePath="$PROJECT_DIR$/pkg/db_query/player.gen.go" beforeDir="false" />
       <change beforePath="$PROJECT_DIR$/pkg/db_query/team.gen.go" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/pkg/domain/fixture.go" beforeDir="false" afterPath="$PROJECT_DIR$/pkg/domain/fixture.go" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/pkg/domain/structs.go" beforeDir="false" afterPath="$PROJECT_DIR$/pkg/domain/structs.go" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/pkg/odds/api_retriever.go" beforeDir="false" afterPath="$PROJECT_DIR$/pkg/odds/api_retriever.go" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/python/scrape_results/scrape_results.py" beforeDir="false" afterPath="$PROJECT_DIR$/python/scrape_results/scrape_results.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/tools/gen_models.go" beforeDir="false" afterPath="$PROJECT_DIR$/tools/generate_gorm_models/gen_models.go" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/pkg/pipeline/pipeline.go" beforeDir="false" afterPath="$PROJECT_DIR$/pkg/pipeline/pipeline.go" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/pkg/probability_generator/weibull.go" beforeDir="false" afterPath="$PROJECT_DIR$/pkg/probability_generator/weibull.go" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/pkg/score_predictor/elo.go" beforeDir="false" afterPath="$PROJECT_DIR$/pkg/score_predictor/elo.go" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/pkg/score_predictor/interface.go" beforeDir="false" afterPath="$PROJECT_DIR$/pkg/score_predictor/interface.go" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/pkg/score_predictor/last_season_xg.go" beforeDir="false" afterPath="$PROJECT_DIR$/pkg/score_predictor/last_season_xg.go" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/tools/generate_gorm_models/gen_models.go" beforeDir="false" afterPath="$PROJECT_DIR$/tools/generate_gorm_models/gen_models.go" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/tools/get_historic_odds.go" beforeDir="false" afterPath="$PROJECT_DIR$/tools/get_historic_odds.go" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />

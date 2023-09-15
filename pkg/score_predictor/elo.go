@@ -1,29 +1,33 @@
 package score_predictor
 
 import (
+	"context"
+	"errors"
 	"fmt"
 	"time"
 
 	"sports-book.com/pkg/db"
-	"sports-book.com/pkg/db_model"
 	"sports-book.com/pkg/domain"
+	"sports-book.com/pkg/gorm/model"
+	"sports-book.com/pkg/notify"
+	"sports-book.com/pkg/predictions"
 )
 
 type eloGoalsPredictor struct {
-	predictions               map[int32]prediction
+	predictions               predictions.PredictionHandler
 	FormTimespan              int
 	chanceConversionWeighting int
 }
 
 func NewEloGoalsPredictor(formTimespan, chanceConversionRating int) ScorePredictor {
 	return &eloGoalsPredictor{
-		predictions:               make(map[int32]prediction),
+		predictions:               predictions.GetPredictionHandler(),
 		FormTimespan:              formTimespan,
 		chanceConversionWeighting: chanceConversionRating,
 	}
 }
 
-func (e *eloGoalsPredictor) PredictScore(homeTeam, awayTeam, season int32, league domain.League, date time.Time, matchID int32) (float64, float64, error) {
+func (e *eloGoalsPredictor) PredictScore(ctx context.Context, homeTeam, awayTeam, season int32, league domain.League, date time.Time, matchID int32) (float64, float64, error) {
 	seasonStats, err := db.GetSeasonDetails(season-1, league)
 	if err != nil {
 		return -1, -1, err
@@ -35,10 +39,13 @@ func (e *eloGoalsPredictor) PredictScore(homeTeam, awayTeam, season int32, leagu
 		return -1, -1, ErrInvalidSeason
 	}
 	defer func() {
-		if _, exists := e.predictions[matchID]; !exists {
-			e.predictions[matchID] = prediction{
-				homexG: -1,
-				awayxG: -1,
+		if _, predictionErr := e.predictions.GetPrediction(ctx, matchID); errors.Is(predictionErr, predictions.ErrPredictionNotFound) {
+			predictionErr = e.predictions.SavePrediction(ctx, matchID, domain.Prediction{
+				HomexG: -1,
+				AwayxG: -1,
+			})
+			if predictionErr != nil {
+				notify.GetNotifier().NotifyError(predictionErr.Error())
 			}
 		}
 	}()
@@ -59,8 +66,14 @@ func (e *eloGoalsPredictor) PredictScore(homeTeam, awayTeam, season int32, leagu
 		return -1, -1, ErrInvalidSeason
 	}
 
-	lastGames, _ := db.GetHomeLastXMatches(homeTeam, season, date, e.FormTimespan)
-	aForm, dForm := e.calcFormHome(homeTeam, lastGames)
+	lastGames, err := db.GetHomeLastXMatches(homeTeam, season, date, e.FormTimespan)
+	if err != nil {
+		return -1, -1, err
+	}
+	aForm, dForm, err := e.calcFormHome(ctx, homeTeam, lastGames)
+	if err != nil {
+		return -1, -1, err
+	}
 	homeChanceConversion := e.calcGoalConversion(homeSeason, homeSeason.HomeCount+homeSeason.AwayCount)
 
 	homeAvgxG := homeSeason.XGScoredAtHome / float64(homeSeason.AwayCount)
@@ -85,8 +98,14 @@ func (e *eloGoalsPredictor) PredictScore(homeTeam, awayTeam, season int32, leagu
 		return -1, -1, ErrInvalidSeason
 	}
 
-	lastGames, _ = db.GetAwayLastXMatches(awayTeam, season, date, e.FormTimespan)
-	aForm, dForm = e.calcFormAway(awayTeam, lastGames)
+	lastGames, err = db.GetAwayLastXMatches(awayTeam, season, date, e.FormTimespan)
+	if err != nil {
+		return -1, -1, err
+	}
+	aForm, dForm, err = e.calcFormAway(ctx, awayTeam, lastGames)
+	if err != nil {
+		return -1, -1, err
+	}
 	awayChanceConversion := e.calcGoalConversion(awaySeason, awaySeason.HomeCount+awaySeason.AwayCount)
 
 	awayAvgxG := awaySeason.XGScoredAway / float64(awaySeason.AwayCount)
@@ -104,99 +123,94 @@ func (e *eloGoalsPredictor) PredictScore(homeTeam, awayTeam, season int32, leagu
 	projectedAwayGoals := awayAttackStrength * homeDefenseStrength * avgAwayXg
 
 	fmt.Printf("%d: %f | %d: %f", homeTeam, projectedHomeGoals, awayTeam, projectedAwayGoals)
-	e.predictions[matchID] = prediction{
-		homexG: projectedHomeGoals,
-		awayxG: projectedAwayGoals,
-	}
-	return projectedHomeGoals, projectedAwayGoals, nil
-}
-
-type prediction struct {
-	homexG float64
-	awayxG float64
+	err = e.predictions.SavePrediction(ctx, matchID, domain.Prediction{
+		HomexG: projectedHomeGoals,
+		AwayxG: projectedAwayGoals,
+	})
+	return projectedHomeGoals, projectedAwayGoals, err
 }
 
 // additive or multiplicative?
 // calculate home and away separately or together?
 
-func (e *eloGoalsPredictor) calcFormHome(team int32, matches []db_model.Match) (float64, float64) {
+func (e *eloGoalsPredictor) calcFormHome(ctx context.Context, team int32, matches []model.Match) (float64, float64, error) {
 	attackForm := 0.0  // how many more goals they score than expected
 	defenseForm := 0.0 // how many more goals they concede than expected
 	count := 0
 	for i := 0; i < len(matches); i++ {
-		pred, ok := e.predictions[matches[i].ID]
-		if !ok {
-			panic("could not find prediction")
+		pred, err := e.predictions.GetPrediction(ctx, matches[i].ID)
+		if err != nil {
+			return -1, -1, err
 		}
-		if pred.awayxG == -1 && pred.homexG == -1 {
+		if pred.AwayxG == -1 && pred.HomexG == -1 {
 			continue
 		}
-		attackForm = attackForm + (matches[i].HomeExpectedGoals - pred.homexG)
-		defenseForm = defenseForm + (matches[i].AwayExpectedGoals - pred.awayxG)
+		attackForm = attackForm + (matches[i].HomeExpectedGoals - pred.HomexG)
+		defenseForm = defenseForm + (matches[i].AwayExpectedGoals - pred.AwayxG)
 		count++
 	}
 	if count < 4 {
-		return 0, 0
+		return 0, 0, nil
 	}
 	attackForm = attackForm / float64(count)
 	defenseForm = defenseForm / float64(count)
 
-	return attackForm, defenseForm
+	return attackForm, defenseForm, nil
 }
 
-func (e *eloGoalsPredictor) calcFormAway(team int32, matches []db_model.Match) (float64, float64) {
+func (e *eloGoalsPredictor) calcFormAway(ctx context.Context, team int32, matches []model.Match) (float64, float64, error) {
 	attackForm := 0.0
 	defenseForm := 0.0
 	count := 0
 	for i := 0; i < len(matches); i++ {
-		pred, ok := e.predictions[matches[i].ID]
-		if !ok {
-			panic("could not find prediction")
+		pred, err := e.predictions.GetPrediction(ctx, matches[i].ID)
+		if err != nil {
+			return -1, -1, err
 		}
-		if pred.awayxG == -1 && pred.homexG == -1 {
+		if pred.AwayxG == -1 && pred.HomexG == -1 {
 			continue
 		}
-		attackForm = attackForm + (matches[i].AwayExpectedGoals - pred.awayxG)
-		defenseForm = defenseForm + (matches[i].HomeExpectedGoals - pred.homexG)
+		attackForm = attackForm + (matches[i].AwayExpectedGoals - pred.AwayxG)
+		defenseForm = defenseForm + (matches[i].HomeExpectedGoals - pred.HomexG)
 		count++
 	}
 	if count < 4 {
-		return 0, 0
+		return 0, 0, nil
 	}
 	attackForm = attackForm / float64(count)
 	defenseForm = defenseForm / float64(count)
-	return attackForm, defenseForm
+	return attackForm, defenseForm, nil
 }
 
-func (e *eloGoalsPredictor) calcForm(team int32, matches []db_model.Match) (float64, float64) {
+func (e *eloGoalsPredictor) calcForm(ctx context.Context, team int32, matches []model.Match) (float64, float64, error) {
 	attackForm := 0.0
 	defenseForm := 0.0
 	count := 0
 	for _, match := range matches {
-		pred, ok := e.predictions[match.ID]
-		if !ok {
-			panic("could not find prediction")
+		pred, err := e.predictions.GetPrediction(ctx, match.ID)
+		if err != nil {
+			return -1, -1, err
 		}
-		if pred.awayxG == -1 && pred.homexG == -1 {
+		if pred.AwayxG == -1 && pred.HomexG == -1 {
 			continue
 		}
 		if match.HomeTeam == team {
-			attackForm = attackForm + (match.HomeExpectedGoals - pred.homexG)
-			defenseForm = defenseForm + (match.AwayExpectedGoals - pred.awayxG)
+			attackForm = attackForm + (match.HomeExpectedGoals - pred.HomexG)
+			defenseForm = defenseForm + (match.AwayExpectedGoals - pred.AwayxG)
 		} else if match.AwayTeam == team {
-			attackForm = attackForm + (match.AwayExpectedGoals - pred.awayxG)
-			defenseForm = defenseForm + (match.HomeExpectedGoals - pred.homexG)
+			attackForm = attackForm + (match.AwayExpectedGoals - pred.AwayxG)
+			defenseForm = defenseForm + (match.HomeExpectedGoals - pred.HomexG)
 		} else {
 			panic("team not in match")
 		}
 		count++
 	}
 	if count < 4 {
-		return 0, 0
+		return 0, 0, nil
 	}
 	attackForm = attackForm / float64(count)
 	defenseForm = defenseForm / float64(count)
-	return attackForm, defenseForm
+	return attackForm, defenseForm, nil
 }
 
 func (e *eloGoalsPredictor) calcGoalConversion(lastSeason domain.TeamSeasonDetails, matchesPlayed int) float64 {

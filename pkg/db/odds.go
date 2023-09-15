@@ -4,16 +4,16 @@ import (
 	"context"
 	"errors"
 
-	model "sports-book.com/pkg/db_model"
-	"sports-book.com/pkg/db_query"
 	"sports-book.com/pkg/domain"
+	"sports-book.com/pkg/gorm/model"
+	"sports-book.com/pkg/gorm/query"
 )
 
 // GetBestOddsForMatch returns the best odds of found for a given match, as found in the database.
 // The odds can each be provided by different bookmakers.
 func GetBestOddsForMatch(ctx context.Context, matchId int32) (domain.BookmakerMatchOdds, error) {
 	var resp domain.BookmakerMatchOdds
-	o := db_query.Odds1x2
+	o := query.Odds1x2
 
 	err := o.WithContext(ctx).
 		Select(o.Bookmaker.As("HomeBookie"), o.HomeWin).
@@ -48,13 +48,13 @@ func GetBestOddsForMatch(ctx context.Context, matchId int32) (domain.BookmakerMa
 }
 
 func SaveOdds(ctx context.Context, odds model.Odds1x2) error {
-	o := db_query.Odds1x2
+	o := query.Odds1x2
 	err := o.WithContext(ctx).Create(&odds)
 	return err
 }
 
 func SaveBetPlaced(ctx context.Context, bet domain.BetOrder) error {
-	b := db_query.BetsPlaced
+	b := query.BetsPlaced
 
 	oddsTaken, err := getOddsFromBookmakerAndPrice(ctx, bet.BookMaker, bet.OddsTaken, bet.Backing)
 	if err != nil {
@@ -69,20 +69,23 @@ func SaveBetPlaced(ctx context.Context, bet domain.BetOrder) error {
 }
 
 func getOddsFromBookmakerAndPrice(ctx context.Context, bookmaker string, oddsTaken float64, backing domain.BackingType) (model.Odds1x2, error) {
-	o := db_query.Odds1x2
+	o := query.Odds1x2
 	var err error
-	var res model.Odds1x2
+	var odds *model.Odds1x2
 	switch backing {
 	case domain.BackHomeWin:
-		err = o.WithContext(ctx).Select(o.ALL).Where(o.Bookmaker.Eq(bookmaker), o.HomeWin.Eq(oddsTaken)).Scan(&res)
+		odds, err = o.WithContext(ctx).Select(o.ALL).Where(o.Bookmaker.Eq(bookmaker), o.HomeWin.Eq(oddsTaken)).First()
 	case domain.BackDraw:
-		err = o.WithContext(ctx).Select(o.ALL).Where(o.Bookmaker.Eq(bookmaker), o.Draw.Eq(oddsTaken)).Scan(&res)
+		odds, err = o.WithContext(ctx).Select(o.ALL).Where(o.Bookmaker.Eq(bookmaker), o.Draw.Eq(oddsTaken)).First()
 	case domain.BackAwayWin:
-		err = o.WithContext(ctx).Select(o.ALL).Where(o.Bookmaker.Eq(bookmaker), o.AwayWin.Eq(oddsTaken)).Scan(&res)
+		odds, err = o.WithContext(ctx).Select(o.ALL).Where(o.Bookmaker.Eq(bookmaker), o.AwayWin.Eq(oddsTaken)).First()
 	default:
 		return model.Odds1x2{}, errors.New("invalid backing type")
 	}
-	return res, err
+	if err != nil {
+		return model.Odds1x2{}, err
+	}
+	return *odds, nil
 }
 
 /*
@@ -93,9 +96,9 @@ func getOddsFromBookmakerAndPrice(ctx context.Context, bookmaker string, oddsTak
 // The odds can each be provided by different bookmakers.
 func getBestOdds(homeTeam, awayTeam, year int32) domain.BookmakerMatchOdds {
 	var resp domain.BookmakerMatchOdds
-	m := db_query.Match
-	o := db_query.Odds1x2
-	c := db_query.Competition
+	m := query.Match
+	o := query.Odds1x2
+	c := query.Competition
 
 	o.WithContext(context.Background()).
 		Select(o.Bookmaker.As("HomeBookie"), o.HomeWin).

@@ -1,21 +1,22 @@
 package score_predictor
 
 import (
+	"context"
 	"fmt"
 	"time"
 
 	"github.com/samber/lo"
 
 	"sports-book.com/pkg/db"
-	"sports-book.com/pkg/db_model"
 	"sports-book.com/pkg/domain"
+	"sports-book.com/pkg/gorm/model"
 )
 
 type LastSeasonXgScorePredictor struct {
 	LastXGames int
 }
 
-func (l *LastSeasonXgScorePredictor) PredictScore(homeTeam, awayTeam, season int32, league domain.League, date time.Time, matchID int32) (float64, float64, error) {
+func (l *LastSeasonXgScorePredictor) PredictScore(ctx context.Context, homeTeam, awayTeam, season int32, league domain.League, date time.Time, matchID int32) (float64, float64, error) {
 	// calculate standard for the year before
 	seasonStats, err := db.GetSeasonDetails(season-1, league)
 	if err != nil {
@@ -51,10 +52,10 @@ func (l *LastSeasonXgScorePredictor) PredictScore(homeTeam, awayTeam, season int
 			return -1, -1, err
 		}
 		if len(homeLastXGames) > 0 {
-			lastGamesHomexG := lo.Reduce(homeLastXGames, func(agg float64, item db_model.Match, index int) float64 {
+			lastGamesHomexG := lo.Reduce(homeLastXGames, func(agg float64, item model.Match, index int) float64 {
 				return agg + item.HomeExpectedGoals
 			}, 0.0)
-			lastGamesAwayxG := lo.Reduce(homeLastXGames, func(agg float64, item db_model.Match, index int) float64 {
+			lastGamesAwayxG := lo.Reduce(homeLastXGames, func(agg float64, item model.Match, index int) float64 {
 				return agg + item.AwayExpectedGoals
 			}, 0.0)
 			homeAvgxG = (homeAvgxG + (lastGamesHomexG / float64(len(homeLastXGames)))) / 2
@@ -85,10 +86,10 @@ func (l *LastSeasonXgScorePredictor) PredictScore(homeTeam, awayTeam, season int
 			return -1, -1, err
 		}
 		if len(awayLastXGames) > 0 {
-			lastGamesxGScored := lo.Reduce(awayLastXGames, func(agg float64, item db_model.Match, index int) float64 {
+			lastGamesxGScored := lo.Reduce(awayLastXGames, func(agg float64, item model.Match, index int) float64 {
 				return agg + item.AwayExpectedGoals
 			}, 0.0)
-			lastGamesxGConceded := lo.Reduce(awayLastXGames, func(agg float64, item db_model.Match, index int) float64 {
+			lastGamesxGConceded := lo.Reduce(awayLastXGames, func(agg float64, item model.Match, index int) float64 {
 				return agg + item.HomeExpectedGoals
 			}, 0.0)
 			awayAvgxG = (awayAvgxG + (lastGamesxGScored / float64(len(awayLastXGames)))) / 2

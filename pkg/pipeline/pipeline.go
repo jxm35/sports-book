@@ -23,7 +23,7 @@ type pipelineImpl struct {
 }
 
 func (p *pipelineImpl) PredictMatch(ctx context.Context, homeTeam, awayTeam, seasonYear int32, league domain.League, date time.Time, matchID int32) (domain.MatchProbability, error) {
-	homeGoalsPredicted, awayGoalsPredicted, err := p.predictor.PredictScore(homeTeam, awayTeam, seasonYear, league, date, matchID)
+	homeGoalsPredicted, awayGoalsPredicted, err := p.predictor.PredictScore(ctx, homeTeam, awayTeam, seasonYear, league, date, matchID)
 	if err != nil {
 		return domain.MatchProbability{}, err
 	}

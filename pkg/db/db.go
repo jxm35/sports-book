@@ -7,7 +7,7 @@ import (
 	"gorm.io/driver/mysql"
 	"gorm.io/gorm"
 
-	"sports-book.com/pkg/db_query"
+	"sports-book.com/pkg/gorm/query"
 )
 
 var dbConn *gorm.DB
@@ -25,7 +25,7 @@ func Connect() (*gorm.DB, error) {
 			),
 		),
 	)
-	db_query.SetDefault(db)
+	query.SetDefault(db)
 	dbConn = db
 	return db, err
 }

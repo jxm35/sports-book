@@ -9,3 +9,5 @@ bet_selector.max_percent_bet: 0.05
 bet_selector.linear_amounts: true
 
 odds_retriever.impl: db
+
+predictions.impl: in_memory

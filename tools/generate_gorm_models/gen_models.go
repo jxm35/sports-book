@@ -14,7 +14,7 @@ func main() {
 
 func genModels() {
 	g := gen.NewGenerator(gen.Config{
-		OutPath: "./query",
+		OutPath: "./pkg/gorm/query",
 		Mode:    gen.WithoutContext | gen.WithDefaultQuery | gen.WithQueryInterface, // generate mode
 	})
 

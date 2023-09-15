@@ -7,14 +7,14 @@ import (
 	"strconv"
 
 	"sports-book.com/pkg/db"
-	"sports-book.com/pkg/db_model"
 	"sports-book.com/pkg/domain"
+	"sports-book.com/pkg/gorm/model"
 	"sports-book.com/pkg/pipeline"
 	"sports-book.com/pkg/score_predictor"
 )
 
 func RunBacktests(startYear, endYear int32, league domain.League, pipeline pipeline.Pipeline, placeBets bool) {
-	probabilitiesForCalibration := make(map[db_model.Match]domain.MatchProbability)
+	probabilitiesForCalibration := make(map[model.Match]domain.MatchProbability)
 	betResults := make([]betResult, 0)
 	bank := float64(100)
 	for i := startYear; i <= endYear; i++ {
@@ -50,10 +50,10 @@ type betResult struct {
 	Won       bool
 }
 
-func testPredictSeason(pipeline pipeline.Pipeline, season int32, league domain.League, placeBets bool, bank float64) (map[db_model.Match]domain.MatchProbability, float64, []betResult, error) {
-	winningBets := make(map[db_model.Match]domain.BetOrder)
-	losingBets := make(map[db_model.Match]domain.BetOrder)
-	probabilitiesForCalibration := make(map[db_model.Match]domain.MatchProbability)
+func testPredictSeason(pipeline pipeline.Pipeline, season int32, league domain.League, placeBets bool, bank float64) (map[model.Match]domain.MatchProbability, float64, []betResult, error) {
+	winningBets := make(map[model.Match]domain.BetOrder)
+	losingBets := make(map[model.Match]domain.BetOrder)
+	probabilitiesForCalibration := make(map[model.Match]domain.MatchProbability)
 	betsPlaced := make([]betResult, 0)
 	ctx := context.Background()
 

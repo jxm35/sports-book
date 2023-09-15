@@ -1,6 +1,7 @@
 package score_predictor
 
 import (
+	"context"
 	"sync"
 	"time"
 
@@ -14,7 +15,7 @@ var (
 )
 
 type ScorePredictor interface {
-	PredictScore(homeTeam, awayTeam, season int32, league domain.League, date time.Time, matchID int32) (float64, float64, error)
+	PredictScore(ctx context.Context, homeTeam, awayTeam, season int32, league domain.League, date time.Time, matchID int32) (float64, float64, error)
 }
 
 func NewScorePredictorFromConfig() (ScorePredictor, error) {
