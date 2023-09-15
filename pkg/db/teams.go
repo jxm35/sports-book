@@ -120,10 +120,10 @@ func GetTeamAwayMatchesSince(team int32, since time.Time) ([]model.Match, error)
 }
 
 // GetTeam retrieves a team from the database given it's id
-func GetTeam(teamId int32) (model.Team, error) {
+func GetTeam(ctx context.Context, teamId int32) (model.Team, error) {
 	t := db_query.Team
 	var team model.Team
-	err := t.WithContext(context.Background()).
+	err := t.WithContext(ctx).
 		Select(t.ALL).
 		Where(t.ID.Eq(teamId)).Scan(&team)
 	return team, err

@@ -1,6 +1,7 @@
 package notify
 
 import (
+	"context"
 	"errors"
 	"fmt"
 	"os"
@@ -29,16 +30,16 @@ func newDiscordNotifier() (*discordNotifier, error) {
 	}, nil
 }
 
-func (d *discordNotifier) NotifyBetPlaced(bet domain.BetOrder) error {
-	match, err := db.GetMatch(bet.MatchId)
+func (d *discordNotifier) NotifyBetPlaced(ctx context.Context, bet domain.BetOrder) error {
+	match, err := db.GetMatch(ctx, bet.MatchId)
 	if err != nil {
 		return err
 	}
-	homeTeam, err := db.GetTeam(match.HomeTeam)
+	homeTeam, err := db.GetTeam(ctx, match.HomeTeam)
 	if err != nil {
 		return err
 	}
-	awayTeam, err := db.GetTeam(match.AwayTeam)
+	awayTeam, err := db.GetTeam(ctx, match.AwayTeam)
 	if err != nil {
 		return err
 	}
@@ -56,6 +57,10 @@ Predicted Probability: %.2f%%`,
 		bet.PredictedProbability*100,
 	)
 	return d.sendMessage(message)
+}
+
+func (l *discordNotifier) NotifyError(message string) error {
+	return nil
 }
 
 func (d *discordNotifier) sendMessage(text string) error {

@@ -83,8 +83,7 @@ func GetSeasonDetails(seasonYear int32, league domain.League) (domain.SeasonDeta
 	return res, err
 }
 
-func GetMatch(matchId int32) (model.Match, error) {
-	ctx := context.Background()
+func GetMatch(ctx context.Context, matchId int32) (model.Match, error) {
 	m := db_query.Match
 	var res model.Match
 	err := m.WithContext(ctx).

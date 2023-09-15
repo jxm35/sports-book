@@ -5,19 +5,21 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="c12b77f7-ff21-404b-9dea-32d9f800b7fe" name="Changes" comment="">
-      <change afterPath="$PROJECT_DIR$/pkg/config/config.go" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/cmd/backtest/backtest.go" beforeDir="false" afterPath="$PROJECT_DIR$/cmd/backtest/backtest.go" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/cmd/predict_fixtures/predict_fixtures.go" beforeDir="false" afterPath="$PROJECT_DIR$/cmd/predict_fixtures/predict_fixtures.go" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/go.mod" beforeDir="false" afterPath="$PROJECT_DIR$/go.mod" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/go.sum" beforeDir="false" afterPath="$PROJECT_DIR$/go.sum" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/config/local.yaml" beforeDir="false" afterPath="$PROJECT_DIR$/config/local.yaml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/internal/backtest/run_backtests.go" beforeDir="false" afterPath="$PROJECT_DIR$/internal/backtest/run_backtests.go" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/pkg/bet_selector/fixed_amount.go" beforeDir="false" afterPath="$PROJECT_DIR$/pkg/bet_selector/fixed_amount.go" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/pkg/bet_selector/interface.go" beforeDir="false" afterPath="$PROJECT_DIR$/pkg/bet_selector/interface.go" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/pkg/bet_selector/kelly_criterion.go" beforeDir="false" afterPath="$PROJECT_DIR$/pkg/bet_selector/kelly_criterion.go" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/pkg/db/db.go" beforeDir="false" afterPath="$PROJECT_DIR$/pkg/db/db.go" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/pkg/db/matches.go" beforeDir="false" afterPath="$PROJECT_DIR$/pkg/db/matches.go" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/pkg/db/odds.go" beforeDir="false" afterPath="$PROJECT_DIR$/pkg/db/odds.go" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/pkg/db/teams.go" beforeDir="false" afterPath="$PROJECT_DIR$/pkg/db/teams.go" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/pkg/notify/discord.go" beforeDir="false" afterPath="$PROJECT_DIR$/pkg/notify/discord.go" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/pkg/notify/log.go" beforeDir="false" afterPath="$PROJECT_DIR$/pkg/notify/log.go" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/pkg/notify/notify.go" beforeDir="false" afterPath="$PROJECT_DIR$/pkg/notify/notify.go" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/pkg/pipeline/pipeline_builder.go" beforeDir="false" afterPath="$PROJECT_DIR$/pkg/pipeline/pipeline_builder.go" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/pkg/score_predictor/interface.go" beforeDir="false" afterPath="$PROJECT_DIR$/pkg/score_predictor/interface.go" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/pkg/pipeline/interface.go" beforeDir="false" afterPath="$PROJECT_DIR$/pkg/pipeline/interface.go" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/pkg/pipeline/pipeline.go" beforeDir="false" afterPath="$PROJECT_DIR$/pkg/pipeline/pipeline.go" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -106,6 +108,7 @@
         <env name="DB_USER" value="root" />
         <env name="DISCORD_WEBHOOK_URL" value="https://discordapp.com/api/webhooks/1151587748319350835/afvwuMzlWHLwqI4-WJEy-9BMOh60oTP1CVM2YqSEy7_MDPR7tCqOSAir9Yfj8qUmvPa3" />
         <env name="env" value="local" />
+        <env name="ODDS_API_KEY" value="54c60474c409a5d1da163fad50994bac" />
       </envs>
       <kind value="PACKAGE" />
       <package value="sports-book.com/cmd/backtest" />

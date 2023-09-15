@@ -1,6 +1,7 @@
 package bet_selector
 
 import (
+	"context"
 	"sync"
 
 	results "github.com/jxm35/go-results"
@@ -15,7 +16,7 @@ var (
 )
 
 type BetSelector interface {
-	Place1x2Bets(matchId int32, generatedOdds domain.MatchProbability, currentPot float64) results.Option[domain.BetOrder]
+	Place1x2Bets(ctx context.Context, matchId int32, generatedOdds domain.MatchProbability, currentPot float64) results.Option[domain.BetOrder]
 }
 
 func NewBetSelectorFromConfig() (BetSelector, error) {

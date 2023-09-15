@@ -1,11 +1,13 @@
 package bet_selector
 
 import (
+	"context"
+
 	results "github.com/jxm35/go-results"
 
 	"sports-book.com/pkg/config"
-	"sports-book.com/pkg/db"
 	"sports-book.com/pkg/domain"
+	odds2 "sports-book.com/pkg/odds"
 )
 
 type kellyCriterionBetSelector struct {
@@ -73,8 +75,11 @@ func NewKellyCriterionBetSelectorFromConfig() (BetSelector, error) {
 	}, nil
 }
 
-func (k *kellyCriterionBetSelector) Place1x2Bets(matchId int32, generatedOdds domain.MatchProbability, currentPot float64) results.Option[domain.BetOrder] {
-	odds := db.GetBestOddsForMatch(matchId)
+func (k *kellyCriterionBetSelector) Place1x2Bets(ctx context.Context, matchId int32, generatedOdds domain.MatchProbability, currentPot float64) results.Option[domain.BetOrder] {
+	odds, err := odds2.GetOddsRetriever().GetBestOdds(ctx, matchId, "")
+	if err != nil {
+		return results.None[domain.BetOrder]()
+	}
 	bookieImpliedOdds := domain.MatchProbability{
 		HomeWin: 1 / odds.HomeWin,
 		Draw:    1 / odds.Draw,

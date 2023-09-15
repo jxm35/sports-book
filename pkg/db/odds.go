@@ -9,32 +9,45 @@ import (
 
 // GetBestOddsForMatch returns the best odds of found for a given match, as found in the database.
 // The odds can each be provided by different bookmakers.
-func GetBestOddsForMatch(matchId int32) domain.BookmakerMatchOdds {
+func GetBestOddsForMatch(ctx context.Context, matchId int32) (domain.BookmakerMatchOdds, error) {
 	var resp domain.BookmakerMatchOdds
 	o := db_query.Odds1x2
 
-	o.WithContext(context.Background()).
+	err := o.WithContext(ctx).
 		Select(o.Bookmaker.As("HomeBookie"), o.HomeWin).
 		Where(o.Match.Eq(matchId)).
 		Order(o.HomeWin.Desc()).
 		Limit(1).
 		Scan(&resp)
+	if err != nil {
+		return domain.BookmakerMatchOdds{}, err
+	}
 
-	o.WithContext(context.Background()).
+	err = o.WithContext(ctx).
 		Select(o.Bookmaker.As("DrawBookie"), o.Draw).
 		Where(o.Match.Eq(matchId)).
 		Order(o.Draw.Desc()).
 		Limit(1).
 		Scan(&resp)
+	if err != nil {
+		return domain.BookmakerMatchOdds{}, err
+	}
 
-	o.WithContext(context.Background()).
+	err = o.WithContext(ctx).
 		Select(o.Bookmaker.As("AwayBookie"), o.AwayWin).
 		Where(o.Match.Eq(matchId)).
 		Order(o.AwayWin.Desc()).
 		Limit(1).
 		Scan(&resp)
-	return resp
+	if err != nil {
+		return domain.BookmakerMatchOdds{}, err
+	}
+	return resp, err
 }
+
+/*
+	Unused
+*/
 
 // GetBestOdds returns the best odds of found for a given match, as found in the database.
 // The odds can each be provided by different bookmakers.

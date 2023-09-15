@@ -1,13 +1,14 @@
 package bet_selector
 
 import (
+	"context"
 	"errors"
 
 	results "github.com/jxm35/go-results"
 
 	"sports-book.com/pkg/config"
-	"sports-book.com/pkg/db"
 	"sports-book.com/pkg/domain"
+	odds2 "sports-book.com/pkg/odds"
 )
 
 var ErrInvalidConfig = errors.New("invalid bet placer config provided")
@@ -53,7 +54,7 @@ func NewFixedAmountBetSelectorFromConfig() (BetSelector, error) {
 	}, nil
 }
 
-func (f *fixedAmountBetSelector) Place1x2Bets(matchId int32, generatedOdds domain.MatchProbability, currentPot float64) results.Option[domain.BetOrder] {
+func (f *fixedAmountBetSelector) Place1x2Bets(ctx context.Context, matchId int32, generatedOdds domain.MatchProbability, currentPot float64) results.Option[domain.BetOrder] {
 	if f.maxOddsDelta == 0 {
 		f.maxOddsDelta = 1
 	}
@@ -61,7 +62,10 @@ func (f *fixedAmountBetSelector) Place1x2Bets(matchId int32, generatedOdds domai
 		return results.None[domain.BetOrder]()
 	}
 
-	odds := db.GetBestOddsForMatch(matchId)
+	odds, err := odds2.GetOddsRetriever().GetBestOdds(ctx, matchId, "")
+	if err != nil {
+		return results.None[domain.BetOrder]()
+	}
 	bookieImpliedOdds := domain.MatchProbability{
 		HomeWin: 1 / odds.HomeWin,
 		Draw:    1 / odds.Draw,

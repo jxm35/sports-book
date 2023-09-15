@@ -1,6 +1,7 @@
 package notify
 
 import (
+	"context"
 	"sync"
 
 	"sports-book.com/pkg/config"
@@ -13,7 +14,8 @@ var (
 )
 
 type notifier interface {
-	NotifyBetPlaced(bet domain.BetOrder) error
+	NotifyBetPlaced(ctx context.Context, bet domain.BetOrder) error
+	NotifyError(message string) error
 }
 
 func GetNotifier() notifier {

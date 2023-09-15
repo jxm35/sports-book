@@ -1,6 +1,7 @@
 package backtest
 
 import (
+	"context"
 	"errors"
 	"fmt"
 	"strconv"
@@ -54,6 +55,7 @@ func testPredictSeason(pipeline pipeline.Pipeline, season int32, league domain.L
 	losingBets := make(map[db_model.Match]domain.BetOrder)
 	probabilitiesForCalibration := make(map[db_model.Match]domain.MatchProbability)
 	betsPlaced := make([]betResult, 0)
+	ctx := context.Background()
 
 	matches, err := db.ListFixtures(season, league)
 	if err != nil {
@@ -64,7 +66,7 @@ func testPredictSeason(pipeline pipeline.Pipeline, season int32, league domain.L
 	}
 
 	for _, match := range matches {
-		customProbabilities, _, err := pipeline.PredictMatch(match.HomeTeam, match.AwayTeam, season, league, match.Date, match.ID)
+		customProbabilities, err := pipeline.PredictMatch(ctx, match.HomeTeam, match.AwayTeam, season, league, match.Date, match.ID)
 		if errors.Is(err, score_predictor.ErrNoPreviousData) {
 			continue
 		}
@@ -75,7 +77,7 @@ func testPredictSeason(pipeline pipeline.Pipeline, season int32, league domain.L
 		probabilitiesForCalibration[match] = customProbabilities
 
 		if placeBets {
-			betOp := pipeline.PlaceBet(match.ID, customProbabilities, bank)
+			betOp := pipeline.PlaceBet(ctx, match.ID, customProbabilities, bank)
 			// betPlaced := predict.HandleOddsDelta(oddsDelta, match.ID)
 			if betOp.IsNone() {
 				continue

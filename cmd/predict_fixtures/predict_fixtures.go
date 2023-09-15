@@ -53,7 +53,8 @@ func handle(ctx context.Context, event events.SQSEvent, predictionPipeline pipel
 			if err != nil {
 				return fmt.Errorf("failed to add fixture: %w", err)
 			}
-			probabilities, _, err := predictionPipeline.PredictMatch(
+			probabilities, err := predictionPipeline.PredictMatch(
+				ctx,
 				match.HomeTeam,
 				match.AwayTeam,
 				2023,
@@ -61,9 +62,9 @@ func handle(ctx context.Context, event events.SQSEvent, predictionPipeline pipel
 				time.Now(),
 				match.ID,
 			)
-			bet := predictionPipeline.PlaceBet(match.ID, probabilities, 100)
+			bet := predictionPipeline.PlaceBet(ctx, match.ID, probabilities, 100)
 			if bet.IsPresent() {
-				if err := notify.GetNotifier().NotifyBetPlaced(bet.Value()); err != nil {
+				if err := notify.GetNotifier().NotifyBetPlaced(ctx, bet.Value()); err != nil {
 					return fmt.Errorf("failed to add notify bet order: %w", err)
 				}
 			}
