@@ -1,11 +1,16 @@
 data/oddsFiles
 analysis
 data
-python/venv
-.idea
+python/venv/
+.idea/
+bin
 python/.idea
 *.png
 .DS_Store
+
+*.tfstate
+*.tfstate.backup
+deployments/.terraform
 
 # Byte-compiled / optimized / DLL files
 __pycache__/
