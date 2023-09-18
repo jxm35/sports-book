@@ -25,5 +25,5 @@ func main() {
 	if err != nil {
 		panic(err)
 	}
-	backtest.RunBacktests(2021, 2022, domain.LeagueEPL, p, true)
+	backtest.RunBacktests(2014, 2023, domain.LeagueEPL, p, true)
 }

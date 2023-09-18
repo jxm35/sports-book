@@ -13,6 +13,10 @@ python/.idea
 *.tfstate
 *.tfstate.backup
 deployments/.terraform
+deployments/scrape_fixtures.zip
+deployments/scrape_results.zip
+deployments/scrape_fixtures_dist_pkg
+deployments/scrape_results_dist_pkg
 
 # Byte-compiled / optimized / DLL files
 __pycache__/

@@ -6,11 +6,10 @@ import (
 	"fmt"
 	"strconv"
 
-	"sports-book.com/pkg/logger"
-
 	"sports-book.com/pkg/db"
 	"sports-book.com/pkg/domain"
 	"sports-book.com/pkg/gorm/model"
+	"sports-book.com/pkg/logger"
 	"sports-book.com/pkg/pipeline"
 	"sports-book.com/pkg/score_predictor"
 )

@@ -6,11 +6,10 @@ import (
 	"fmt"
 	"time"
 
-	"sports-book.com/pkg/logger"
-
 	"sports-book.com/pkg/db"
 	"sports-book.com/pkg/domain"
 	"sports-book.com/pkg/gorm/model"
+	"sports-book.com/pkg/logger"
 	"sports-book.com/pkg/notify"
 	"sports-book.com/pkg/predictions"
 )
@@ -35,6 +34,7 @@ func (e *eloGoalsPredictor) PredictScore(ctx context.Context, homeTeam, awayTeam
 		return -1, -1, err
 	}
 	if seasonStats.TotalHG == 0 && seasonStats.TotalAG == 0 {
+		logger.Debug("no previous data for whole season")
 		return -1, -1, ErrNoPreviousData
 	}
 	if seasonStats.MatchCount == 0 || seasonStats.MatchCount%2 != 0 {
@@ -62,6 +62,7 @@ func (e *eloGoalsPredictor) PredictScore(ctx context.Context, homeTeam, awayTeam
 		return -1, -1, err
 	}
 	if homeSeason.XGScoredAtHome == 0 && homeSeason.XGConcededAtHome == 0 {
+		logger.Debug("no previous data for home season")
 		return -1, -1, ErrNoPreviousData
 	}
 	if homeSeason.HomeCount == 0 || homeSeason.AwayCount == 0 || homeSeason.HomeCount != homeSeason.AwayCount {
@@ -94,6 +95,7 @@ func (e *eloGoalsPredictor) PredictScore(ctx context.Context, homeTeam, awayTeam
 		return -1, -1, err
 	}
 	if awaySeason.XGScoredAtHome == 0 && awaySeason.XGConcededAtHome == 0 {
+		logger.Debug("no previous data for away season")
 		return -1, -1, ErrNoPreviousData
 	}
 	if awaySeason.HomeCount == 0 || awaySeason.AwayCount == 0 || awaySeason.HomeCount != awaySeason.AwayCount {

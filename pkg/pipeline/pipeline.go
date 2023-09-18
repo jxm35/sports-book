@@ -5,12 +5,11 @@ import (
 	"errors"
 	"time"
 
-	"sports-book.com/pkg/logger"
-
 	results "github.com/jxm35/go-results"
 
 	"sports-book.com/pkg/bet_selector"
 	"sports-book.com/pkg/domain"
+	"sports-book.com/pkg/logger"
 	"sports-book.com/pkg/probability_generator"
 	"sports-book.com/pkg/score_predictor"
 )

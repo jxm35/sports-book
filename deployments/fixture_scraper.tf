@@ -1,16 +1,37 @@
-data "archive_file" "python_lambda_package" {
-  type = "zip"
-  source_file = "${path.module}/../python/scrape_fixtures/scrape_fixtures.py"
+resource "null_resource" "fixture_install_python_dependencies" {
+  provisioner "local-exec" {
+    command = "bash ${path.module}/scripts/create_pkg.sh"
+
+    environment = {
+      source_code_path = "${path.module}/../python/scrape_fixtures"
+      filename = "scrape_fixtures.py"
+      function_name = "fixture-scraper"
+      dir_name = "scrape_fixtures_dist_pkg/"
+      path_module = path.module
+      runtime = "python3.9"
+      path_cwd = path.cwd
+    }
+  }
+
+    triggers = {
+#       build_number = "${timestamp()}"
+    }
+}
+
+data "archive_file" "fixture_python_lambda_package" {
+  depends_on = [null_resource.fixture_install_python_dependencies]
+  source_dir = "${path.cwd}/scrape_fixtures_dist_pkg/"
   output_path = "scrape_fixtures.zip"
+  type = "zip"
 }
 
 resource "aws_lambda_function" "scrape-fixtures-lambda-func" {
         function_name = "fixture-scraper"
         filename      = "scrape_fixtures.zip"
-        source_code_hash = data.archive_file.python_lambda_package.output_base64sha256
+        source_code_hash = data.archive_file.fixture_python_lambda_package.output_base64sha256
         role          = aws_iam_role.scraper_lambda_role.arn
         runtime       = "python3.9"
-        handler       = "lambda_function.lambda_handler"
+        handler       = "scrape_fixtures.handle_fixtures"
         timeout       = 100
 
         environment  {

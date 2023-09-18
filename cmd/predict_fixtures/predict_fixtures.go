@@ -3,15 +3,16 @@ package main
 import (
 	"context"
 	"encoding/json"
-	"time"
+	"fmt"
 
 	"github.com/aws/aws-lambda-go/events"
 	"github.com/aws/aws-lambda-go/lambda"
 
+	"sports-book.com/internal/new_fixtures"
+	"sports-book.com/internal/new_results"
 	"sports-book.com/pkg/db"
 	"sports-book.com/pkg/domain"
 	"sports-book.com/pkg/logger"
-	"sports-book.com/pkg/notify"
 	"sports-book.com/pkg/pipeline"
 )
 
@@ -38,57 +39,32 @@ func main() {
 func handle(ctx context.Context, event events.SQSEvent, predictionPipeline pipeline.Pipeline) error {
 	for _, record := range event.Records {
 		title := record.MessageAttributes["Title"]
-		logger.Info("new message received", "title", *title.StringValue)
-		var fixtures []domain.Fixture
-		bets := make([]domain.BetOrder, 0)
+		switch *title.StringValue {
+		case "new_fixtures":
+			var fixtures []domain.Fixture
 
-		if err := json.Unmarshal([]byte(record.Body), &fixtures); err != nil {
-			logger.Error("failed to unmarshal fixtures", "body", record.Body)
-			return err
-		}
-
-		for _, fixture := range fixtures {
-			match, err := db.CreateFixture(ctx, fixture, -1)
-			if err != nil {
-				logger.Error("failed to save fixture", "error", err)
-				return err
-			}
-			probabilities, err := predictionPipeline.PredictMatch(
-				ctx,
-				match.HomeTeam,
-				match.AwayTeam,
-				2023,
-				domain.LeagueEPL,
-				time.Now(),
-				match.ID,
-			)
-			if err != nil {
-				logger.Error("failed to predict match", "error", err)
+			if err := json.Unmarshal([]byte(record.Body), &fixtures); err != nil {
+				logger.Error("failed to unmarshal fixtures", "body", record.Body)
 				return err
 			}
 
-			bet := predictionPipeline.PlaceBet(ctx, match.ID, probabilities, 100)
-			if bet.IsPresent() {
-				bets = append(bets, bet.Value())
-			}
-		}
-		// sleep to ensure all odds have been entered into the database
-		time.Sleep(5 * time.Second)
+			return new_fixtures.HandleNewFixtures(ctx, fixtures, predictionPipeline)
 
-		for _, bet := range bets {
-			// send message to me recommending for bet to be placed
-			if err := notify.GetNotifier().NotifyBetPlaced(ctx, bet); err != nil {
-				logger.Error("failed to notify about placed bet", "error", err)
+		case "new_results":
+			var results []domain.Result
+
+			if err := json.Unmarshal([]byte(record.Body), &results); err != nil {
+				logger.Error("failed to unmarshal results", "body", record.Body)
 				return err
 			}
 
-			// enter bet into the database
-			if err := db.SaveBetPlaced(ctx, bet); err != nil {
-				logger.Error("could not save bet", "error", err)
-				return err
-			}
+			return new_results.HandleNewResults(ctx, results)
+
+		default:
+			logger.Error("unknown event type", "title", *title.StringValue)
+			return fmt.Errorf("unknown event type %s", *title.StringValue)
+
 		}
 	}
-
 	return nil
 }
