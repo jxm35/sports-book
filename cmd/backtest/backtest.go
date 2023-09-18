@@ -4,6 +4,7 @@ import (
 	"sports-book.com/internal/backtest"
 	"sports-book.com/pkg/db"
 	"sports-book.com/pkg/domain"
+	"sports-book.com/pkg/logger"
 	"sports-book.com/pkg/pipeline"
 )
 
@@ -12,6 +13,7 @@ func main() {
 	if err != nil {
 		panic(err)
 	}
+	logger.InitialiseDevLogger()
 	// p, err := pipeline.NewPipelineBuilder().
 	//	SetPredictor(score_predictor.NewEloGoalsPredictor(5, 11)).
 	//	// SetPredictor(&goals_predictor.LastSeasonXgGoalPredictor{LastXGames: 0}).

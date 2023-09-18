@@ -1,6 +1,8 @@
 package config
 
 import (
+	"embed"
+	_ "embed"
 	"errors"
 	"fmt"
 	"os"
@@ -16,9 +18,12 @@ var (
 	ErrConfigNotProvided = errors.New("config not provided")
 )
 
+//go:embed files/*
+var configFiles embed.FS
+
 func loadConfig(env string) error {
 	config = make(map[string]any)
-	file, err := os.Open(fmt.Sprintf("config/%s.yaml", env))
+	file, err := configFiles.Open(fmt.Sprintf("files/%s.yaml", env))
 	if err != nil {
 		return err
 	}

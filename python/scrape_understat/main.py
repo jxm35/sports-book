@@ -83,7 +83,7 @@ async def getTeams(conn, year):
     async with aiohttp.ClientSession() as session:
         understat = Understat(session)
         teams = await understat.get_teams(
-            "serie_a",
+            "epl",
             year,
         )
         for team in teams:
@@ -210,7 +210,7 @@ if __name__ == "__main__":
     conn = getConnection()
     loop = asyncio.new_event_loop()
     asyncio.set_event_loop(loop)
-    loop.run_until_complete(getFixtures(conn))
+    loop.run_until_complete(getTeams(conn, 2023))
     # print("db connection made")
     # year = 2022
     # yearId = 37

@@ -6,6 +6,8 @@ import (
 	"fmt"
 	"time"
 
+	"sports-book.com/pkg/logger"
+
 	"sports-book.com/pkg/db"
 	"sports-book.com/pkg/domain"
 	"sports-book.com/pkg/gorm/model"
@@ -122,7 +124,7 @@ func (e *eloGoalsPredictor) PredictScore(ctx context.Context, homeTeam, awayTeam
 	projectedHomeGoals := homeAttackStrength * awayDefenseStrength * avgHomeXg
 	projectedAwayGoals := awayAttackStrength * homeDefenseStrength * avgAwayXg
 
-	fmt.Printf("%d: %f | %d: %f", homeTeam, projectedHomeGoals, awayTeam, projectedAwayGoals)
+	logger.Info("predicted score", "score", fmt.Sprintf("%d: %f | %d: %f", homeTeam, projectedHomeGoals, awayTeam, projectedAwayGoals))
 	err = e.predictions.SavePrediction(ctx, matchID, domain.Prediction{
 		HomexG: projectedHomeGoals,
 		AwayxG: projectedAwayGoals,

@@ -25,7 +25,7 @@ def write_to_queue(fixtures_to_send: List[Dict[str, Any]]) -> None:
         MessageAttributes={
             'Title': {
                 'DataType': 'String',
-                'StringValue': 'New_Fixtures'
+                'StringValue': 'new_fixtures'
             },
             'Author': {
                 'DataType': 'String',

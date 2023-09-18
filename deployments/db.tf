@@ -26,6 +26,7 @@ resource "aws_db_instance" "sports-book-db" {
   password             = data.aws_ssm_parameter.db_password.value
   parameter_group_name = "default.mysql5.7"
   vpc_security_group_ids = ["${aws_security_group.rds_sg.id}"]
+#   deletion_protection = true
   skip_final_snapshot  = true
   publicly_accessible =  true
 }

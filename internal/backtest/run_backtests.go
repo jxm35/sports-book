@@ -6,6 +6,8 @@ import (
 	"fmt"
 	"strconv"
 
+	"sports-book.com/pkg/logger"
+
 	"sports-book.com/pkg/db"
 	"sports-book.com/pkg/domain"
 	"sports-book.com/pkg/gorm/model"
@@ -20,7 +22,7 @@ func RunBacktests(startYear, endYear int32, league domain.League, pipeline pipel
 	for i := startYear; i <= endYear; i++ {
 		yearProbabilities, resultingBank, bets, err := testPredictSeason(pipeline, i, league, placeBets, bank)
 		if err != nil {
-			fmt.Println(err)
+			logger.Error("error predicting season", "error", err)
 			return
 		}
 		betResults = append(betResults, bets...)

@@ -7,6 +7,8 @@ bin
 python/.idea
 *.png
 .DS_Store
+*.zip
+*.lock.hcl
 
 *.tfstate
 *.tfstate.backup

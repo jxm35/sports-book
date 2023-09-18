@@ -3,8 +3,9 @@ package pipeline
 import (
 	"context"
 	"errors"
-	"fmt"
 	"time"
+
+	"sports-book.com/pkg/logger"
 
 	results "github.com/jxm35/go-results"
 
@@ -28,7 +29,8 @@ func (p *pipelineImpl) PredictMatch(ctx context.Context, homeTeam, awayTeam, sea
 		return domain.MatchProbability{}, err
 	}
 	matchProbabilities := p.probabilityGenerator.Generate1x2Probabilities(homeGoalsPredicted, awayGoalsPredicted, league)
-	fmt.Printf("my probabilities: %+v\n", matchProbabilities)
+	logger.Info("generated probabilities", "probabilities", matchProbabilities)
+	// fmt.Printf("my probabilities: %+v\n", matchProbabilities)
 
 	return matchProbabilities, nil
 }

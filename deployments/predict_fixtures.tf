@@ -35,7 +35,7 @@ resource "aws_lambda_function" "predictor_lambda" {
 #       POST_TABLE_NAME = aws_dynamodb_table.posts_table.name
 #       COMMENT_TABLE_NAME = aws_dynamodb_table.comments_table.name
         DB_HOST = aws_db_instance.sports-book-db.address
-        DB_NAME = "sports-book"
+        DB_NAME = aws_db_instance.sports-book-db.db_name
         DB_PASSWORD = data.aws_ssm_parameter.db_password.value
         DB_USER = aws_db_instance.sports-book-db.username
         DISCORD_WEBHOOK_URL = data.aws_ssm_parameter.discord_url.value
