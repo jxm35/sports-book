@@ -1,7 +1,6 @@
 import asyncio
 import datetime
 import json
-import logging
 import os
 
 from typing import List, Dict, Any
@@ -11,7 +10,7 @@ from understat import Understat
 import boto3
 
 
-def write_to_queue(fixtures_to_send: List[Dict[str, Any]]) -> None:
+def write_to_queue(results_to_send: List[Dict[str, Any]]) -> None:
     # Create SQS client
     sqs = boto3.client('sqs')
 
@@ -30,10 +29,10 @@ def write_to_queue(fixtures_to_send: List[Dict[str, Any]]) -> None:
             }
         },
         MessageBody=(
-            json.dumps(fixtures_to_send)
+            json.dumps(results_to_send)
         )
     )
-    logging.debug(response)
+    print(response)
 
 
 async def get_results() -> List[Dict[str, Any]]:
@@ -52,17 +51,17 @@ def result_was_today(fixture: Dict[str, Any]) -> bool:
     return dt.date() == datetime.datetime.today().date()
 
 
-if __name__ == "__main__":
+def handle_results(event, context):
     loop = asyncio.new_event_loop()
     asyncio.set_event_loop(loop)
 
     results = loop.run_until_complete(get_results())
     filtered_results = [result for result in results if result_was_today(result)]
     if len(filtered_results) == 0:
-        logging.debug("no results found")
-        exit(0)
+        print("no results found")
+        return "no results sent"
 
     write_to_queue(filtered_results)
-    logging.debug("sent {count} fixtures to the queue".format(count=len(filtered_results)))
+    print("sent {count} results to the queue".format(count=len(filtered_results)))
 
-    print(filtered_results)
+    return "{count} results sent".format(count=len(filtered_results))

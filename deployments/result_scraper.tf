@@ -31,8 +31,8 @@ resource "aws_lambda_function" "scrape-results-lambda-func" {
         source_code_hash = data.archive_file.result_python_lambda_package.output_base64sha256
         role          = aws_iam_role.scraper_lambda_role.arn
         runtime       = "python3.9"
-        handler       = "lambda_function.lambda_handler"
-        timeout       = 100
+        handler       = "scrape_results.handle_results"
+        timeout       = 30
 
         environment  {
             variables = {

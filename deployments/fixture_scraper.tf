@@ -32,7 +32,7 @@ resource "aws_lambda_function" "scrape-fixtures-lambda-func" {
         role          = aws_iam_role.scraper_lambda_role.arn
         runtime       = "python3.9"
         handler       = "scrape_fixtures.handle_fixtures"
-        timeout       = 100
+        timeout       = 30
 
         environment  {
             variables = {

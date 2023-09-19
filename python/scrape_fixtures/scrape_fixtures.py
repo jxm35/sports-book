@@ -59,36 +59,10 @@ def handle_fixtures(event, context):
     fixtures = loop.run_until_complete(get_fixtures())
     filtered_fixtures = [fixture for fixture in fixtures if fixture_is_today(fixture)]
     if len(filtered_fixtures) == 0:
-        logging.debug("no fixtures found")
-        exit(0)
-
-    # we have some fixtures today to process
-    # for fixture in filtered_fixtures:
-    #     save_fixture(conn, fixture, year_id)
-    # logging.debug("added {count} fixtures to database".format(count=len(filtered_fixtures)))
+        print("no fixtures found")
+        return "no fixtures sent"
 
     write_to_queue(filtered_fixtures)
     print("sent {count} fixtures to the queue".format(count=len(filtered_fixtures)))
 
     return "{count} fixtures sent".format(count=len(filtered_fixtures))
-
-
-# if __name__ == "__main__":
-#     loop = asyncio.new_event_loop()
-#     asyncio.set_event_loop(loop)
-#
-#     fixtures = loop.run_until_complete(get_fixtures())
-#     filtered_fixtures = [fixture for fixture in fixtures if fixture_is_today(fixture)]
-#     if len(filtered_fixtures) == 0:
-#         logging.debug("no fixtures found")
-#         exit(0)
-#
-#     # we have some fixtures today to process
-#     # for fixture in filtered_fixtures:
-#     #     save_fixture(conn, fixture, year_id)
-#     # logging.debug("added {count} fixtures to database".format(count=len(filtered_fixtures)))
-#
-#     write_to_queue(filtered_fixtures)
-#     logging.debug("sent {count} fixtures to the queue".format(count=len(filtered_fixtures)))
-#
-#     print(filtered_fixtures)
