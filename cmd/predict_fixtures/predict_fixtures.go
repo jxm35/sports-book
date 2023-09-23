@@ -13,6 +13,7 @@ import (
 	"sports-book.com/pkg/db"
 	"sports-book.com/pkg/domain"
 	"sports-book.com/pkg/logger"
+	"sports-book.com/pkg/notify"
 	"sports-book.com/pkg/pipeline"
 )
 
@@ -32,7 +33,14 @@ func main() {
 
 	lambda.Start(func(ctx context.Context, event events.SQSEvent) error {
 		logger.Info("event received", "event", event)
-		return handle(ctx, event, predictionPipeline)
+		err := handle(ctx, event, predictionPipeline)
+		if err != nil {
+			notify.GetNotifier().NotifyError(err.Error())
+			logger.Error("failed to handle event", "error", err)
+		} else {
+			logger.Info("event handled successfully")
+		}
+		return nil
 	})
 }
 

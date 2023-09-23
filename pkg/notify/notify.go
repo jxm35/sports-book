@@ -16,6 +16,7 @@ var (
 type notifier interface {
 	NotifyBetPlaced(ctx context.Context, bet domain.BetOrder) error
 	NotifyError(message string) error
+	NotifyInfo(message string) error
 }
 
 func GetNotifier() notifier {

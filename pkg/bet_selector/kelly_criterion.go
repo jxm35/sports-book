@@ -3,6 +3,8 @@ package bet_selector
 import (
 	"context"
 
+	"sports-book.com/pkg/logger"
+
 	results "github.com/jxm35/go-results"
 
 	"sports-book.com/pkg/config"
@@ -116,6 +118,12 @@ func (k *kellyCriterionBetSelector) Place1x2Bets(ctx context.Context, matchId in
 		}
 		return results.Some(bet)
 	}
+	logger.Info(
+		"match not within betting constraints",
+		"match_id", matchId,
+		"generated odds", generatedOdds,
+		"bookie_implied_odds", bookieImpliedOdds,
+	)
 	return results.None[domain.BetOrder]()
 }
 

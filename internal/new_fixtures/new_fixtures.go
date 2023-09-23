@@ -44,11 +44,13 @@ func HandleNewFixtures(ctx context.Context, fixtures []domain.Fixture, predictio
 			continue
 		} else if err != nil {
 			logger.Error("failed to predict match", "error", err)
-			return nil
+			return err
 		}
+		logger.Debug("match predicted", "match_id", match.ID, "probabilities", probabilities)
 
 		bet := predictionPipeline.PlaceBet(ctx, match.ID, probabilities, 100)
 		if bet.IsPresent() {
+			logger.Debug("bet placed", "match", match.ID, "bet", bet.Value())
 			bets = append(bets, bet.Value())
 		}
 	}

@@ -56,14 +56,18 @@ Predicted Probability: %.2f%%`,
 		bet.Amount,
 		bet.PredictedProbability*100,
 	)
-	return d.sendMessage(message)
+	return d.sendMessage(d.username, message)
 }
 
-func (l *discordNotifier) NotifyError(message string) error {
-	return nil
+func (d *discordNotifier) NotifyError(message string) error {
+	return d.sendMessage("ERROR", message)
 }
 
-func (d *discordNotifier) sendMessage(text string) error {
+func (d *discordNotifier) NotifyInfo(message string) error {
+	return d.sendMessage("INFO", message)
+}
+
+func (d *discordNotifier) sendMessage(username, text string) error {
 	user := d.username
 
 	message := discordwebhook.Message{

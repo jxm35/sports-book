@@ -3,10 +3,10 @@ package notify
 import (
 	"context"
 	"fmt"
-	"log"
 
 	"sports-book.com/pkg/db"
 	"sports-book.com/pkg/domain"
+	"sports-book.com/pkg/logger"
 )
 
 type logNotifier struct{}
@@ -37,10 +37,16 @@ Predicted Probability: %.2f%%`,
 		bet.Amount,
 		bet.PredictedProbability*100,
 	)
-	log.Print(message)
+	logger.Info(message)
 	return nil
 }
 
 func (l *logNotifier) NotifyError(message string) error {
+	logger.Error(message)
+	return nil
+}
+
+func (l *logNotifier) NotifyInfo(message string) error {
+	logger.Info(message)
 	return nil
 }
